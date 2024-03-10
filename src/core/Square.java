@@ -1,5 +1,8 @@
 package core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Square {
     private int x;
     private int y;
@@ -89,6 +92,19 @@ public class Square {
         int y = rank - 1;
 
         return new Square(x, y);
+    }
+
+    public static List<Square> getAll(){
+        List<Square> squareList = new ArrayList<>();
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                Square square = new Square(x, y);
+                squareList.add(square);
+            }
+
+        }
+
+        return squareList;
     }
 
 }

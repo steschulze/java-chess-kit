@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SquareTest {
 
     @Test
-    public void testEquality() {
+    void testEquality() {
         Square square1 = Square.fromName("b4");
         Square square2 = Square.fromName("b4");
         Square square3 = Square.fromName("b3");
@@ -22,7 +22,7 @@ class SquareTest {
     }
 
     @Test
-    public void testSimpleProperties() {
+    void testSimpleProperties() {
         Square f7 = Square.fromName("f7");
         assertFalse(f7.isDark());
         assertTrue(f7.isLight());
@@ -36,10 +36,19 @@ class SquareTest {
     }
 
     @Test
-    public void testCreation() {
+    void testCreation() {
         assertEquals(new Square(3, 5), Square.fromName("d6"));
         assertEquals(Square.from0x88Index(2), Square.fromName("c1"));
         assertEquals(Square.fromRankAndFile(2, 'g'), Square.fromName("g2"));
+    }
+
+    @Test
+    void testGetAllSquares() {
+        Square a1 = Square.fromName("a1");
+        Square h8 = Square.fromName("h8");
+
+        assertTrue(Square.getAll().contains(a1));
+        assertTrue(Square.getAll().contains(h8));
     }
 
 }
