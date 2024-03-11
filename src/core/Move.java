@@ -1,6 +1,8 @@
 package core;
 
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Move {
 
@@ -49,5 +51,17 @@ public class Move {
     @Override
     public int hashCode() {
         return Objects.hash(source, target, promotion);
+    }
+
+    public static Move fromUCI(String move){
+        Pattern uci_regex = Pattern.compile("^([a-h][1-8])([a-h][1-8])([rnbq]?)$");
+        Matcher matcher = uci_regex.matcher(move);
+        if(!matcher.matches()) throw new IllegalArgumentException("No uci format: " + move);
+
+        Square source = Square.fromName(matcher.group(0));
+        Square target = Square.fromName(matcher.group(1));
+        PieceType promotion = PieceType.fromSymbol(matcher.group(2).charAt(0));
+
+        return new Move(source, target, promotion);
     }
 }
