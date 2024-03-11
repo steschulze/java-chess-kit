@@ -92,7 +92,7 @@ public class Position {
 
     public void setCastlingRight(char type, boolean status) {
         assert "KQkq".indexOf(type) != -1;
-        assert status || getTheoreticalCastlingRight(type);
+        assert !status || getTheoreticalCastlingRight(type);
 
         StringBuilder sb = new StringBuilder();
         for (char t : new char[]{'K', 'Q', 'k', 'q'}) {
@@ -183,7 +183,7 @@ public class Position {
             }
         }
 
-        fen.append(' ').append(turn).append(' ');
+        fen.append(' ').append(turn.shortName()).append(' ');
 
         if (castling.isEmpty()) {
             fen.append('-');
@@ -211,14 +211,15 @@ public class Position {
         String[] rows = parts[0].split("/");
         assert rows.length == 8;
 
-        int index = 0;
+        int index = 0x70;
         for (char c: parts[0].toCharArray()) {
             if(c == '/'){
-                index += 8;
+                index -= 24;
             } else if (c >= '1' && c <= '8') {
                 index += Character.getNumericValue(c);
             } else {
                 this.board [index] = Piece.fromSymbol(c);
+                index++;
             }
         }
 
