@@ -124,4 +124,50 @@ class PositionTest {
         assertEquals(2, allPieces.get(PieceType.QUEEN));
         assertEquals(2, allPieces.get(PieceType.KING));
     }
+
+    @Test
+    void testScholarsMate() {
+        Position position = Position.getDefault();
+
+        Move e4 = Move.fromUCI("e2e4");
+        assertTrue(position.getLegalMoves().contains(e4));
+        position.makeMove(e4);
+
+        Move e5 = Move.fromUCI("e7e5");
+        assertTrue(position.getLegalMoves().contains(e5));
+        assertFalse(position.getLegalMoves().contains(e4));
+        position.makeMove(e5);
+
+        Move qf3 = Move.fromUCI("d1f3");
+        assertTrue(position.getLegalMoves().contains(qf3));
+        position.makeMove(qf3);
+
+        Move nc6 = Move.fromUCI("b8c6");
+        assertTrue(position.getLegalMoves().contains(nc6));
+        position.makeMove(nc6);
+
+        Move lc4 = Move.fromUCI("f1c4");
+        assertTrue(position.getLegalMoves().contains(lc4));
+        position.makeMove(lc4);
+
+        Move rb8 = Move.fromUCI("a8b8");
+        assertTrue(position.getLegalMoves().contains(rb8));
+        position.makeMove(rb8);
+
+        assertFalse(position.isCheck());
+        assertFalse(position.isCheckmate());
+        assertFalse(position.isGameOver());
+        assertFalse(position.isStalemate());
+
+        Move qf7 = Move.fromUCI("f3f7");
+        assertTrue(position.getLegalMoves().contains(qf7));
+        position.makeMove(qf7);
+
+        assertTrue(position.isCheck());
+        assertTrue(position.isCheckmate());
+        assertTrue(position.isGameOver());
+        assertFalse(position.isStalemate());
+
+        assertEquals("1rbqkbnr/pppp1Qpp/2n5/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQk - 0 4", position.getFen());
+    }
 }

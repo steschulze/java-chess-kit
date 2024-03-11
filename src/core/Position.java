@@ -271,8 +271,6 @@ public class Position {
     private List<Square> getAttackers(Color color, Square square) {
         List<Square> attackingSquares = new ArrayList<>();
 
-
-
         for (Square source : Square.getAll()){
             Piece piece = get(source);
             if(piece == null || piece.getColor() != color) continue;
@@ -312,7 +310,7 @@ public class Position {
                 }
             }
         }
-        return null;
+        return attackingSquares;
     }
 
     public List<Move> getPseudoLegalMoves(){
@@ -359,7 +357,7 @@ public class Position {
                         } else {
                             moves.add(new Move(square, targetSquare));
                         }
-                    } else if (capturedPiece == null && targetSquare.getFile() == epFile) {
+                    } else if ((capturedPiece == null) && epFile != null && (targetSquare.getFile() == epFile.charValue())) {
                         moves.add(new Move(square, targetSquare));
                     }
                 }
@@ -429,6 +427,7 @@ public class Position {
         boolean hasCaptured = this.get(move.getTarget()) != null;
         this.set(move.getTarget(), movingPiece);
         this.set(move.getSource(), null);
+        this.epFile = null;
 
         this.toggleTurn();
 
