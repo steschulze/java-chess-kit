@@ -21,4 +21,9 @@ public enum Color {
         else if (symbol == 'b') return BLACK;
         else throw new IllegalArgumentException("No Color for symbol " + symbol);
     }
+
+    public int forwardDirection() {
+        if (this == WHITE) return 1;
+        else return -1;
+    }
 }

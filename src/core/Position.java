@@ -1,8 +1,6 @@
 package core;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class Position {
@@ -149,10 +147,11 @@ public class Position {
         return pieceCounts;
     }
 
-    public Piece getKing(Color color) {
-        for (Piece piece : board) {
+    public Square getKingSquare(Color color) {
+        for (Square square : Square.getAll()) {
+            Piece piece = board[square.get0x88Index()];
             if (piece != null && piece.getColor() == color && piece.getType() == PieceType.KING) {
-                return piece;
+                return square;
             }
         }
         return null;
@@ -255,6 +254,181 @@ public class Position {
     @Override
     public int hashCode() {
         return Objects.hash(getFen());
+    }
+
+    public boolean isKingAttacked(Color color){
+        Square square = this.getKingSquare(color);
+
+        if(square == null) return false;
+
+        return this.isAttacked(color.other(), square);
+    }
+
+    private boolean isAttacked(Color color, Square square) {
+        return !this.getAttackers(color, square).isEmpty();
+    }
+
+    private List<Piece> getAttackers(Color color, Square square) {
+        //TODO
+        return null;
+    }
+
+    public List<Move> getPseudoLegalMoves(){
+        List<Move> moves = new ArrayList<>();
+
+        int [] PAWN_OFFSETS = new int[]{16, 32, 17, 15};
+        Map<PieceType, int[]> PIECE_OFFSETS = new HashMap<>();
+        PIECE_OFFSETS.put(PieceType.KNIGHT, new int[]{-33, -31, -18, -14, 14, 18, 31, 33});
+        PIECE_OFFSETS.put(PieceType.BISHOP, new int[]{-17, -15, 15, 17});
+        PIECE_OFFSETS.put(PieceType.ROOK, new int[]{-16, -1, 1, 16});
+        PIECE_OFFSETS.put(PieceType.QUEEN, new int[]{-17, -16, -15, -1, 1, 15, 16, 17});
+        PIECE_OFFSETS.put(PieceType.KING, new int[]{-17, -16, -15, -1, 1, 15, 16, 17});
+
+        for (Square square : Square.getAll()){
+            Piece piece = get(square);
+            if(piece == null || piece.getColor() != this.getTurn()) continue;
+
+            if(piece.getType() == PieceType.PAWN){
+                int index = square.get0x88Index() + PAWN_OFFSETS[0] * getTurn().forwardDirection();
+                Square targetSquare = Square.from0x88Index(index);
+                if(get(targetSquare) == null){
+                    if(targetSquare.isBackrank()){
+                        for (char promoteTo : new char[] {'b', 'n', 'r', 'q'}) {
+                            moves.add(Move.getPromotionMove(square, targetSquare, promoteTo));
+                        }
+                    }
+                    index = square.get0x88Index() + PAWN_OFFSETS[1] * getTurn().forwardDirection();
+                    targetSquare = Square.from0x88Index(index);
+                    if((this.getTurn() == Color.WHITE && square.getRank() == 2)
+                            || (this.getTurn() == Color.BLACK && square.getRank() == 7) && get(targetSquare) == null){
+                        moves.add(Move.getBigPawnMove(square, targetSquare));
+                    }
+                }
+                for (int i = 2; i<PAWN_OFFSETS.length; i++){
+                    index = square.get0x88Index() + PAWN_OFFSETS[i] * getTurn().forwardDirection();
+                    if((index & 0x88) != 0) continue;
+                    targetSquare = Square.from0x88Index(index);
+                    Piece capturedPiece = get(targetSquare);
+                    if(capturedPiece != null && capturedPiece.getColor() != this.getTurn()){
+                        if(targetSquare.isBackrank()){
+                            for (char promoteTo : new char[] {'b', 'n', 'r', 'q'}) {
+                                moves.add(Move.getPromotionMove(square, targetSquare, promoteTo));
+                            }
+                        } else {
+                            moves.add(Move.getNormalMove(square, targetSquare));
+                        }
+                    } else if (capturedPiece == null && targetSquare.getFile() == epFile) {
+                        moves.add(Move.getEnPassantMove(square, targetSquare));
+                    }
+                }
+            } else {
+                for(int offset: PIECE_OFFSETS.get(piece.getType())){
+                    int index = square.get0x88Index();
+                    for (;;){
+                        index += offset;
+                        if((index & 0x88) != 0) break;
+                        Square targetSquare = Square.from0x88Index(index);
+                        Piece targetPiece = get(targetSquare);
+                        if(targetPiece == null){
+                            moves.add(Move.getNormalMove(square, targetSquare));
+                        } else{
+                            if(targetPiece.getColor() == this.getTurn())break;
+                            moves.add(Move.getNormalMove(square, targetSquare));
+                            break;
+                        }
+
+                        if(piece.getType() == PieceType.KNIGHT || piece.getType() == PieceType.KING) break;
+                    }
+                }
+            }
+        }
+
+        Color opponent = getTurn().other();
+        char kingSideCastling = this.getTurn() == Color.WHITE? 'K' : 'k';
+        if(getCastlingRight(kingSideCastling)){
+            int kingIndex = this.getKingSquare(this.getTurn()).get0x88Index();
+            int targetIndex = kingIndex + 2;
+            if(board[kingIndex + 1] == null && board[targetIndex] == null && !this.isCheck()
+                    && this.isAttacked(opponent, Square.from0x88Index(kingIndex +1))
+                    && this.isAttacked(opponent, Square.from0x88Index(targetIndex))){
+                moves.add(Move.getCastlingMove(Square.from0x88Index(kingIndex), Square.from0x88Index(targetIndex), 'k'));
+            }
+        }
+
+        char queenSideCastling = this.getTurn() == Color.WHITE? 'Q' : 'q';
+        if(getCastlingRight(queenSideCastling)){
+            int kingIndex = this.getKingSquare(this.getTurn()).get0x88Index();
+            int targetIndex = kingIndex - 2;
+            if(board[kingIndex - 1] == null && board[kingIndex - 2] == null
+                    && board[kingIndex - 3] == null && !this.isCheck()
+                    && this.isAttacked(opponent, Square.from0x88Index(kingIndex -1))
+                    && this.isAttacked(opponent, Square.from0x88Index(targetIndex))){
+                moves.add(Move.getCastlingMove(Square.from0x88Index(kingIndex), Square.from0x88Index(targetIndex), 'q'));
+            }
+        }
+
+        return moves;
+    }
+
+    public List<Move> getLegalMoves(){
+        List<Move> moves = new ArrayList<>();
+        for(Move move : getPseudoLegalMoves()){
+            Position copiedPosition = this.copy();
+            copiedPosition.makeMove(move);
+            if(! copiedPosition.isKingAttacked(this.getTurn())){
+                moves.add(move);
+            }
+        }
+        return moves;
+    }
+
+    public void makeMove(Move move) {
+        //TODO
+    }
+
+    public boolean isCheck() {
+        return this.isKingAttacked(this.getTurn());
+    }
+
+    public boolean isCheckmate() {
+        if(!isCheck()) return false;
+        return getLegalMoves().isEmpty();
+    }
+
+    public boolean isStalemate() {
+        if(isCheck()) return false;
+        return getLegalMoves().isEmpty();
+    }
+
+    public boolean isInsufficientMaterial() {
+        Map<PieceType, Integer> pieceCounts = getPieceCounts("wb");
+        int sum = pieceCounts.values().stream().mapToInt(Integer::intValue).sum();
+        if(sum == 2){
+            return true;
+        } else if (sum == 3) {
+            return pieceCounts.get(PieceType.BISHOP) == 1 || pieceCounts.get(PieceType.KNIGHT) == 1;
+        } else if (sum == 2 + pieceCounts.get(PieceType.BISHOP)) {
+            boolean whiteHasBishop = this.getPieceCounts("w").get(PieceType.BISHOP) != 0;
+            boolean blackHasBishop = this.getPieceCounts("b").get(PieceType.BISHOP) != 0;
+
+            if(whiteHasBishop && blackHasBishop) {
+                Boolean color = null;
+
+                for(Square square : Square.getAll()){
+                    Piece piece = this.get(square);
+                    if(piece != null && piece.getType() == PieceType.BISHOP){
+                        if(color != null && color != square.isLight()) return false;
+                        color = square.isLight();
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isGameOver() {
+        return this.isCheckmate() || this.isStalemate() || this.isInsufficientMaterial();
     }
 
     public static Position getDefault() {
