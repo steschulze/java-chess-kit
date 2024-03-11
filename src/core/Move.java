@@ -1,5 +1,7 @@
 package core;
 
+import java.util.Objects;
+
 public class Move {
 
     private Square source;
@@ -20,5 +22,32 @@ public class Move {
 
     public Move (Square source, Square target){
         this(source, target, null);
+    }
+
+    public String getUciMove(){
+        String promotionSymbol = "";
+        if(this.promotion != null) {
+            promotionSymbol = String.valueOf(this.promotion.getSymbol());
+        }
+
+        return this.source.getName() + this.target.getName() + promotionSymbol;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Move.fromUCI(%s)", this.getUciMove());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Move other = (Move) o;
+        return this.getUciMove().equals(other.getUciMove());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(source, target, promotion);
     }
 }
