@@ -58,9 +58,13 @@ public class Move {
         Matcher matcher = uci_regex.matcher(move);
         if(!matcher.matches()) throw new IllegalArgumentException("No uci format: " + move);
 
-        Square source = Square.fromName(matcher.group(0));
-        Square target = Square.fromName(matcher.group(1));
-        PieceType promotion = PieceType.fromSymbol(matcher.group(2).charAt(0));
+        Square source = Square.fromName(matcher.group(1));
+        Square target = Square.fromName(matcher.group(2));
+        PieceType promotion = null;
+        if(!matcher.group(3).isEmpty()){
+            promotion = PieceType.fromSymbol(matcher.group(3).charAt(0));
+        }
+
 
         return new Move(source, target, promotion);
     }
