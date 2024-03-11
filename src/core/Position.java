@@ -142,6 +142,7 @@ public class Position {
         for (Piece piece : board) {
             if (piece != null && color.contains(piece.getColor().shortName())) {
                 int value = pieceCounts.getOrDefault(piece.getType(), 0);
+                value++;
                 pieceCounts.put(piece.getType(), value);
             }
         }

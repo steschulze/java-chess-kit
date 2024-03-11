@@ -18,7 +18,7 @@ public enum Color {
 
     static Color fromSymbol(char symbol){
         if(symbol == 'w') return WHITE;
-        else if (symbol == 's') return BLACK;
+        else if (symbol == 'b') return BLACK;
         else throw new IllegalArgumentException("No Color for symbol " + symbol);
     }
 }
