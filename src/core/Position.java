@@ -425,7 +425,57 @@ public class Position {
     }
 
     public void makeMove(Move move) {
-        //TODO
+        Piece movingPiece = this.get(move.getSource());
+        boolean hasCaptured = this.get(move.getTarget()) != null;
+        this.set(move.getTarget(), movingPiece);
+        this.set(move.getSource(), null);
+
+        this.toggleTurn();
+
+        if(movingPiece.getType() == PieceType.PAWN){
+            if(move.getTarget().getFile() != move.getSource().getFile() && !hasCaptured){
+                if(this.getTurn() == Color.BLACK){
+                    this.board[move.getTarget().get0x88Index() + 16] = null;
+                } else {
+                    this.board[move.getTarget().get0x88Index() - 16] = null;
+                }
+                hasCaptured = true;
+            }
+
+            if(Math.abs(move.getTarget().getRank() - move.getSource().getRank()) == 2){
+                this.epFile = move.getTarget().getFile();
+            }
+
+            if(move.getPromotion() != null) {
+                this.set(move.getTarget(), new Piece(move.getPromotion(), movingPiece.getColor()));
+            }
+        } else if (movingPiece.getType() == PieceType.KING) {
+            int steps = move.getTarget().getX() - move.getSource().getX();
+
+            if(Math.abs(steps) == 2){
+                int rookTargetIndex;
+                int rookSourceIndex;
+                if(steps == 2){
+                    rookTargetIndex = move.getTarget().get0x88Index() - 1;
+                    rookSourceIndex = move.getTarget().get0x88Index() + 1;
+                } else {
+                    rookTargetIndex = move.getTarget().get0x88Index() + 1;
+                    rookSourceIndex = move.getTarget().get0x88Index() - 2;
+                }
+                this.board[rookTargetIndex] = this.board[rookSourceIndex];
+                this.board[rookSourceIndex] = null;
+            }
+        }
+
+        if(movingPiece.getType() == PieceType.PAWN || hasCaptured){
+            this.halfMoves = 0;
+        } else{
+            this.halfMoves++;
+        }
+
+        if ((this.getTurn() == Color.WHITE)){
+            this.moveNumber++;
+        }
     }
 
     public boolean isCheck() {
