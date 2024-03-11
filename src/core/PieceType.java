@@ -1,7 +1,7 @@
 package core;
 
 public enum PieceType {
-    PAWN('p'), ROOK('r'), KNIGHT('n'), BISHOP('b'), QUEEN('q'), KING('k');
+    PAWN('p'), KNIGHT('n'), BISHOP('b'), ROOK('r'),QUEEN('q'), KING('k');
 
     private char symbol;
     PieceType(char symbol) {

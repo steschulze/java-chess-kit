@@ -268,8 +268,50 @@ public class Position {
         return !this.getAttackers(color, square).isEmpty();
     }
 
-    private List<Piece> getAttackers(Color color, Square square) {
-        //TODO
+    private List<Square> getAttackers(Color color, Square square) {
+        List<Square> attackingSquares = new ArrayList<>();
+
+
+
+        for (Square source : Square.getAll()){
+            Piece piece = get(source);
+            if(piece == null || piece.getColor() != color) continue;
+
+            int diff = source.get0x88Index() - square.get0x88Index();
+            int index = diff + 119;
+
+            if ((Board.ATTACKS[index] & (1 << piece.getType().ordinal())) != 0){
+                if(piece.getType() == PieceType.PAWN){
+                    if (diff > 0){
+                        if (piece.getColor() == Color.WHITE){
+                            attackingSquares.add(source);
+                        }
+                    }else {
+                        if (piece.getColor() == Color.BLACK){
+                            attackingSquares.add(source);
+                        }
+                    }
+                }
+
+                if(piece.getType() == PieceType.KNIGHT || piece.getType() == PieceType.KING){
+                    attackingSquares.add(source);
+                }
+
+                int offset = Board.RAYS[index];
+                int targetIndex = source.get0x88Index() + offset;
+                boolean blocked = false;
+                while (targetIndex != square.get0x88Index()){
+                    if(this.board[targetIndex] != null){
+                        blocked = true;
+                        break;
+                    }
+                    targetIndex += offset;
+                }
+                if (!blocked){
+                    attackingSquares.add(source);
+                }
+            }
+        }
         return null;
     }
 
