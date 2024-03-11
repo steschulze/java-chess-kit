@@ -335,15 +335,15 @@ public class Position {
                 Square targetSquare = Square.from0x88Index(index);
                 if(get(targetSquare) == null){
                     if(targetSquare.isBackrank()){
-                        for (char promoteTo : new char[] {'b', 'n', 'r', 'q'}) {
-                            moves.add(Move.getPromotionMove(square, targetSquare, promoteTo));
+                        for (PieceType promoteTo : PieceType.promotionTypes()) {
+                            moves.add(new Move(square, targetSquare, promoteTo));
                         }
                     }
                     index = square.get0x88Index() + PAWN_OFFSETS[1] * getTurn().forwardDirection();
                     targetSquare = Square.from0x88Index(index);
                     if((this.getTurn() == Color.WHITE && square.getRank() == 2)
                             || (this.getTurn() == Color.BLACK && square.getRank() == 7) && get(targetSquare) == null){
-                        moves.add(Move.getBigPawnMove(square, targetSquare));
+                        moves.add(new Move(square, targetSquare));
                     }
                 }
                 for (int i = 2; i<PAWN_OFFSETS.length; i++){
@@ -353,14 +353,14 @@ public class Position {
                     Piece capturedPiece = get(targetSquare);
                     if(capturedPiece != null && capturedPiece.getColor() != this.getTurn()){
                         if(targetSquare.isBackrank()){
-                            for (char promoteTo : new char[] {'b', 'n', 'r', 'q'}) {
-                                moves.add(Move.getPromotionMove(square, targetSquare, promoteTo));
+                            for (PieceType promoteTo : PieceType.promotionTypes()) {
+                                moves.add(new Move(square, targetSquare, promoteTo));
                             }
                         } else {
-                            moves.add(Move.getNormalMove(square, targetSquare));
+                            moves.add(new Move(square, targetSquare));
                         }
                     } else if (capturedPiece == null && targetSquare.getFile() == epFile) {
-                        moves.add(Move.getEnPassantMove(square, targetSquare));
+                        moves.add(new Move(square, targetSquare));
                     }
                 }
             } else {
@@ -372,10 +372,10 @@ public class Position {
                         Square targetSquare = Square.from0x88Index(index);
                         Piece targetPiece = get(targetSquare);
                         if(targetPiece == null){
-                            moves.add(Move.getNormalMove(square, targetSquare));
+                            moves.add(new Move(square, targetSquare));
                         } else{
                             if(targetPiece.getColor() == this.getTurn())break;
-                            moves.add(Move.getNormalMove(square, targetSquare));
+                            moves.add(new Move(square, targetSquare));
                             break;
                         }
 
@@ -393,7 +393,7 @@ public class Position {
             if(board[kingIndex + 1] == null && board[targetIndex] == null && !this.isCheck()
                     && this.isAttacked(opponent, Square.from0x88Index(kingIndex +1))
                     && this.isAttacked(opponent, Square.from0x88Index(targetIndex))){
-                moves.add(Move.getCastlingMove(Square.from0x88Index(kingIndex), Square.from0x88Index(targetIndex), 'k'));
+                moves.add(new Move(Square.from0x88Index(kingIndex), Square.from0x88Index(targetIndex)));
             }
         }
 
@@ -405,7 +405,7 @@ public class Position {
                     && board[kingIndex - 3] == null && !this.isCheck()
                     && this.isAttacked(opponent, Square.from0x88Index(kingIndex -1))
                     && this.isAttacked(opponent, Square.from0x88Index(targetIndex))){
-                moves.add(Move.getCastlingMove(Square.from0x88Index(kingIndex), Square.from0x88Index(targetIndex), 'q'));
+                moves.add(new Move(Square.from0x88Index(kingIndex), Square.from0x88Index(targetIndex)));
             }
         }
 

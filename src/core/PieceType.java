@@ -20,6 +20,10 @@ public enum PieceType {
         }
     }
 
+    public static PieceType[] promotionTypes(){
+        return new PieceType[]{ROOK, KNIGHT, BISHOP, QUEEN};
+    }
+
     public char getSymbol() {
         return symbol;
     }

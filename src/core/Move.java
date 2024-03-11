@@ -2,28 +2,23 @@ package core;
 
 public class Move {
 
-    public static Move getPromotionMove(Square square, Square targetSquare, char promoteTo) {
-        //TODO
-        return null;
+    private Square source;
+    private Square target;
+    private PieceType promotion;
+
+    public Move(Square source, Square target, PieceType promotion) {
+        this.source = source;
+        this.target = target;
+        this.promotion = promotion;
+
+        if(promotion != null){
+            assert target.isBackrank();
+            assert promotion == PieceType.ROOK || promotion == PieceType.KNIGHT
+                    || promotion == PieceType.BISHOP || promotion == PieceType.QUEEN;
+        }
     }
 
-    public static Move getBigPawnMove(Square square, Square targetSquare) {
-        //TODO
-        return null;
-    }
-
-    public static Move getNormalMove(Square square, Square targetSquare) {
-        //TODO
-        return null;
-    }
-
-    public static Move getEnPassantMove(Square square, Square targetSquare) {
-        //TODO
-        return null;
-    }
-
-    public static Move getCastlingMove(Square square, Square square1, char castlingSymbol) {
-        //TODO
-        return null;
+    public Move (Square source, Square target){
+        this(source, target, null);
     }
 }
