@@ -10,6 +10,18 @@ public class Move {
     private Square target;
     private PieceType promotion;
 
+    public Square getSource() {
+        return source;
+    }
+
+    public Square getTarget() {
+        return target;
+    }
+
+    public PieceType getPromotion() {
+        return promotion;
+    }
+
     public Move(Square source, Square target, PieceType promotion) {
         this.source = source;
         this.target = target;
