@@ -419,7 +419,7 @@ public class Position {
         List<Move> moves = new ArrayList<>();
         for(Move move : getPseudoLegalMoves()){
             Position copiedPosition = this.copy();
-            copiedPosition.makeMove(move);
+            copiedPosition.makeMove(move, false);
             if(! copiedPosition.isKingAttacked(this.getTurn())){
                 moves.add(move);
             }
@@ -428,6 +428,12 @@ public class Position {
     }
 
     public void makeMove(Move move) {
+        makeMove(move, true);
+    }
+
+    public void makeMove(Move move, boolean validate) {
+        assert !validate || getLegalMoves().contains(move);
+
         Piece movingPiece = this.get(move.getSource());
         boolean hasCaptured = this.get(move.getTarget()) != null;
         this.set(move.getTarget(), movingPiece);
