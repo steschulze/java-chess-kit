@@ -1,4 +1,4 @@
-package core;
+package de.stefanet.javachesskit.core;
 
 public enum Color {
     WHITE, BLACK;

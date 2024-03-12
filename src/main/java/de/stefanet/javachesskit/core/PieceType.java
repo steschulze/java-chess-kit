@@ -1,4 +1,4 @@
-package core;
+package de.stefanet.javachesskit.core;
 
 public enum PieceType {
     PAWN('p'), KNIGHT('n'), BISHOP('b'), ROOK('r'),QUEEN('q'), KING('k');

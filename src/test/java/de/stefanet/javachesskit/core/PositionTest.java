@@ -1,4 +1,4 @@
-package core;
+package de.stefanet.javachesskit.core;
 
 import javafx.geometry.Pos;
 import org.junit.jupiter.api.Test;

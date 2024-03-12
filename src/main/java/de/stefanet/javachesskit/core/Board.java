@@ -1,4 +1,4 @@
-package core;
+package de.stefanet.javachesskit.core;
 
 public class Board {
     public final static int [] ATTACKS = new int []{

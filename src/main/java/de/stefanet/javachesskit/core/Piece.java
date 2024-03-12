@@ -1,4 +1,4 @@
-package core;
+package de.stefanet.javachesskit.core;
 
 
 import java.util.Objects;
