@@ -10,11 +10,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class PositionTest {
 
     @Test
-    void testFEN() {
-        Position position = new Position();
-        String fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-        position.setFen(fen);
-        assertEquals(fen, position.getFen());
+    void testGetFEN_defaultPosition() {
+        Position position = Position.getDefault();
+        assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", position.getFen());
     }
 
     @Test
