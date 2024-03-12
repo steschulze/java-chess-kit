@@ -8,4 +8,5 @@ and parsing a PGN or FEN.
 ```
 git clone https://github.com/Stefan3004/java-chess-kit.git
 cd java-chess-kit/
+gradlew build
 ```
