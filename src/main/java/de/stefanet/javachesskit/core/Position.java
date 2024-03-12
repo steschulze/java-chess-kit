@@ -256,6 +256,11 @@ public class Position {
         return Objects.hash(getFen());
     }
 
+    @Override
+    public String toString() {
+        return String.format("Position.fromFen(%s)", getFen());
+    }
+
     public boolean isKingAttacked(Color color){
         Square square = this.getKingSquare(color);
 

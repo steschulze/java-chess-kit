@@ -63,6 +63,11 @@ public class Square {
         return this.getX() == other.getX() && this.getY() == other.getY();
     }
 
+    @Override
+    public int hashCode() {
+        return this.get0x88Index();
+    }
+
     public static Square fromName(String name) {
         assert name.length() == 2;
         assert "abcdefgh".indexOf(name.charAt(0)) != -1;
