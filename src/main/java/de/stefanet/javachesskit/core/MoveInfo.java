@@ -51,6 +51,10 @@ public class MoveInfo {
         return isQueenSideCastle;
     }
 
+    public boolean isCastle() {
+        return isKingSideCastle || isQueenSideCastle;
+    }
+
     public boolean isCheck() {
         return isCheck;
     }

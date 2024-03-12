@@ -168,4 +168,16 @@ class PositionTest {
 
         assertEquals("1rbqkbnr/pppp1Qpp/2n5/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQk - 0 4", position.getFen());
     }
+
+    @Test
+    void testMoveInfo(){
+        Position position = Position.getDefault();
+        MoveInfo moveInfo = position.getMoveInfo(Move.fromUCI("d2d4"));
+
+        assertEquals("d4", moveInfo.getSan());
+        assertFalse(moveInfo.isCheck());
+        assertFalse(moveInfo.isCheckmate());
+        assertFalse(moveInfo.isCastle());
+
+    }
 }

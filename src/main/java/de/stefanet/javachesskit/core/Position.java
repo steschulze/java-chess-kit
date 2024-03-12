@@ -539,4 +539,97 @@ public class Position {
         return position;
     }
 
+    public MoveInfo getMoveInfo(Move move) {
+        assert getLegalMoves().contains(move);
+
+        Position copiedPosition = this.copy();
+        copiedPosition.makeMove(move);
+
+        Piece movedPiece = get(move.getSource());
+        Piece capturedPiece = get(move.getTarget());
+
+        boolean enPassant = false;
+
+        if(movedPiece.getType() == PieceType.PAWN){
+            if(move.getTarget().getFile() != move.getSource().getFile() && capturedPiece == null){
+                enPassant = true;
+                capturedPiece = new Piece(PieceType.PAWN, copiedPosition.getTurn());
+            }
+        }
+
+        boolean isKingSideCastling = movedPiece.getType() == PieceType.KING
+                && (move.getTarget().getX() - move.getSource().getX() == 2);
+        boolean isQueenSideCastling = movedPiece.getType() == PieceType.KING
+                && (move.getTarget().getX() - move.getSource().getX() == -2);
+
+        boolean isCheck = copiedPosition.isCheck();
+        boolean isCheckmate = copiedPosition.isCheckmate();
+
+        StringBuilder san = new StringBuilder();
+        if (isKingSideCastling){
+            san.append("O-O");
+        } else if (isQueenSideCastling) {
+            san.append("O-O-O");
+        } else {
+            if (movedPiece.getType() != PieceType.PAWN){
+                san.append(Character.toUpperCase(movedPiece.getType().getSymbol()));
+            }
+
+            san.append(getDisambiguatedMove(move));
+
+            if (capturedPiece != null){
+                if(movedPiece.getType() == PieceType.PAWN){
+                    san.append(move.getSource().getFile());
+                }
+                san.append("x");
+            }
+
+            san.append(move.getTarget().getName());
+
+            if (move.getPromotion() != null) {
+                san.append("=").append(Character.toUpperCase(move.getPromotion().getSymbol()));
+            }
+        }
+
+        if (isCheck) {
+            san.append("+");
+        } else if (isCheckmate) {
+            san.append("#");
+        }
+
+        if (enPassant){
+            san.append(" (e.p.)");
+        }
+
+        return new MoveInfo(move, movedPiece,capturedPiece, san.toString(),
+                enPassant, isKingSideCastling, isQueenSideCastling, isCheck, isCheckmate);
+    }
+
+    private String getDisambiguatedMove(Move move){
+        boolean sameFile = false;
+        boolean sameRank = false;
+        Piece piece = get(move.getSource());
+
+        for(Move otherMove: getLegalMoves()){
+            Piece otherPiece = get(otherMove.getSource());
+            if(piece == otherPiece && move.getSource() != otherMove.getSource()
+                    && move.getTarget() == otherMove.getTarget()){
+                sameFile = move.getSource().getFile() == otherMove.getSource().getFile();
+                sameRank = move.getSource().getRank() == otherMove.getSource().getRank();
+
+                if (sameFile && sameRank) break;
+            }
+        }
+
+        if (sameFile && sameRank) {
+            return move.getSource().getName();
+        } else if (sameFile) {
+            return String.valueOf(move.getSource().getRank());
+        } else if (sameRank) {
+            return String.valueOf(move.getSource().getFile());
+        } else {
+            return "";
+        }
+    }
+
 }
