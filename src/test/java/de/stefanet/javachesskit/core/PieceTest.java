@@ -2,12 +2,13 @@ package de.stefanet.javachesskit.core;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class PieceTest {
 
     @Test
-    void testSymbolParsing(){
+    void testSymbolParsing() {
         Piece blackQueen = Piece.fromSymbol('q');
         assertEquals('q', blackQueen.getSymbol());
 
@@ -17,7 +18,7 @@ class PieceTest {
     }
 
     @Test
-    void testEquality(){
+    void testEquality() {
         Piece whiteBishop1 = new Piece(PieceType.BISHOP, Color.WHITE);
         Piece blackKing = new Piece(PieceType.KING, Color.BLACK);
         Piece whiteKing = new Piece(PieceType.KING, Color.WHITE);
@@ -29,7 +30,7 @@ class PieceTest {
     }
 
     @Test
-    void testSimpleProperties(){
+    void testSimpleProperties() {
         Piece whiteKnight = new Piece(PieceType.KNIGHT, Color.WHITE);
 
         assertEquals(Color.WHITE, whiteKnight.getColor());

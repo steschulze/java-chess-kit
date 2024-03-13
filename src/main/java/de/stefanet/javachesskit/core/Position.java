@@ -20,6 +20,18 @@ public class Position {
         moveNumber = 1;
     }
 
+    public static Position getDefault() {
+        Position defaultPosition = new Position();
+        defaultPosition.reset();
+        return defaultPosition;
+    }
+
+    public static Position fromFen(String fen) {
+        Position position = new Position();
+        position.setFen(fen);
+        return position;
+    }
+
     public Position copy() {
         Position copy = new Position();
         copy.setFen(this.getFen());
@@ -213,13 +225,13 @@ public class Position {
         assert rows.length == 8;
 
         int index = 0x70;
-        for (char c: parts[0].toCharArray()) {
-            if(c == '/'){
+        for (char c : parts[0].toCharArray()) {
+            if (c == '/') {
                 index -= 24;
             } else if (c >= '1' && c <= '8') {
                 index += Character.getNumericValue(c);
             } else {
-                this.board [index] = Piece.fromSymbol(c);
+                this.board[index] = Piece.fromSymbol(c);
                 index++;
             }
         }
@@ -236,7 +248,7 @@ public class Position {
         halfMoves = Integer.parseInt(parts[4]);
         moveNumber = Integer.parseInt(parts[5]);
 
-        for (char type : new char[]{'K', 'Q', 'k', 'q'}){
+        for (char type : new char[]{'K', 'Q', 'k', 'q'}) {
             if (!getTheoreticalCastlingRight(type)) {
                 setCastlingRight(type, false);
             }
@@ -261,10 +273,10 @@ public class Position {
         return String.format("Position.fromFen(%s)", getFen());
     }
 
-    public boolean isKingAttacked(Color color){
+    public boolean isKingAttacked(Color color) {
         Square square = this.getKingSquare(color);
 
-        if(square == null) return false;
+        if (square == null) return false;
 
         return this.isAttacked(color.other(), square);
     }
@@ -276,41 +288,41 @@ public class Position {
     private List<Square> getAttackers(Color color, Square square) {
         List<Square> attackingSquares = new ArrayList<>();
 
-        for (Square source : Square.getAll()){
+        for (Square source : Square.getAll()) {
             Piece piece = get(source);
-            if(piece == null || piece.getColor() != color) continue;
+            if (piece == null || piece.getColor() != color) continue;
 
             int diff = source.get0x88Index() - square.get0x88Index();
             int index = diff + 119;
 
-            if ((Board.ATTACKS[index] & (1 << piece.getType().ordinal())) != 0){
-                if(piece.getType() == PieceType.PAWN){
-                    if (diff > 0){
-                        if (piece.getColor() == Color.WHITE){
+            if ((Board.ATTACKS[index] & (1 << piece.getType().ordinal())) != 0) {
+                if (piece.getType() == PieceType.PAWN) {
+                    if (diff > 0) {
+                        if (piece.getColor() == Color.WHITE) {
                             attackingSquares.add(source);
                         }
-                    }else {
-                        if (piece.getColor() == Color.BLACK){
+                    } else {
+                        if (piece.getColor() == Color.BLACK) {
                             attackingSquares.add(source);
                         }
                     }
                 }
 
-                if(piece.getType() == PieceType.KNIGHT || piece.getType() == PieceType.KING){
+                if (piece.getType() == PieceType.KNIGHT || piece.getType() == PieceType.KING) {
                     attackingSquares.add(source);
                 }
 
                 int offset = Board.RAYS[index];
                 int targetIndex = source.get0x88Index() + offset;
                 boolean blocked = false;
-                while (targetIndex != square.get0x88Index()){
-                    if(this.board[targetIndex] != null){
+                while (targetIndex != square.get0x88Index()) {
+                    if (this.board[targetIndex] != null) {
                         blocked = true;
                         break;
                     }
                     targetIndex += offset;
                 }
-                if (!blocked){
+                if (!blocked) {
                     attackingSquares.add(source);
                 }
             }
@@ -318,10 +330,10 @@ public class Position {
         return attackingSquares;
     }
 
-    public List<Move> getPseudoLegalMoves(){
+    public List<Move> getPseudoLegalMoves() {
         List<Move> moves = new ArrayList<>();
 
-        int [] PAWN_OFFSETS = new int[]{16, 32, 17, 15};
+        int[] PAWN_OFFSETS = new int[]{16, 32, 17, 15};
         Map<PieceType, int[]> PIECE_OFFSETS = new HashMap<>();
         PIECE_OFFSETS.put(PieceType.KNIGHT, new int[]{-33, -31, -18, -14, 14, 18, 31, 33});
         PIECE_OFFSETS.put(PieceType.BISHOP, new int[]{-17, -15, 15, 17});
@@ -329,33 +341,33 @@ public class Position {
         PIECE_OFFSETS.put(PieceType.QUEEN, new int[]{-17, -16, -15, -1, 1, 15, 16, 17});
         PIECE_OFFSETS.put(PieceType.KING, new int[]{-17, -16, -15, -1, 1, 15, 16, 17});
 
-        for (Square square : Square.getAll()){
+        for (Square square : Square.getAll()) {
             Piece piece = get(square);
-            if(piece == null || piece.getColor() != this.getTurn()) continue;
+            if (piece == null || piece.getColor() != this.getTurn()) continue;
 
-            if(piece.getType() == PieceType.PAWN){
+            if (piece.getType() == PieceType.PAWN) {
                 int index = square.get0x88Index() + PAWN_OFFSETS[0] * getTurn().forwardDirection();
                 Square targetSquare = Square.from0x88Index(index);
-                if(get(targetSquare) == null){
-                    if(targetSquare.isBackrank()){
+                if (get(targetSquare) == null) {
+                    if (targetSquare.isBackrank()) {
                         for (PieceType promoteTo : PieceType.promotionTypes()) {
                             moves.add(new Move(square, targetSquare, promoteTo));
                         }
                     }
                     index = square.get0x88Index() + PAWN_OFFSETS[1] * getTurn().forwardDirection();
                     targetSquare = Square.from0x88Index(index);
-                    if((this.getTurn() == Color.WHITE && square.getRank() == 2)
-                            || (this.getTurn() == Color.BLACK && square.getRank() == 7) && get(targetSquare) == null){
+                    if ((this.getTurn() == Color.WHITE && square.getRank() == 2)
+                            || (this.getTurn() == Color.BLACK && square.getRank() == 7) && get(targetSquare) == null) {
                         moves.add(new Move(square, targetSquare));
                     }
                 }
-                for (int i = 2; i<PAWN_OFFSETS.length; i++){
+                for (int i = 2; i < PAWN_OFFSETS.length; i++) {
                     index = square.get0x88Index() + PAWN_OFFSETS[i] * getTurn().forwardDirection();
-                    if((index & 0x88) != 0) continue;
+                    if ((index & 0x88) != 0) continue;
                     targetSquare = Square.from0x88Index(index);
                     Piece capturedPiece = get(targetSquare);
-                    if(capturedPiece != null && capturedPiece.getColor() != this.getTurn()){
-                        if(targetSquare.isBackrank()){
+                    if (capturedPiece != null && capturedPiece.getColor() != this.getTurn()) {
+                        if (targetSquare.isBackrank()) {
                             for (PieceType promoteTo : PieceType.promotionTypes()) {
                                 moves.add(new Move(square, targetSquare, promoteTo));
                             }
@@ -367,47 +379,47 @@ public class Position {
                     }
                 }
             } else {
-                for(int offset: PIECE_OFFSETS.get(piece.getType())){
+                for (int offset : PIECE_OFFSETS.get(piece.getType())) {
                     int index = square.get0x88Index();
-                    for (;;){
+                    for (; ; ) {
                         index += offset;
-                        if((index & 0x88) != 0) break;
+                        if ((index & 0x88) != 0) break;
                         Square targetSquare = Square.from0x88Index(index);
                         Piece targetPiece = get(targetSquare);
-                        if(targetPiece == null){
+                        if (targetPiece == null) {
                             moves.add(new Move(square, targetSquare));
-                        } else{
-                            if(targetPiece.getColor() == this.getTurn())break;
+                        } else {
+                            if (targetPiece.getColor() == this.getTurn()) break;
                             moves.add(new Move(square, targetSquare));
                             break;
                         }
 
-                        if(piece.getType() == PieceType.KNIGHT || piece.getType() == PieceType.KING) break;
+                        if (piece.getType() == PieceType.KNIGHT || piece.getType() == PieceType.KING) break;
                     }
                 }
             }
         }
 
         Color opponent = getTurn().other();
-        char kingSideCastling = this.getTurn() == Color.WHITE? 'K' : 'k';
-        if(getCastlingRight(kingSideCastling)){
+        char kingSideCastling = this.getTurn() == Color.WHITE ? 'K' : 'k';
+        if (getCastlingRight(kingSideCastling)) {
             int kingIndex = this.getKingSquare(this.getTurn()).get0x88Index();
             int targetIndex = kingIndex + 2;
-            if(board[kingIndex + 1] == null && board[targetIndex] == null && !this.isCheck()
-                    && this.isAttacked(opponent, Square.from0x88Index(kingIndex +1))
-                    && this.isAttacked(opponent, Square.from0x88Index(targetIndex))){
+            if (board[kingIndex + 1] == null && board[targetIndex] == null && !this.isCheck()
+                    && this.isAttacked(opponent, Square.from0x88Index(kingIndex + 1))
+                    && this.isAttacked(opponent, Square.from0x88Index(targetIndex))) {
                 moves.add(new Move(Square.from0x88Index(kingIndex), Square.from0x88Index(targetIndex)));
             }
         }
 
-        char queenSideCastling = this.getTurn() == Color.WHITE? 'Q' : 'q';
-        if(getCastlingRight(queenSideCastling)){
+        char queenSideCastling = this.getTurn() == Color.WHITE ? 'Q' : 'q';
+        if (getCastlingRight(queenSideCastling)) {
             int kingIndex = this.getKingSquare(this.getTurn()).get0x88Index();
             int targetIndex = kingIndex - 2;
-            if(board[kingIndex - 1] == null && board[kingIndex - 2] == null
+            if (board[kingIndex - 1] == null && board[kingIndex - 2] == null
                     && board[kingIndex - 3] == null && !this.isCheck()
-                    && this.isAttacked(opponent, Square.from0x88Index(kingIndex -1))
-                    && this.isAttacked(opponent, Square.from0x88Index(targetIndex))){
+                    && this.isAttacked(opponent, Square.from0x88Index(kingIndex - 1))
+                    && this.isAttacked(opponent, Square.from0x88Index(targetIndex))) {
                 moves.add(new Move(Square.from0x88Index(kingIndex), Square.from0x88Index(targetIndex)));
             }
         }
@@ -415,12 +427,12 @@ public class Position {
         return moves;
     }
 
-    public List<Move> getLegalMoves(){
+    public List<Move> getLegalMoves() {
         List<Move> moves = new ArrayList<>();
-        for(Move move : getPseudoLegalMoves()){
+        for (Move move : getPseudoLegalMoves()) {
             Position copiedPosition = this.copy();
             copiedPosition.makeMove(move, false);
-            if(! copiedPosition.isKingAttacked(this.getTurn())){
+            if (!copiedPosition.isKingAttacked(this.getTurn())) {
                 moves.add(move);
             }
         }
@@ -442,9 +454,9 @@ public class Position {
 
         this.toggleTurn();
 
-        if(movingPiece.getType() == PieceType.PAWN){
-            if(move.getTarget().getFile() != move.getSource().getFile() && !hasCaptured){
-                if(this.getTurn() == Color.BLACK){
+        if (movingPiece.getType() == PieceType.PAWN) {
+            if (move.getTarget().getFile() != move.getSource().getFile() && !hasCaptured) {
+                if (this.getTurn() == Color.BLACK) {
                     this.board[move.getTarget().get0x88Index() + 16] = null;
                 } else {
                     this.board[move.getTarget().get0x88Index() - 16] = null;
@@ -452,20 +464,20 @@ public class Position {
                 hasCaptured = true;
             }
 
-            if(Math.abs(move.getTarget().getRank() - move.getSource().getRank()) == 2){
+            if (Math.abs(move.getTarget().getRank() - move.getSource().getRank()) == 2) {
                 this.epFile = move.getTarget().getFile();
             }
 
-            if(move.getPromotion() != null) {
+            if (move.getPromotion() != null) {
                 this.set(move.getTarget(), new Piece(move.getPromotion(), movingPiece.getColor()));
             }
         } else if (movingPiece.getType() == PieceType.KING) {
             int steps = move.getTarget().getX() - move.getSource().getX();
 
-            if(Math.abs(steps) == 2){
+            if (Math.abs(steps) == 2) {
                 int rookTargetIndex;
                 int rookSourceIndex;
-                if(steps == 2){
+                if (steps == 2) {
                     rookTargetIndex = move.getTarget().get0x88Index() - 1;
                     rookSourceIndex = move.getTarget().get0x88Index() + 1;
                 } else {
@@ -477,13 +489,13 @@ public class Position {
             }
         }
 
-        if(movingPiece.getType() == PieceType.PAWN || hasCaptured){
+        if (movingPiece.getType() == PieceType.PAWN || hasCaptured) {
             this.halfMoves = 0;
-        } else{
+        } else {
             this.halfMoves++;
         }
 
-        if ((this.getTurn() == Color.WHITE)){
+        if ((this.getTurn() == Color.WHITE)) {
             this.moveNumber++;
         }
     }
@@ -493,19 +505,19 @@ public class Position {
     }
 
     public boolean isCheckmate() {
-        if(!isCheck()) return false;
+        if (!isCheck()) return false;
         return getLegalMoves().isEmpty();
     }
 
     public boolean isStalemate() {
-        if(isCheck()) return false;
+        if (isCheck()) return false;
         return getLegalMoves().isEmpty();
     }
 
     public boolean isInsufficientMaterial() {
         Map<PieceType, Integer> pieceCounts = getPieceCounts("wb");
         int sum = pieceCounts.values().stream().mapToInt(Integer::intValue).sum();
-        if(sum == 2){
+        if (sum == 2) {
             return true;
         } else if (sum == 3) {
             return pieceCounts.get(PieceType.BISHOP) == 1 || pieceCounts.get(PieceType.KNIGHT) == 1;
@@ -513,13 +525,13 @@ public class Position {
             boolean whiteHasBishop = this.getPieceCounts("w").get(PieceType.BISHOP) != 0;
             boolean blackHasBishop = this.getPieceCounts("b").get(PieceType.BISHOP) != 0;
 
-            if(whiteHasBishop && blackHasBishop) {
+            if (whiteHasBishop && blackHasBishop) {
                 Boolean color = null;
 
-                for(Square square : Square.getAll()){
+                for (Square square : Square.getAll()) {
                     Piece piece = this.get(square);
-                    if(piece != null && piece.getType() == PieceType.BISHOP){
-                        if(color != null && color != square.isLight()) return false;
+                    if (piece != null && piece.getType() == PieceType.BISHOP) {
+                        if (color != null && color != square.isLight()) return false;
                         color = square.isLight();
                     }
                 }
@@ -533,18 +545,6 @@ public class Position {
         return this.isCheckmate() || this.isStalemate() || this.isInsufficientMaterial();
     }
 
-    public static Position getDefault() {
-        Position defaultPosition = new Position();
-        defaultPosition.reset();
-        return defaultPosition;
-    }
-
-    public static Position fromFen(String fen) {
-        Position position = new Position();
-        position.setFen(fen);
-        return position;
-    }
-
     public MoveInfo getMoveInfo(Move move) {
         assert getLegalMoves().contains(move);
 
@@ -556,8 +556,8 @@ public class Position {
 
         boolean enPassant = false;
 
-        if(movedPiece.getType() == PieceType.PAWN){
-            if(move.getTarget().getFile() != move.getSource().getFile() && capturedPiece == null){
+        if (movedPiece.getType() == PieceType.PAWN) {
+            if (move.getTarget().getFile() != move.getSource().getFile() && capturedPiece == null) {
                 enPassant = true;
                 capturedPiece = new Piece(PieceType.PAWN, copiedPosition.getTurn());
             }
@@ -572,19 +572,19 @@ public class Position {
         boolean isCheckmate = copiedPosition.isCheckmate();
 
         StringBuilder san = new StringBuilder();
-        if (isKingSideCastling){
+        if (isKingSideCastling) {
             san.append("O-O");
         } else if (isQueenSideCastling) {
             san.append("O-O-O");
         } else {
-            if (movedPiece.getType() != PieceType.PAWN){
+            if (movedPiece.getType() != PieceType.PAWN) {
                 san.append(Character.toUpperCase(movedPiece.getType().getSymbol()));
             }
 
             san.append(getDisambiguatedMove(move));
 
-            if (capturedPiece != null){
-                if(movedPiece.getType() == PieceType.PAWN){
+            if (capturedPiece != null) {
+                if (movedPiece.getType() == PieceType.PAWN) {
                     san.append(move.getSource().getFile());
                 }
                 san.append("x");
@@ -603,23 +603,23 @@ public class Position {
             san.append("#");
         }
 
-        if (enPassant){
+        if (enPassant) {
             san.append(" (e.p.)");
         }
 
-        return new MoveInfo(move, movedPiece,capturedPiece, san.toString(),
+        return new MoveInfo(move, movedPiece, capturedPiece, san.toString(),
                 enPassant, isKingSideCastling, isQueenSideCastling, isCheck, isCheckmate);
     }
 
-    private String getDisambiguatedMove(Move move){
+    private String getDisambiguatedMove(Move move) {
         boolean sameFile = false;
         boolean sameRank = false;
         Piece piece = get(move.getSource());
 
-        for(Move otherMove: getLegalMoves()){
+        for (Move otherMove : getLegalMoves()) {
             Piece otherPiece = get(otherMove.getSource());
-            if(piece == otherPiece && move.getSource() != otherMove.getSource()
-                    && move.getTarget() == otherMove.getTarget()){
+            if (piece == otherPiece && move.getSource() != otherMove.getSource()
+                    && move.getTarget() == otherMove.getTarget()) {
                 sameFile = move.getSource().getFile() == otherMove.getSource().getFile();
                 sameRank = move.getSource().getRank() == otherMove.getSource().getRank();
 

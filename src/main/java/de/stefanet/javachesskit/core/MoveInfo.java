@@ -1,15 +1,15 @@
 package de.stefanet.javachesskit.core;
 
 public class MoveInfo {
-    private Move move;
-    private Piece movedPiece;
-    private Piece capturedPiece;
-    private String san;
-    private boolean isEnpassant;
-    private boolean isKingSideCastle;
-    private boolean isQueenSideCastle;
-    private boolean isCheck;
-    private boolean isCheckmate;
+    private final Move move;
+    private final Piece movedPiece;
+    private final Piece capturedPiece;
+    private final String san;
+    private final boolean isEnpassant;
+    private final boolean isKingSideCastle;
+    private final boolean isQueenSideCastle;
+    private final boolean isCheck;
+    private final boolean isCheckmate;
 
     public MoveInfo(Move move, Piece movedPiece, Piece capturedPiece, String san, boolean isEnpassant, boolean isKingSideCastle, boolean isQueenSideCastle, boolean isCheck, boolean isCheckmate) {
         this.move = move;

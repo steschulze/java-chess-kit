@@ -14,7 +14,7 @@ class MoveTest {
 
     @Test
     void testMoveCreation_wrongPromotion() {
-        assertThrows(AssertionError.class, ()->{
+        assertThrows(AssertionError.class, () -> {
             new Move(Square.fromName("e4"), Square.fromName("e5"), PieceType.KNIGHT);
         });
     }
@@ -48,7 +48,7 @@ class MoveTest {
     }
 
     @Test
-    void testToString(){
+    void testToString() {
         Move move = new Move(Square.fromRankAndFile(2, 'a'), Square.fromRankAndFile(4, 'a'));
         assertEquals("Move.fromUCI(a2a4)", move.toString());
     }

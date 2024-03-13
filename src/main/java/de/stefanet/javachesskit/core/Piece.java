@@ -4,12 +4,23 @@ package de.stefanet.javachesskit.core;
 import java.util.Objects;
 
 public class Piece {
-    private PieceType type;
-    private Color color;
+    private final PieceType type;
+    private final Color color;
 
     public Piece(PieceType type, Color color) {
         this.type = type;
         this.color = color;
+    }
+
+    public static Piece fromSymbol(char symbol) {
+        char type = Character.toLowerCase(symbol);
+        PieceType pieceType = PieceType.fromSymbol(type);
+
+        if (type == symbol) {
+            return new Piece(pieceType, Color.BLACK);
+        } else {
+            return new Piece(pieceType, Color.WHITE);
+        }
     }
 
     public PieceType getType() {
@@ -20,7 +31,7 @@ public class Piece {
         return color;
     }
 
-    public char getSymbol(){
+    public char getSymbol() {
         return color == Color.WHITE ? Character.toUpperCase(type.getSymbol()) : type.getSymbol();
     }
 
@@ -40,16 +51,5 @@ public class Piece {
     @Override
     public int hashCode() {
         return Objects.hash(getType(), getColor());
-    }
-
-    public static Piece fromSymbol(char symbol){
-        char type = Character.toLowerCase(symbol);
-        PieceType pieceType = PieceType.fromSymbol(type);
-
-        if(type == symbol){
-            return new Piece(pieceType, Color.BLACK);
-        }else {
-            return new Piece(pieceType, Color.WHITE);
-        }
     }
 }

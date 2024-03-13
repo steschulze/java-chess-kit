@@ -1,6 +1,5 @@
 package de.stefanet.javachesskit.core;
 
-import javafx.geometry.Pos;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -170,7 +169,7 @@ class PositionTest {
     }
 
     @Test
-    void testMoveInfo(){
+    void testMoveInfo() {
         Position position = Position.getDefault();
         MoveInfo moveInfo = position.getMoveInfo(Move.fromUCI("d2d4"));
 

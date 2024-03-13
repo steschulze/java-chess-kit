@@ -1,7 +1,7 @@
 package de.stefanet.javachesskit.core;
 
 public class Board {
-    public final static int [] ATTACKS = new int []{
+    public final static int[] ATTACKS = new int[]{
             20, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 20, 0,
             0, 20, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 20, 0, 0,
             0, 0, 20, 0, 0, 0, 0, 24, 0, 0, 0, 0, 20, 0, 0, 0,
@@ -19,7 +19,7 @@ public class Board {
             20, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 20
     };
 
-    public final static int [] RAYS = new int []{
+    public final static int[] RAYS = new int[]{
             17, 0, 0, 0, 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 15, 0,
             0, 17, 0, 0, 0, 0, 0, 16, 0, 0, 0, 0, 0, 15, 0, 0,
             0, 0, 17, 0, 0, 0, 0, 16, 0, 0, 0, 0, 15, 0, 0, 0,

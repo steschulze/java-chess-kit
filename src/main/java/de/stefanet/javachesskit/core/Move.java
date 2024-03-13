@@ -6,9 +6,41 @@ import java.util.regex.Pattern;
 
 public class Move {
 
-    private Square source;
-    private Square target;
-    private PieceType promotion;
+    private final Square source;
+    private final Square target;
+    private final PieceType promotion;
+
+    public Move(Square source, Square target, PieceType promotion) {
+        this.source = source;
+        this.target = target;
+        this.promotion = promotion;
+
+        if (promotion != null) {
+            assert target.isBackrank();
+            assert promotion == PieceType.ROOK || promotion == PieceType.KNIGHT
+                    || promotion == PieceType.BISHOP || promotion == PieceType.QUEEN;
+        }
+    }
+
+    public Move(Square source, Square target) {
+        this(source, target, null);
+    }
+
+    public static Move fromUCI(String move) {
+        Pattern uci_regex = Pattern.compile("^([a-h][1-8])([a-h][1-8])([rnbq]?)$");
+        Matcher matcher = uci_regex.matcher(move);
+        if (!matcher.matches()) throw new IllegalArgumentException("No uci format: " + move);
+
+        Square source = Square.fromName(matcher.group(1));
+        Square target = Square.fromName(matcher.group(2));
+        PieceType promotion = null;
+        if (!matcher.group(3).isEmpty()) {
+            promotion = PieceType.fromSymbol(matcher.group(3).charAt(0));
+        }
+
+
+        return new Move(source, target, promotion);
+    }
 
     public Square getSource() {
         return source;
@@ -22,25 +54,9 @@ public class Move {
         return promotion;
     }
 
-    public Move(Square source, Square target, PieceType promotion) {
-        this.source = source;
-        this.target = target;
-        this.promotion = promotion;
-
-        if(promotion != null){
-            assert target.isBackrank();
-            assert promotion == PieceType.ROOK || promotion == PieceType.KNIGHT
-                    || promotion == PieceType.BISHOP || promotion == PieceType.QUEEN;
-        }
-    }
-
-    public Move (Square source, Square target){
-        this(source, target, null);
-    }
-
-    public String getUciMove(){
+    public String getUciMove() {
         String promotionSymbol = "";
-        if(this.promotion != null) {
+        if (this.promotion != null) {
             promotionSymbol = String.valueOf(this.promotion.getSymbol());
         }
 
@@ -63,21 +79,5 @@ public class Move {
     @Override
     public int hashCode() {
         return Objects.hash(source, target, promotion);
-    }
-
-    public static Move fromUCI(String move){
-        Pattern uci_regex = Pattern.compile("^([a-h][1-8])([a-h][1-8])([rnbq]?)$");
-        Matcher matcher = uci_regex.matcher(move);
-        if(!matcher.matches()) throw new IllegalArgumentException("No uci format: " + move);
-
-        Square source = Square.fromName(matcher.group(1));
-        Square target = Square.fromName(matcher.group(2));
-        PieceType promotion = null;
-        if(!matcher.group(3).isEmpty()){
-            promotion = PieceType.fromSymbol(matcher.group(3).charAt(0));
-        }
-
-
-        return new Move(source, target, promotion);
     }
 }
