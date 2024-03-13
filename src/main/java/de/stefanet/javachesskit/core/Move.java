@@ -17,8 +17,7 @@ public class Move {
 
         if (promotion != null) {
             assert target.isBackrank();
-            assert promotion == PieceType.ROOK || promotion == PieceType.KNIGHT
-                    || promotion == PieceType.BISHOP || promotion == PieceType.QUEEN;
+            assert PieceType.promotionTypes().contains(promotion);
         }
     }
 

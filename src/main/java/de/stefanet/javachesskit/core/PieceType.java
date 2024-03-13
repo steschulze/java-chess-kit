@@ -1,5 +1,8 @@
 package de.stefanet.javachesskit.core;
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum PieceType {
     PAWN('p'), KNIGHT('n'), BISHOP('b'), ROOK('r'), QUEEN('q'), KING('k');
 
@@ -28,8 +31,8 @@ public enum PieceType {
         }
     }
 
-    public static PieceType[] promotionTypes() {
-        return new PieceType[]{ROOK, KNIGHT, BISHOP, QUEEN};
+    public static List<PieceType> promotionTypes() {
+        return Arrays.asList(ROOK, KNIGHT, BISHOP, QUEEN);
     }
 
     public char getSymbol() {

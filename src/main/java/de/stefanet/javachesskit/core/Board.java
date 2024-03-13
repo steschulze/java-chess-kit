@@ -1,6 +1,9 @@
 package de.stefanet.javachesskit.core;
 
-public class Board {
+public final class Board {
+
+    private Board() {};
+
     public final static int[] ATTACKS = new int[]{
             20, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 20, 0,
             0, 20, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 20, 0, 0,

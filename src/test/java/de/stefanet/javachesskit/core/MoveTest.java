@@ -17,13 +17,20 @@ class MoveTest {
         assertThrows(AssertionError.class, () -> {
             new Move(Square.fromName("e4"), Square.fromName("e5"), PieceType.KNIGHT);
         });
+
+        assertThrows(AssertionError.class, () -> {
+            new Move(Square.fromName("e7"), Square.fromName("e8"), PieceType.PAWN);
+        });
     }
 
     @Test
     void testEquals() {
         Move move1 = Move.fromUCI("e2e4");
         Move move2 = new Move(Square.fromRankAndFile(2, 'e'), Square.fromRankAndFile(4, 'e'));
+        assertEquals(move1, move1);
         assertEquals(move1, move2);
+        assertFalse(move1.equals("e2e4"));
+        assertFalse(move1.equals(null));
     }
 
     @Test
@@ -51,5 +58,15 @@ class MoveTest {
     void testToString() {
         Move move = new Move(Square.fromRankAndFile(2, 'a'), Square.fromRankAndFile(4, 'a'));
         assertEquals("Move.fromUCI(a2a4)", move.toString());
+    }
+
+    @Test
+    void testHashCode() {
+        Move move1 = new Move(Square.fromName("e7"), Square.fromName("e8"));
+        Move move2 = Move.fromUCI("e7e8");
+        Move move3 = Move.fromUCI("e7e8r");
+
+        assertEquals(move1.hashCode(), move2.hashCode());
+        assertNotEquals(move1.hashCode(), move3.hashCode());
     }
 }
