@@ -37,7 +37,7 @@ public class Piece {
 
     @Override
     public String toString() {
-        return String.format("Piece.parseSymbol(%s)", getSymbol());
+        return String.format("Piece.parseSymbol('%s')", getSymbol());
     }
 
     @Override
