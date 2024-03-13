@@ -29,8 +29,8 @@ class MoveTest {
         Move move2 = new Move(Square.fromRankAndFile(2, 'e'), Square.fromRankAndFile(4, 'e'));
         assertEquals(move1, move1);
         assertEquals(move1, move2);
-        assertFalse(move1.equals("e2e4"));
-        assertFalse(move1.equals(null));
+        assertNotEquals("e2e4", move1);
+        assertNotEquals(null, move1);
     }
 
     @Test

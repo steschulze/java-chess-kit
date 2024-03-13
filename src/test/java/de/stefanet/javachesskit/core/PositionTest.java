@@ -264,7 +264,7 @@ class PositionTest {
         Position position2 = Position.fromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/1NBQKBNR w KQkq - 0 1");
 
         assertEquals(position1, position1);
-        assertFalse(position1.equals(null));
+        assertNotEquals(null, position1);
         assertEquals(position1, position2);
         assertEquals(position1.hashCode(), position2.hashCode());
 

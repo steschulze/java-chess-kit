@@ -31,8 +31,8 @@ class PieceTest {
         assertEquals(whiteBishop1, whiteBishop2);
         assertNotEquals(whiteKing, blackKing);
         assertNotEquals(whiteKing, whiteBishop1);
-        assertFalse(blackKing.equals(null));
-        assertFalse(whiteKing.equals("K"));
+        assertNotEquals(null, blackKing);
+        assertNotEquals("K", whiteKing);
     }
 
     @Test

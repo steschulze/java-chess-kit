@@ -20,8 +20,8 @@ class SquareTest {
         assertNotEquals(square1, square3);
         assertNotEquals(square1, square4);
         assertNotEquals(square3, square4);
-        assertFalse(square1.equals(null));
-        assertFalse(square3.equals("b3"));
+        assertNotEquals(null, square1);
+        assertNotEquals("b3", square3);
     }
 
     @Test

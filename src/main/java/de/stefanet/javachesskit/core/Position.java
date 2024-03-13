@@ -629,12 +629,12 @@ public class Position {
             Piece otherPiece = get(otherMove.getSource());
             if (piece.getType() == otherPiece.getType() && move.getSource().get0x88Index() != otherMove.getSource().get0x88Index()
                     && move.getTarget().get0x88Index() == otherMove.getTarget().get0x88Index()) {
-                if(move.getSource().getFile() == otherMove.getSource().getFile()) {
+                if (move.getSource().getFile() == otherMove.getSource().getFile()) {
                     sameFile = true;
-                };
-                if(move.getSource().getRank() == otherMove.getSource().getRank()) {
+                }
+                if (move.getSource().getRank() == otherMove.getSource().getRank()) {
                     sameRank = true;
-                };
+                }
 
                 if (sameFile && sameRank) break;
             }
