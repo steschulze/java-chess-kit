@@ -24,7 +24,7 @@ public class Square {
     }
 
     public static Square from0x88Index(int index) {
-        assert index > 0 && index <= 128;
+        assert index >= 0 && index <= 128;
         assert (index & 0x88) == 0;
 
         int x = index & 7;

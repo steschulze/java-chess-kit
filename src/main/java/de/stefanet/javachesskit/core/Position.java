@@ -81,7 +81,7 @@ public class Position {
     public boolean getTheoreticalCastlingRight(char type) {
         assert "KQkq".indexOf(type) != -1;
         if (type == 'K' || type == 'Q') {
-            if (get(Square.fromName("e1")) != null && !get(Square.fromName("e1")).equals(new Piece(PieceType.KING, Color.WHITE))) {
+            if (get(Square.fromName("e1")) == null || !get(Square.fromName("e1")).equals(new Piece(PieceType.KING, Color.WHITE))) {
                 return false;
             }
             if (type == 'K') {
@@ -90,7 +90,7 @@ public class Position {
                 return get(Square.fromName("a1")) != null && get(Square.fromName("a1")).equals(new Piece(PieceType.ROOK, Color.WHITE));
             }
         } else {
-            if (get(Square.fromName("e8")) != null && !get(Square.fromName("e8")).equals(new Piece(PieceType.KING, Color.BLACK))) {
+            if (get(Square.fromName("e8")) == null || !get(Square.fromName("e8")).equals(new Piece(PieceType.KING, Color.BLACK))) {
                 return false;
             }
             if (type == 'k') {
@@ -123,7 +123,7 @@ public class Position {
     }
 
     public void setEpFile(Character file) {
-        assert file == null || "abcdefgh".indexOf(file) != -1;
+        assert file != null && "abcdefgh".indexOf(file) != -1;
         epFile = file;
     }
 
@@ -148,6 +148,12 @@ public class Position {
         assert color.equals("w") || color.equals("b") || color.equals("wb") || color.equals("bw");
 
         Map<PieceType, Integer> pieceCounts = new HashMap<>();
+        pieceCounts.put(PieceType.PAWN, 0);
+        pieceCounts.put(PieceType.ROOK, 0);
+        pieceCounts.put(PieceType.KNIGHT, 0);
+        pieceCounts.put(PieceType.BISHOP, 0);
+        pieceCounts.put(PieceType.QUEEN, 0);
+        pieceCounts.put(PieceType.KING, 0);
 
         for (Piece piece : board) {
             if (piece != null && color.contains(piece.getColor().shortName())) {
@@ -298,14 +304,15 @@ public class Position {
             if ((Board.ATTACKS[index] & (1 << piece.getType().ordinal())) != 0) {
                 if (piece.getType() == PieceType.PAWN) {
                     if (diff > 0) {
-                        if (piece.getColor() == Color.WHITE) {
-                            attackingSquares.add(source);
-                        }
-                    } else {
                         if (piece.getColor() == Color.BLACK) {
                             attackingSquares.add(source);
                         }
+                    } else {
+                        if (piece.getColor() == Color.WHITE) {
+                            attackingSquares.add(source);
+                        }
                     }
+                    continue;
                 }
 
                 if (piece.getType() == PieceType.KNIGHT || piece.getType() == PieceType.KING) {
@@ -353,7 +360,9 @@ public class Position {
                         for (PieceType promoteTo : PieceType.promotionTypes()) {
                             moves.add(new Move(square, targetSquare, promoteTo));
                         }
+                        continue;
                     }
+                    moves.add(new Move(square, targetSquare));
                     index = square.get0x88Index() + PAWN_OFFSETS[1] * getTurn().forwardDirection();
                     targetSquare = Square.from0x88Index(index);
                     if ((this.getTurn() == Color.WHITE && square.getRank() == 2)
@@ -406,8 +415,8 @@ public class Position {
             int kingIndex = this.getKingSquare(this.getTurn()).get0x88Index();
             int targetIndex = kingIndex + 2;
             if (board[kingIndex + 1] == null && board[targetIndex] == null && !this.isCheck()
-                    && this.isAttacked(opponent, Square.from0x88Index(kingIndex + 1))
-                    && this.isAttacked(opponent, Square.from0x88Index(targetIndex))) {
+                    && !this.isAttacked(opponent, Square.from0x88Index(kingIndex + 1))
+                    && !this.isAttacked(opponent, Square.from0x88Index(targetIndex))) {
                 moves.add(new Move(Square.from0x88Index(kingIndex), Square.from0x88Index(targetIndex)));
             }
         }
@@ -418,8 +427,8 @@ public class Position {
             int targetIndex = kingIndex - 2;
             if (board[kingIndex - 1] == null && board[kingIndex - 2] == null
                     && board[kingIndex - 3] == null && !this.isCheck()
-                    && this.isAttacked(opponent, Square.from0x88Index(kingIndex - 1))
-                    && this.isAttacked(opponent, Square.from0x88Index(targetIndex))) {
+                    && !this.isAttacked(opponent, Square.from0x88Index(kingIndex - 1))
+                    && !this.isAttacked(opponent, Square.from0x88Index(targetIndex))) {
                 moves.add(new Move(Square.from0x88Index(kingIndex), Square.from0x88Index(targetIndex)));
             }
         }
@@ -597,10 +606,10 @@ public class Position {
             }
         }
 
-        if (isCheck) {
-            san.append("+");
-        } else if (isCheckmate) {
+        if (isCheckmate) {
             san.append("#");
+        } else if (isCheck) {
+            san.append("+");
         }
 
         if (enPassant) {
@@ -618,10 +627,14 @@ public class Position {
 
         for (Move otherMove : getLegalMoves()) {
             Piece otherPiece = get(otherMove.getSource());
-            if (piece == otherPiece && move.getSource() != otherMove.getSource()
-                    && move.getTarget() == otherMove.getTarget()) {
-                sameFile = move.getSource().getFile() == otherMove.getSource().getFile();
-                sameRank = move.getSource().getRank() == otherMove.getSource().getRank();
+            if (piece.getType() == otherPiece.getType() && move.getSource().get0x88Index() != otherMove.getSource().get0x88Index()
+                    && move.getTarget().get0x88Index() == otherMove.getTarget().get0x88Index()) {
+                if(move.getSource().getFile() == otherMove.getSource().getFile()) {
+                    sameFile = true;
+                };
+                if(move.getSource().getRank() == otherMove.getSource().getRank()) {
+                    sameRank = true;
+                };
 
                 if (sameFile && sameRank) break;
             }
