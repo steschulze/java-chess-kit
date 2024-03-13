@@ -586,4 +586,25 @@ class PositionTest {
                 "isCheck=false, " +
                 "isCheckmate=false}", moveInfo.toString());
     }
+
+    @Test
+    void testParseSan() {
+        Position position = Position.getDefault();
+
+        position.makeMove(position.parseSan("Nc3"));
+        position.makeMove(position.parseSan("c5"));
+
+        position.makeMove(position.parseSan("e4"));
+        position.makeMove(position.parseSan("g6"));
+
+        position.makeMove(position.parseSan("Nge2"));
+        position.makeMove(position.parseSan("Bg7"));
+
+        position.makeMove(position.parseSan("d3"));
+        position.makeMove(position.parseSan("Bxc3"));
+
+        position.makeMove(position.parseSan("bxc3"));
+
+        assertEquals("rnbqk1nr/pp1ppp1p/6p1/2p5/4P3/2PP4/P1P1NPPP/R1BQKB1R b KQkq - 0 5", position.getFen());
+    }
 }

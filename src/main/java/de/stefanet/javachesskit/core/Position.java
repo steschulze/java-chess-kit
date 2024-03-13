@@ -1,6 +1,7 @@
 package de.stefanet.javachesskit.core;
 
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Position {
@@ -618,6 +619,67 @@ public class Position {
 
         return new MoveInfo(move, movedPiece, capturedPiece, san.toString(),
                 enPassant, isKingSideCastling, isQueenSideCastling, isCheck, isCheckmate);
+    }
+
+    public Move parseSan(String san) {
+        san = san.replace('0', 'O');
+        if (san.equals("O-O") || san.equals("O-O-O")) {
+            int rank = this.getTurn() == Color.WHITE ? 1 : 8;
+            if (san.equals("O-O")) {
+                Square source = Square.fromRankAndFile(rank, 'e');
+                Square target = Square.fromRankAndFile(rank, 'g');
+
+                return new Move(source, target);
+            } else {
+                Square source = Square.fromRankAndFile(rank, 'e');
+                Square target = Square.fromRankAndFile(rank, 'c');
+
+                return new Move(source, target);
+            }
+        } else {
+            Pattern pattern = Pattern.compile("^([NBKRQ])?([a-h])?([1-8])?[-x]?([a-h][1-8])(=?[nbrqkNBRQK])?[+#]?\\Z");
+            Matcher matcher = pattern.matcher(san);
+            assert matcher.matches();
+
+            PieceType pieceType;
+
+            if (matcher.group(1) != null) {
+                char pieceSymbol = matcher.group(1).toLowerCase().charAt(0);
+                pieceType = PieceType.fromSymbol(pieceSymbol);
+            } else {
+                pieceType = PieceType.PAWN;
+            }
+
+
+            Square target = Square.fromName(matcher.group(4));
+            PieceType promotionType = null;
+            Square source = null;
+
+            for (Move move : this.getLegalMoves()) {
+                Piece piece = get(move.getSource());
+                if(piece!= null && piece.getType() == pieceType && move.getTarget().get0x88Index() == target.get0x88Index()) {
+                    if(matcher.group(2) != null && matcher.group(2).charAt(0) != move.getSource().getFile()){
+                        continue;
+                    }
+                    if(matcher.group(3) != null && !matcher.group(3).equals(String.valueOf(move.getSource().getRank()))) {
+                        continue;
+                    }
+
+                    assert source == null;
+                    source = move.getSource();
+
+                }
+            }
+
+            assert source != null;
+
+            if(matcher.group(5) != null) {
+                char promotionSymbol = matcher.group(5).toLowerCase().charAt(0);
+                promotionType = PieceType.fromSymbol(promotionSymbol);
+            }
+
+            return new Move(source, target, promotionType);
+        }
     }
 
     private String getDisambiguatedMove(Move move) {
