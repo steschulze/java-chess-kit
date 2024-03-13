@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id 'jacoco'
 }
 
 group 'org.example'
@@ -22,4 +23,8 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(8)
     }
+}
+
+jacocoTestReport {
+    dependsOn test
 }
