@@ -7,18 +7,21 @@ import static org.junit.jupiter.api.Assertions.*;
 class SquareTest {
 
     @Test
-    void testEquality() {
+    void testSquareEquality() {
         Square square1 = Square.fromName("b4");
         Square square2 = Square.fromName("b4");
         Square square3 = Square.fromName("b3");
         Square square4 = Square.fromName("f3");
 
+        assertEquals(square1, square1);
         assertEquals(square1, square2);
         assertEquals(square2, square1);
 
         assertNotEquals(square1, square3);
         assertNotEquals(square1, square4);
         assertNotEquals(square3, square4);
+        assertFalse(square1.equals(null));
+        assertFalse(square3.equals("b3"));
     }
 
     @Test
@@ -43,12 +46,91 @@ class SquareTest {
     }
 
     @Test
+    void testFromName_wrongLength() {
+        assertThrows(AssertionError.class, () -> Square.fromName("abc"));
+    }
+
+    @Test
+    void testFromName_wrongFile() {
+        assertThrows(AssertionError.class, () -> Square.fromName("s6"));
+    }
+
+    @Test
+    void testFromName_wrongRank() {
+        assertThrows(AssertionError.class, () -> Square.fromName("e9"));
+        assertThrows(AssertionError.class, () -> Square.fromName("e0"));
+    }
+
+    @Test
+    void testFromRankAndFile_wrongRank() {
+        assertThrows(AssertionError.class, () -> Square.fromRankAndFile(9, 'd'));
+        assertThrows(AssertionError.class, () -> Square.fromRankAndFile(-1, 'd'));
+    }
+
+    @Test
+    void testFromRankAndFile_wrongFile() {
+        assertThrows(AssertionError.class, () -> Square.fromRankAndFile(4, 'n'));
+    }
+
+    @Test
+    void testFrom0x88Index_negativeIndex() {
+        assertThrows(AssertionError.class, () -> Square.from0x88Index(-2));
+    }
+
+    @Test
+    void testFrom0x88Index_indexOutOfBound() {
+        assertThrows(AssertionError.class, () -> Square.from0x88Index(135));
+    }
+
+    @Test
+    void testFrom0x88Index_offBoardIndex() {
+        assertThrows(AssertionError.class, () -> Square.from0x88Index(0x2B));
+    }
+
+    @Test
     void testGetAllSquares() {
         Square a1 = Square.fromName("a1");
         Square h8 = Square.fromName("h8");
 
         assertTrue(Square.getAll().contains(a1));
         assertTrue(Square.getAll().contains(h8));
+    }
+
+    @Test
+    void testIsLightSquare() {
+        Square d1 = Square.fromName("d1");
+        assertTrue(d1.isLight());
+        assertFalse(d1.isDark());
+    }
+
+    @Test
+    void testIsDarkSquare() {
+        Square d8 = Square.fromName("d8");
+        assertTrue(d8.isDark());
+        assertFalse(d8.isLight());
+    }
+
+    @Test
+    void testIsBackrank() {
+        Square a1 = Square.fromName("a1");
+        Square h8 = Square.fromName("h8");
+        Square e4 = Square.fromName("e4");
+
+        assertTrue(a1.isBackrank());
+        assertTrue(h8.isBackrank());
+        assertFalse(e4.isBackrank());
+    }
+
+    @Test
+    void testToString() {
+        Square square = Square.fromRankAndFile(3, 'c');
+        assertEquals("Square.fromName('c3')", square.toString());
+    }
+
+    @Test
+    void testHashCode() {
+        Square square = Square.fromName("e4");
+        assertEquals(0x34, square.hashCode());
     }
 
 }
