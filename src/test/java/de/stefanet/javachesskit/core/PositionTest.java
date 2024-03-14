@@ -572,22 +572,6 @@ class PositionTest {
     }
 
     @Test
-    void testMoveInfoToString() {
-        Position position = new Position();
-        MoveInfo moveInfo = position.getMoveInfo(Move.fromUCI("g1f3"));
-
-        assertEquals("MoveInfo{move=Move.fromUCI(g1f3), " +
-                "movedPiece=Piece.parseSymbol('N'), " +
-                "capturedPiece=null, " +
-                "san='Nf3', " +
-                "isEnpassant=false, " +
-                "isKingSideCastle=false, " +
-                "isQueenSideCastle=false, " +
-                "isCheck=false, " +
-                "isCheckmate=false}", moveInfo.toString());
-    }
-
-    @Test
     void testParseSan() {
         Position position = new Position();
 

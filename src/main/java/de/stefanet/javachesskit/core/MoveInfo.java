@@ -1,5 +1,7 @@
 package de.stefanet.javachesskit.core;
 
+import java.util.Objects;
+
 public class MoveInfo {
     private final Move move;
     private final Piece movedPiece;
@@ -76,5 +78,26 @@ public class MoveInfo {
                 ", isCheck=" + isCheck +
                 ", isCheckmate=" + isCheckmate +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MoveInfo moveInfo = (MoveInfo) o;
+        return isEnpassant() == moveInfo.isEnpassant()
+                && isKingSideCastle() == moveInfo.isKingSideCastle()
+                && isQueenSideCastle() == moveInfo.isQueenSideCastle()
+                && isCheck() == moveInfo.isCheck()
+                && isCheckmate() == moveInfo.isCheckmate()
+                && Objects.equals(getMove(), moveInfo.getMove())
+                && Objects.equals(getMovedPiece(), moveInfo.getMovedPiece())
+                && Objects.equals(getCapturedPiece(), moveInfo.getCapturedPiece())
+                && Objects.equals(getSan(), moveInfo.getSan());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getMove(), getMovedPiece(), getCapturedPiece(), getSan(), isEnpassant(), isKingSideCastle(), isQueenSideCastle(), isCheck(), isCheckmate());
     }
 }
