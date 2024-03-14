@@ -107,7 +107,7 @@ class PositionTest {
 
     @Test
     void testTheoreticalCastlingRight_fromFen() {
-        Position position = new Position("n3k2b/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
+        Position position = new Position("n3k2b/8/8/8/8/8/8/R3K2R w KQ - 0 1");
 
         assertTrue(position.getTheoreticalCastlingRight('K'));
         assertTrue(position.getTheoreticalCastlingRight('Q'));
@@ -248,7 +248,7 @@ class PositionTest {
 
     @Test
     void testPieceCounts_onlyBlackPieces() {
-        Position position = new Position("rnbqkbnr/pppppppp/8/8/8/8/8/8 w KQkq - 0 1");
+        Position position = new Position("rnbqkbnr/pppppppp/8/8/8/8/8/8 w - - 0 1");
 
         Map<PieceType, Integer> whitePieces = position.getPieceCounts("w");
         int whitePieceCount = whitePieces.values().stream().mapToInt(Integer::intValue).sum();
@@ -261,7 +261,7 @@ class PositionTest {
         Position position1 = new Position();
         position1.set(Square.fromName("a1"), null);
 
-        Position position2 = new Position("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/1NBQKBNR w KQkq - 0 1");
+        Position position2 = new Position("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/1NBQKBNR w Kkq - 0 1");
 
         assertEquals(position1, position1);
         assertNotEquals(null, position1);

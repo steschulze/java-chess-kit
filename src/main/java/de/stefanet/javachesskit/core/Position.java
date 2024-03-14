@@ -213,14 +213,60 @@ public class Position {
     }
 
     public void setFen(String fen) {
-        String[] parts = fen.split(Pattern.quote(" "));
-        assert parts.length == 6;
+        String[] parts = fen.split(" ");
+        if (parts.length != 6) {
+            throw new InvalidFENException("FEN must have 6 parts, but only has " + parts.length);
+        }
 
         String[] rows = parts[0].split("/");
-        assert rows.length == 8;
+        if (rows.length != 8) {
+            throw new InvalidFENException("Position part of the FEN must have 8 rows, but only has " + rows.length);
+        }
+
+        for (String row : rows) {
+            int rowSum = 0;
+            boolean previousWasNumber = false;
+
+            for(char c : row.toCharArray()) {
+                if(c >= '1' && c <= '8') {
+                    if (previousWasNumber) {
+                        throw new InvalidFENException("Position part of the FEN is invalid Several numbers in a row");
+                    }
+
+                    rowSum += Character.getNumericValue(c);
+                    previousWasNumber = true;
+                } else if ("pnbrkqPNBRKQ".indexOf(c) != -1) {
+                    rowSum++;
+                    previousWasNumber = false;
+                } else {
+                    throw new InvalidFENException("Position part of the FEN is invalid: Invalid character " + c);
+                }
+            }
+
+            if(rowSum != 8) {
+                throw new InvalidFENException("Position part of the FEN is invalid: Invalid row length");
+            }
+        }
+
+        if (!parts[1].equals("w") && !parts[1].equals("b")) {
+            throw new InvalidFENException("Turn part of the FEN is invalid: Expected w or b, but was " + parts[1]);
+        }
+        if (!Pattern.matches("^(KQ?k?q?|Qk?q?|kq?|q|-)$", parts[2])) {
+            throw new InvalidFENException("Castling part of the FEN is invalid");
+        }
+        if (!Pattern.matches("^(-|[a-h][36])$", parts[3])) {
+            throw new InvalidFENException("En-passant part of the FEN is invalid");
+        }
+        if (!Pattern.matches("^(0|[1-9][0-9]*)$", parts[4])) {
+            throw new InvalidFENException("Half move part of the FEN is invalid");
+        }
+        if (!Pattern.matches("^[1-9][0-9]*$", parts[5])) {
+            throw new InvalidFENException("Full move part of the FEN is invalid");
+        }
 
         this.board = new Piece[128];
         int index = 0x70;
+
         for (char c : parts[0].toCharArray()) {
             if (c == '/') {
                 index -= 24;
@@ -232,23 +278,16 @@ public class Position {
             }
         }
 
-        assert parts[1].equals("w") || parts[1].equals("b");
         turn = Color.fromSymbol(parts[1].charAt(0));
 
-        assert parts[2].matches("^(K?Q?k?q?|-)$");
-        castling = parts[2];
+        for (char type : new char[]{'K', 'Q', 'k', 'q'}) {
+            this.setCastlingRight(type, parts[2].indexOf(type) != -1);
+        }
 
-        assert parts[3].matches("^(-|[a-h][36])$");
         epFile = parts[3].equals("-") ? null : parts[3].charAt(0);
 
         halfMoves = Integer.parseInt(parts[4]);
         moveNumber = Integer.parseInt(parts[5]);
-
-        for (char type : new char[]{'K', 'Q', 'k', 'q'}) {
-            if (!getTheoreticalCastlingRight(type)) {
-                setCastlingRight(type, false);
-            }
-        }
     }
 
     @Override
