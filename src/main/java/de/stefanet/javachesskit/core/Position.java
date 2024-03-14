@@ -384,7 +384,7 @@ public class Position {
                         } else {
                             moves.add(new Move(square, targetSquare));
                         }
-                    } else if ((capturedPiece == null) && epFile != null && (targetSquare.getFile() == epFile.charValue())) {
+                    } else if ((capturedPiece == null) && epFile != null && (targetSquare.getFile() == epFile)) {
                         moves.add(new Move(square, targetSquare));
                     }
                 }
@@ -625,21 +625,18 @@ public class Position {
         san = san.replace('0', 'O');
         if (san.equals("O-O") || san.equals("O-O-O")) {
             int rank = this.getTurn() == Color.WHITE ? 1 : 8;
+            Square source = Square.fromRankAndFile(rank, 'e');
+            Square target;
             if (san.equals("O-O")) {
-                Square source = Square.fromRankAndFile(rank, 'e');
-                Square target = Square.fromRankAndFile(rank, 'g');
-
-                return new Move(source, target);
+                target = Square.fromRankAndFile(rank, 'g');
             } else {
-                Square source = Square.fromRankAndFile(rank, 'e');
-                Square target = Square.fromRankAndFile(rank, 'c');
-
-                return new Move(source, target);
+                target = Square.fromRankAndFile(rank, 'c');
             }
+            return new Move(source, target);
         } else {
             Pattern pattern = Pattern.compile("^([NBKRQ])?([a-h])?([1-8])?[-x]?([a-h][1-8])(=?[nbrqkNBRQK])?[+#]?\\Z");
             Matcher matcher = pattern.matcher(san);
-            assert matcher.matches();
+            if (!matcher.matches()) throw new AssertionError();
 
             PieceType pieceType;
 
