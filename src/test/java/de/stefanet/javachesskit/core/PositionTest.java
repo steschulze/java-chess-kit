@@ -45,8 +45,8 @@ class PositionTest {
         Position position = new Position();
         position.clear();
 
-        position.set(Square.fromName("e4"), Piece.fromSymbol('P'));
-        position.set(Square.fromName("d5"), Piece.fromSymbol('n'));
+        position.set(Square.fromName("e4"), new Piece('P'));
+        position.set(Square.fromName("d5"), new Piece('n'));
 
         String expectedFEN = "8/8/8/3n4/4P3/8/8/8 w - - 0 1";
 
@@ -119,11 +119,11 @@ class PositionTest {
     void testTheoreticalCastlingRight_setupPosition() {
         Position position = new Position();
         position.clear();
-        position.set(Square.fromName("e1"), Piece.fromSymbol('K'));
-        position.set(Square.fromName("h1"), Piece.fromSymbol('R'));
-        position.set(Square.fromName("a1"), Piece.fromSymbol('B'));
-        position.set(Square.fromName("e8"), Piece.fromSymbol('k'));
-        position.set(Square.fromName("a8"), Piece.fromSymbol('r'));
+        position.set(Square.fromName("e1"), new Piece('K'));
+        position.set(Square.fromName("h1"), new Piece('R'));
+        position.set(Square.fromName("a1"), new Piece('B'));
+        position.set(Square.fromName("e8"), new Piece('k'));
+        position.set(Square.fromName("a8"), new Piece('r'));
 
         assertTrue(position.getTheoreticalCastlingRight('K'));
         assertFalse(position.getTheoreticalCastlingRight('Q'));
@@ -157,14 +157,14 @@ class PositionTest {
     @Test
     void testTheoreticalCastlingRight_otherPieceOnKingSquare() {
         Position position = new Position();
-        position.set(Square.fromName("e1"), Piece.fromSymbol('Q'));
+        position.set(Square.fromName("e1"), new Piece('Q'));
 
         assertFalse(position.getTheoreticalCastlingRight('K'));
         assertFalse(position.getTheoreticalCastlingRight('Q'));
         assertTrue(position.getTheoreticalCastlingRight('k'));
         assertTrue(position.getTheoreticalCastlingRight('q'));
 
-        position.set(Square.fromName("e8"), Piece.fromSymbol('r'));
+        position.set(Square.fromName("e8"), new Piece('r'));
 
         assertFalse(position.getTheoreticalCastlingRight('K'));
         assertFalse(position.getTheoreticalCastlingRight('Q'));
@@ -284,8 +284,8 @@ class PositionTest {
         Position position = new Position();
         position.clear();
 
-        position.set(Square.fromName("c3"), Piece.fromSymbol('K'));
-        position.set(Square.fromName("e6"), Piece.fromSymbol('k'));
+        position.set(Square.fromName("c3"), new Piece('K'));
+        position.set(Square.fromName("e6"), new Piece('k'));
 
         assertTrue(position.isInsufficientMaterial());
     }
@@ -295,9 +295,9 @@ class PositionTest {
         Position position = new Position();
         position.clear();
 
-        position.set(Square.fromName("c3"), Piece.fromSymbol('K'));
-        position.set(Square.fromName("d3"), Piece.fromSymbol('N'));
-        position.set(Square.fromName("e6"), Piece.fromSymbol('k'));
+        position.set(Square.fromName("c3"), new Piece('K'));
+        position.set(Square.fromName("d3"), new Piece('N'));
+        position.set(Square.fromName("e6"), new Piece('k'));
 
         assertTrue(position.isInsufficientMaterial());
     }
@@ -307,10 +307,10 @@ class PositionTest {
         Position position = new Position();
         position.clear();
 
-        position.set(Square.fromName("e4"), Piece.fromSymbol('K'));
-        position.set(Square.fromName("c1"), Piece.fromSymbol('B'));
-        position.set(Square.fromName("e6"), Piece.fromSymbol('k'));
-        position.set(Square.fromName("d8"), Piece.fromSymbol('b'));
+        position.set(Square.fromName("e4"), new Piece('K'));
+        position.set(Square.fromName("c1"), new Piece('B'));
+        position.set(Square.fromName("e6"), new Piece('k'));
+        position.set(Square.fromName("d8"), new Piece('b'));
 
         assertTrue(position.isInsufficientMaterial());
     }
@@ -407,15 +407,15 @@ class PositionTest {
         Position position = new Position();
         position.clear();
 
-        position.set(Square.fromName("e1"), Piece.fromSymbol('K'));
-        position.set(Square.fromName("e8"), Piece.fromSymbol('k'));
+        position.set(Square.fromName("e1"), new Piece('K'));
+        position.set(Square.fromName("e8"), new Piece('k'));
 
         List<Move> legalMoves = position.getLegalMoves();
 
         assertFalse(legalMoves.contains(Move.fromUCI("e1g1")));
         assertFalse(legalMoves.contains(Move.fromUCI("e1c1")));
 
-        position.set(Square.fromName("h1"), Piece.fromSymbol('R'));
+        position.set(Square.fromName("h1"), new Piece('R'));
         position.setCastlingRight('K', true);
 
         legalMoves = position.getLegalMoves();
@@ -423,7 +423,7 @@ class PositionTest {
         assertTrue(legalMoves.contains(Move.fromUCI("e1g1")));
         assertFalse(legalMoves.contains(Move.fromUCI("e1c1")));
 
-        position.set(Square.fromName("a1"), Piece.fromSymbol('R'));
+        position.set(Square.fromName("a1"), new Piece('R'));
         position.setCastlingRight('Q', true);
 
         legalMoves = position.getLegalMoves();

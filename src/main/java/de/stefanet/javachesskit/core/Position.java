@@ -70,22 +70,22 @@ public class Position {
     public boolean getTheoreticalCastlingRight(char type) {
         assert "KQkq".indexOf(type) != -1;
         if (type == 'K' || type == 'Q') {
-            if (get(Square.fromName("e1")) == null || !get(Square.fromName("e1")).equals(new Piece(PieceType.KING, Color.WHITE))) {
+            if (get(Square.fromName("e1")) == null || !get(Square.fromName("e1")).equals(Piece.fromTypeAndColor(PieceType.KING, Color.WHITE))) {
                 return false;
             }
             if (type == 'K') {
-                return get(Square.fromName("h1")) != null && get(Square.fromName("h1")).equals(new Piece(PieceType.ROOK, Color.WHITE));
+                return get(Square.fromName("h1")) != null && get(Square.fromName("h1")).equals(Piece.fromTypeAndColor(PieceType.ROOK, Color.WHITE));
             } else {
-                return get(Square.fromName("a1")) != null && get(Square.fromName("a1")).equals(new Piece(PieceType.ROOK, Color.WHITE));
+                return get(Square.fromName("a1")) != null && get(Square.fromName("a1")).equals(Piece.fromTypeAndColor(PieceType.ROOK, Color.WHITE));
             }
         } else {
-            if (get(Square.fromName("e8")) == null || !get(Square.fromName("e8")).equals(new Piece(PieceType.KING, Color.BLACK))) {
+            if (get(Square.fromName("e8")) == null || !get(Square.fromName("e8")).equals(Piece.fromTypeAndColor(PieceType.KING, Color.BLACK))) {
                 return false;
             }
             if (type == 'k') {
-                return get(Square.fromName("h8")) != null && get(Square.fromName("h8")).equals(new Piece(PieceType.ROOK, Color.BLACK));
+                return get(Square.fromName("h8")) != null && get(Square.fromName("h8")).equals(Piece.fromTypeAndColor(PieceType.ROOK, Color.BLACK));
             } else {
-                return get(Square.fromName("a8")) != null && get(Square.fromName("a8")).equals(new Piece(PieceType.ROOK, Color.BLACK));
+                return get(Square.fromName("a8")) != null && get(Square.fromName("a8")).equals(Piece.fromTypeAndColor(PieceType.ROOK, Color.BLACK));
             }
         }
     }
@@ -273,7 +273,7 @@ public class Position {
             } else if (c >= '1' && c <= '8') {
                 index += Character.getNumericValue(c);
             } else {
-                this.board[index] = Piece.fromSymbol(c);
+                this.board[index] = new Piece(c);
                 index++;
             }
         }
@@ -507,7 +507,7 @@ public class Position {
             }
 
             if (move.getPromotion() != null) {
-                this.set(move.getTarget(), new Piece(move.getPromotion(), movingPiece.getColor()));
+                this.set(move.getTarget(), Piece.fromTypeAndColor(move.getPromotion(), movingPiece.getColor()));
             }
         } else if (movingPiece.getType() == PieceType.KING) {
             int steps = move.getTarget().getX() - move.getSource().getX();
@@ -597,7 +597,7 @@ public class Position {
         if (movedPiece.getType() == PieceType.PAWN) {
             if (move.getTarget().getFile() != move.getSource().getFile() && capturedPiece == null) {
                 enPassant = true;
-                capturedPiece = new Piece(PieceType.PAWN, copiedPosition.getTurn());
+                capturedPiece = Piece.fromTypeAndColor(PieceType.PAWN, copiedPosition.getTurn());
             }
         }
 

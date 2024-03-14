@@ -8,24 +8,24 @@ class PieceTest {
 
     @Test
     void testSymbolParsing() {
-        Piece blackQueen = Piece.fromSymbol('q');
+        Piece blackQueen = new Piece('q');
         assertEquals('q', blackQueen.getSymbol());
 
-        Piece whitePawn = Piece.fromSymbol('P');
+        Piece whitePawn = new Piece('P');
         assertEquals('P', whitePawn.getSymbol());
     }
 
     @Test
     void testSymbolParsing_wrongSymbol() {
-        assertThrows(IllegalArgumentException.class, () -> Piece.fromSymbol('e'));
+        assertThrows(IllegalArgumentException.class, () -> new Piece('e'));
     }
 
     @Test
     void testEquality() {
-        Piece whiteBishop1 = new Piece(PieceType.BISHOP, Color.WHITE);
-        Piece blackKing = new Piece(PieceType.KING, Color.BLACK);
-        Piece whiteKing = new Piece(PieceType.KING, Color.WHITE);
-        Piece whiteBishop2 = new Piece(PieceType.BISHOP, Color.WHITE);
+        Piece whiteBishop1 = Piece.fromTypeAndColor(PieceType.BISHOP, Color.WHITE);
+        Piece blackKing = Piece.fromTypeAndColor(PieceType.KING, Color.BLACK);
+        Piece whiteKing = Piece.fromTypeAndColor(PieceType.KING, Color.WHITE);
+        Piece whiteBishop2 = Piece.fromTypeAndColor(PieceType.BISHOP, Color.WHITE);
 
         assertEquals(whiteBishop1, whiteBishop1);
         assertEquals(whiteBishop1, whiteBishop2);
@@ -37,7 +37,7 @@ class PieceTest {
 
     @Test
     void testSimpleProperties() {
-        Piece whiteKnight = new Piece(PieceType.KNIGHT, Color.WHITE);
+        Piece whiteKnight = Piece.fromTypeAndColor(PieceType.KNIGHT, Color.WHITE);
 
         assertEquals(Color.WHITE, whiteKnight.getColor());
         assertEquals(PieceType.KNIGHT, whiteKnight.getType());
@@ -45,15 +45,15 @@ class PieceTest {
 
     @Test
     void testToString() {
-        Piece whiteRook = new Piece(PieceType.ROOK, Color.WHITE);
+        Piece whiteRook = Piece.fromTypeAndColor(PieceType.ROOK, Color.WHITE);
         assertEquals("Piece.parseSymbol('R')", whiteRook.toString());
     }
 
     @Test
     void testHashCode() {
-        Piece whitePawn1 = new Piece(PieceType.PAWN, Color.WHITE);
-        Piece whitePawn2 = new Piece(PieceType.PAWN, Color.WHITE);
-        Piece blackPawn = new Piece(PieceType.PAWN, Color.BLACK);
+        Piece whitePawn1 = Piece.fromTypeAndColor(PieceType.PAWN, Color.WHITE);
+        Piece whitePawn2 = Piece.fromTypeAndColor(PieceType.PAWN, Color.WHITE);
+        Piece blackPawn = Piece.fromTypeAndColor(PieceType.PAWN, Color.BLACK);
 
         assertEquals(whitePawn1.hashCode(), whitePawn2.hashCode());
         assertNotEquals(whitePawn1.hashCode(), blackPawn.hashCode());

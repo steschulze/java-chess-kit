@@ -7,20 +7,24 @@ public class Piece {
     private final PieceType type;
     private final Color color;
 
-    public Piece(PieceType type, Color color) {
+    public Piece(char symbol) {
+        if ("pnbrkqPNBRKQ".indexOf(symbol) == -1) {
+            throw new IllegalArgumentException("Invalid piece symbol: " + symbol);
+        }
+
+        char lowerCaseSymbol = Character.toLowerCase(symbol);
+        this.type = PieceType.fromSymbol(lowerCaseSymbol);
+
+        this.color = lowerCaseSymbol == symbol ? Color.BLACK : Color.WHITE;
+    }
+
+    private Piece(PieceType type, Color color) {
         this.type = type;
         this.color = color;
     }
 
-    public static Piece fromSymbol(char symbol) {
-        char type = Character.toLowerCase(symbol);
-        PieceType pieceType = PieceType.fromSymbol(type);
-
-        if (type == symbol) {
-            return new Piece(pieceType, Color.BLACK);
-        } else {
-            return new Piece(pieceType, Color.WHITE);
-        }
+    public static Piece fromTypeAndColor(PieceType type, Color color) {
+        return new Piece(type, color);
     }
 
     public PieceType getType() {
