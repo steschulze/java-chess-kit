@@ -11,13 +11,13 @@ class PositionTest {
 
     @Test
     void testGetFEN_defaultPosition() {
-        Position position = Position.getDefault();
+        Position position = new Position();
         assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", position.getFen());
     }
 
     @Test
     void testDefaultPosition() {
-        Position position = Position.getDefault();
+        Position position = new Position();
         Piece piece1 = position.get(Square.fromName("a1"));
         Piece piece2 = position.get(Square.fromName("b8"));
         Piece piece3 = position.get(Square.fromName("f1"));
@@ -55,21 +55,21 @@ class PositionTest {
 
     @Test
     void testGetTurn_whiteTurn() {
-        Position position = Position.getDefault();
+        Position position = new Position();
 
         assertEquals(position.getTurn(), Color.WHITE);
     }
 
     @Test
     void testGetTurn_blackTurn() {
-        Position position = Position.fromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1");
+        Position position = new Position("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1");
 
         assertEquals(position.getTurn(), Color.BLACK);
     }
 
     @Test
     void testToggleTurn() {
-        Position position = Position.getDefault();
+        Position position = new Position();
 
         assertEquals(position.getTurn(), Color.WHITE);
         position.toggleTurn();
@@ -81,7 +81,7 @@ class PositionTest {
 
     @Test
     void testCastlingRight_defaultPosition() {
-        Position position = Position.getDefault();
+        Position position = new Position();
         assertTrue(position.getCastlingRight('K'));
         assertTrue(position.getCastlingRight('Q'));
         assertTrue(position.getCastlingRight('k'));
@@ -90,14 +90,14 @@ class PositionTest {
 
     @Test
     void testCastlingRight_wrongPieceType() {
-        Position position = Position.getDefault();
+        Position position = new Position();
         assertThrows(AssertionError.class, () -> position.getCastlingRight('r'));
         assertThrows(AssertionError.class, () -> position.setCastlingRight('r', false));
     }
 
     @Test
     void testCastlingRight_emptyPosition() {
-        Position position = Position.getDefault();
+        Position position = new Position();
         position.clear();
         assertThrows(AssertionError.class, () -> position.setCastlingRight('K', true));
         assertThrows(AssertionError.class, () -> position.setCastlingRight('Q', true));
@@ -107,7 +107,7 @@ class PositionTest {
 
     @Test
     void testTheoreticalCastlingRight_fromFen() {
-        Position position = Position.fromFen("n3k2b/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
+        Position position = new Position("n3k2b/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
 
         assertTrue(position.getTheoreticalCastlingRight('K'));
         assertTrue(position.getTheoreticalCastlingRight('Q'));
@@ -133,13 +133,13 @@ class PositionTest {
 
     @Test
     void testTheoreticalCastlingRight_wrongPieceType() {
-        Position position = Position.getDefault();
+        Position position = new Position();
         assertThrows(AssertionError.class, () -> position.getTheoreticalCastlingRight('b'));
     }
 
     @Test
     void testTheoreticalCastlingRight_emptyKingSquare() {
-        Position position = Position.getDefault();
+        Position position = new Position();
         position.set(Square.fromName("e1"), null);
 
         assertFalse(position.getTheoreticalCastlingRight('K'));
@@ -156,7 +156,7 @@ class PositionTest {
 
     @Test
     void testTheoreticalCastlingRight_otherPieceOnKingSquare() {
-        Position position = Position.getDefault();
+        Position position = new Position();
         position.set(Square.fromName("e1"), Piece.fromSymbol('Q'));
 
         assertFalse(position.getTheoreticalCastlingRight('K'));
@@ -174,7 +174,7 @@ class PositionTest {
 
     @Test
     void testTheoreticalCastlingRight_emptyRookSquare() {
-        Position position = Position.getDefault();
+        Position position = new Position();
         position.set(Square.fromName("a1"), null);
 
         assertTrue(position.getTheoreticalCastlingRight('K'));
@@ -206,7 +206,7 @@ class PositionTest {
 
     @Test
     void testSimpleProperties() {
-        Position position = Position.getDefault();
+        Position position = new Position();
 
         assertNull(position.getEpFile());
         assertEquals(0, position.getHalfMoves());
@@ -225,7 +225,7 @@ class PositionTest {
 
     @Test
     void testGetKingSquare_emptyPosition() {
-        Position position = Position.getDefault();
+        Position position = new Position();
         position.clear();
 
         assertNull(position.getKingSquare(Color.WHITE));
@@ -234,7 +234,7 @@ class PositionTest {
 
     @Test
     void testPieceCounts_defaultPosition() {
-        Position position = Position.getDefault();
+        Position position = new Position();
         assertThrows(AssertionError.class, () -> position.getPieceCounts("WB"));
         Map<PieceType, Integer> allPieces = position.getPieceCounts("wb");
 
@@ -248,7 +248,7 @@ class PositionTest {
 
     @Test
     void testPieceCounts_onlyBlackPieces() {
-        Position position = Position.fromFen("rnbqkbnr/pppppppp/8/8/8/8/8/8 w KQkq - 0 1");
+        Position position = new Position("rnbqkbnr/pppppppp/8/8/8/8/8/8 w KQkq - 0 1");
 
         Map<PieceType, Integer> whitePieces = position.getPieceCounts("w");
         int whitePieceCount = whitePieces.values().stream().mapToInt(Integer::intValue).sum();
@@ -258,10 +258,10 @@ class PositionTest {
 
     @Test
     void testEquals() {
-        Position position1 = Position.getDefault();
+        Position position1 = new Position();
         position1.set(Square.fromName("a1"), null);
 
-        Position position2 = Position.fromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/1NBQKBNR w KQkq - 0 1");
+        Position position2 = new Position("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/1NBQKBNR w KQkq - 0 1");
 
         assertEquals(position1, position1);
         assertNotEquals(null, position1);
@@ -275,13 +275,13 @@ class PositionTest {
 
     @Test
     void testToString() {
-        Position position = Position.fromFen("8/8/8/4k3/8/3K4/8/8 w - - 0 60");
+        Position position = new Position("8/8/8/4k3/8/3K4/8/8 w - - 0 60");
         assertEquals("Position.fromFen(8/8/8/4k3/8/3K4/8/8 w - - 0 60)", position.toString());
     }
 
     @Test
     void testInsufficientMaterial_onlyKings() {
-        Position position = Position.getDefault();
+        Position position = new Position();
         position.clear();
 
         position.set(Square.fromName("c3"), Piece.fromSymbol('K'));
@@ -292,7 +292,7 @@ class PositionTest {
 
     @Test
     void testInsufficientMaterial_kingAndKnightVersusKing() {
-        Position position = Position.getDefault();
+        Position position = new Position();
         position.clear();
 
         position.set(Square.fromName("c3"), Piece.fromSymbol('K'));
@@ -304,7 +304,7 @@ class PositionTest {
 
     @Test
     void testInsufficientMaterial_kingAndBishopVersusKingAndBishop() {
-        Position position = Position.getDefault();
+        Position position = new Position();
         position.clear();
 
         position.set(Square.fromName("e4"), Piece.fromSymbol('K'));
@@ -317,7 +317,7 @@ class PositionTest {
 
     @Test
     void testLegalMoves_emptyPosition() {
-        Position position = Position.getDefault();
+        Position position = new Position();
         position.clear();
 
         assertTrue(position.getLegalMoves().isEmpty());
@@ -325,7 +325,7 @@ class PositionTest {
 
     @Test
     void testLegalMoves_whiteKingAndPawnEndgame_blacksTurn() {
-        Position position = Position.fromFen("8/8/8/3k4/8/3PK3/8/8 b - - 0 1");
+        Position position = new Position("8/8/8/3k4/8/3PK3/8/8 b - - 0 1");
 
         List<Move> legalMoves = position.getLegalMoves();
         assertEquals(5, legalMoves.size());
@@ -338,7 +338,7 @@ class PositionTest {
 
     @Test
     void testLegalMoves_whiteKingAndPawnEndgame_blackInCheck() {
-        Position position = Position.fromFen("8/8/8/8/2k5/3PK3/8/8 b - - 0 1");
+        Position position = new Position("8/8/8/8/2k5/3PK3/8/8 b - - 0 1");
 
         List<Move> legalMoves = position.getLegalMoves();
         assertEquals(6, legalMoves.size());
@@ -352,7 +352,7 @@ class PositionTest {
 
     @Test
     void testLegalMoves_blackKingAndPawnEndgame() {
-        Position position = Position.fromFen("8/8/8/2kp4/8/3K4/8/8 w - - 0 1");
+        Position position = new Position("8/8/8/2kp4/8/3K4/8/8 w - - 0 1");
         List<Move> legalMoves = position.getLegalMoves();
 
         assertEquals(5, legalMoves.size());
@@ -366,7 +366,7 @@ class PositionTest {
 
     @Test
     void testLegalMoves_whitePawnPromotion() {
-        Position position = Position.fromFen("7K/4Pk1P/8/8/8/8/8/8 w - - 0 1");
+        Position position = new Position("7K/4Pk1P/8/8/8/8/8/8 w - - 0 1");
         List<Move> legalMoves = position.getLegalMoves();
 
         assertEquals(4, legalMoves.size());
@@ -379,7 +379,7 @@ class PositionTest {
 
     @Test
     void testLegalMoves_whitePawnCapturePromotion() {
-        Position position = Position.fromFen("4bb1K/4Pk1P/8/8/8/8/8/8 w - - 0 1");
+        Position position = new Position("4bb1K/4Pk1P/8/8/8/8/8/8 w - - 0 1");
         List<Move> legalMoves = position.getLegalMoves();
 
         assertEquals(4, legalMoves.size());
@@ -392,7 +392,7 @@ class PositionTest {
 
     @Test
     void testLegalMoves_whitePawnCapture() {
-        Position position = Position.fromFen("5k1K/7P/2n1n3/3P4/8/8/8/8 w - - 0 1");
+        Position position = new Position("5k1K/7P/2n1n3/3P4/8/8/8/8 w - - 0 1");
         List<Move> legalMoves = position.getLegalMoves();
 
         assertEquals(3, legalMoves.size());
@@ -404,7 +404,7 @@ class PositionTest {
 
     @Test
     void testLegalMoves_whiteCastling() {
-        Position position = Position.getDefault();
+        Position position = new Position();
         position.clear();
 
         position.set(Square.fromName("e1"), Piece.fromSymbol('K'));
@@ -434,7 +434,7 @@ class PositionTest {
 
     @Test
     void testScholarsMate() {
-        Position position = Position.getDefault();
+        Position position = new Position();
 
         Move e4 = Move.fromUCI("e2e4");
         assertTrue(position.getLegalMoves().contains(e4));
@@ -480,7 +480,7 @@ class PositionTest {
 
     @Test
     void testMoveInfo() {
-        Position position = Position.getDefault();
+        Position position = new Position();
         MoveInfo moveInfo = position.getMoveInfo(Move.fromUCI("d2d4"));
 
         assertEquals("d4", moveInfo.getSan());
@@ -497,7 +497,7 @@ class PositionTest {
 
     @Test
     void testMoveInfo_enPassantMove() {
-        Position position = Position.fromFen("8/k7/8/5Pp1/8/8/3K4/8 w - g6 0 1");
+        Position position = new Position("8/k7/8/5Pp1/8/8/3K4/8 w - g6 0 1");
         Move enPassant = Move.fromUCI("f5g6");
 
         MoveInfo moveInfo = position.getMoveInfo(enPassant);
@@ -508,7 +508,7 @@ class PositionTest {
 
     @Test
     void testMoveInfo_kingSideCastling() {
-        Position position = Position.fromFen("8/8/8/8/3k4/8/8/4K2R w K - 0 1");
+        Position position = new Position("8/8/8/8/3k4/8/8/4K2R w K - 0 1");
         Move castling = Move.fromUCI("e1g1");
 
         MoveInfo moveInfo = position.getMoveInfo(castling);
@@ -520,7 +520,7 @@ class PositionTest {
 
     @Test
     void testMoveInfo_queenSideCastlingWithCheck() {
-        Position position = Position.fromFen("r3k3/8/8/3K4/8/8/8/8 b q - 0 1");
+        Position position = new Position("r3k3/8/8/3K4/8/8/8/8 b q - 0 1");
         Move castling = Move.fromUCI("e8c8");
 
         MoveInfo moveInfo = position.getMoveInfo(castling);
@@ -532,7 +532,7 @@ class PositionTest {
 
     @Test
     void testMoveInfo_promotionWithMate() {
-        Position position = Position.fromFen("7k/5P2/6K1/8/8/8/8/8 w - - 0 1");
+        Position position = new Position("7k/5P2/6K1/8/8/8/8/8 w - - 0 1");
         Move move = Move.fromUCI("f7f8r");
 
         MoveInfo moveInfo = position.getMoveInfo(move);
@@ -543,7 +543,7 @@ class PositionTest {
 
     @Test
     void testMoveInfo_ambiguousMove_sameFile() {
-        Position position = Position.fromFen("8/8/7k/2R5/8/8/2R5/6K1 w - - 0 1");
+        Position position = new Position("8/8/7k/2R5/8/8/2R5/6K1 w - - 0 1");
         Move move = Move.fromUCI("c2c4");
 
         MoveInfo moveInfo = position.getMoveInfo(move);
@@ -553,7 +553,7 @@ class PositionTest {
 
     @Test
     void testMoveInfo_ambiguousMove_sameRank() {
-        Position position = Position.fromFen("8/8/8/6k1/8/8/8/R4RK1 w - - 0 1");
+        Position position = new Position("8/8/8/6k1/8/8/8/R4RK1 w - - 0 1");
         Move move = Move.fromUCI("f1c1");
 
         MoveInfo moveInfo = position.getMoveInfo(move);
@@ -563,7 +563,7 @@ class PositionTest {
 
     @Test
     void testMoveInfo_ambiguousMove_sameRankAndFile() {
-        Position position = Position.fromFen("8/1Q6/8/6k1/8/8/8/1Q4KQ w - - 0 1");
+        Position position = new Position("8/1Q6/8/6k1/8/8/8/1Q4KQ w - - 0 1");
         Move move = Move.fromUCI("b1e4");
 
         MoveInfo moveInfo = position.getMoveInfo(move);
@@ -573,7 +573,7 @@ class PositionTest {
 
     @Test
     void testMoveInfoToString() {
-        Position position = Position.getDefault();
+        Position position = new Position();
         MoveInfo moveInfo = position.getMoveInfo(Move.fromUCI("g1f3"));
 
         assertEquals("MoveInfo{move=Move.fromUCI(g1f3), " +
@@ -589,7 +589,7 @@ class PositionTest {
 
     @Test
     void testParseSan() {
-        Position position = Position.getDefault();
+        Position position = new Position();
 
         position.makeMove(position.parseSan("Nc3"));
         position.makeMove(position.parseSan("c5"));

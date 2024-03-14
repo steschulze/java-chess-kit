@@ -13,24 +13,12 @@ public class Position {
     private int moveNumber;
 
     public Position() {
-        board = new Piece[128];
-        turn = Color.WHITE;
-        castling = "";
-        epFile = null;
-        halfMoves = 0;
-        moveNumber = 1;
+        this("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     }
 
-    public static Position getDefault() {
-        Position defaultPosition = new Position();
-        defaultPosition.reset();
-        return defaultPosition;
-    }
-
-    public static Position fromFen(String fen) {
-        Position position = new Position();
-        position.setFen(fen);
-        return position;
+    public Position(String fen) {
+        this.castling = "KQkq";
+        setFen(fen);
     }
 
     public Position copy() {
@@ -231,6 +219,7 @@ public class Position {
         String[] rows = parts[0].split("/");
         assert rows.length == 8;
 
+        this.board = new Piece[128];
         int index = 0x70;
         for (char c : parts[0].toCharArray()) {
             if (c == '/') {
