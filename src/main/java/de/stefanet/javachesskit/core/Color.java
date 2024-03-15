@@ -48,7 +48,7 @@ public enum Color {
      * Returns an integer indicating the moving direction of the pawns.
      * @return 1 for WHITE, -1 for BLACK.
      */
-    public int forwardDirection() {
+    int forwardDirection() {
         if (this == WHITE) return 1;
         else return -1;
     }
