@@ -1,9 +1,16 @@
 package de.stefanet.javachesskit.core;
 
+
+/**
+ * Utility class providing precomputed attack and ray vectors for 0x88 board representation.
+ */
 public final class Board {
 
     private Board() {};
 
+    /**
+     * Precomputed attack vector
+     */
     public final static int[] ATTACKS = new int[]{
             20, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 20, 0,
             0, 20, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 20, 0, 0,
@@ -22,6 +29,9 @@ public final class Board {
             20, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 20
     };
 
+    /**
+     * Precomputed ray vector
+     */
     public final static int[] RAYS = new int[]{
             17, 0, 0, 0, 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 15, 0,
             0, 17, 0, 0, 0, 0, 0, 16, 0, 0, 0, 0, 0, 15, 0, 0,
