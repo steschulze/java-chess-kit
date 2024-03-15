@@ -80,6 +80,12 @@ class PositionTest {
     }
 
     @Test
+    void testEpFile() {
+        Position position = new Position("rnbqkbnr/ppp1p1pp/8/3pPp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 1");
+        assertEquals('f', position.getEpFile());
+    }
+
+    @Test
     void testCastlingRight_defaultPosition() {
         Position position = new Position();
         assertTrue(position.getCastlingRight('K'));
