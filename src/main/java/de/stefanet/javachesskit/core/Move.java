@@ -19,6 +19,7 @@ public class Move {
      * @param source    The source square of the move.
      * @param target    The target square of the move.
      * @param promotion The promotion type (can be null), either Rook, Knight, Bishop or Queen.
+     * @throws IllegalArgumentException If the move is invalid, only in cases of promotion not null.
      */
     public Move(Square source, Square target, PieceType promotion) {
         this.source = source;
@@ -26,8 +27,12 @@ public class Move {
         this.promotion = promotion;
 
         if (promotion != null) {
-            assert target.isBackrank();
-            assert PieceType.promotionTypes().contains(promotion);
+            if (!target.isBackrank()) {
+                throw new IllegalArgumentException("Invalid move: target square is not on backrank");
+            }
+            if (!PieceType.promotionTypes().contains(promotion)) {
+                throw new IllegalArgumentException("Invalid move: invalid promotion type " + promotion);
+            }
         }
     }
 

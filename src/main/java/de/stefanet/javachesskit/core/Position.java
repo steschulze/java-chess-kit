@@ -115,9 +115,10 @@ public class Position {
      *
      * @param type The type of castling right to check (K, Q, k, or q).
      * @return True if the specified castling right is available, false otherwise.
+     * @throws IllegalArgumentException If the type of castling right is invalid
      */
     public boolean getCastlingRight(char type) {
-        assert "KQkq".indexOf(type) != -1;
+        if ("KQkq".indexOf(type) == -1) throw new IllegalArgumentException("Invalid type of castling right: " + type);
         return castling.indexOf(type) != -1;
     }
 
@@ -126,9 +127,10 @@ public class Position {
      *
      * @param type The type of castling right to check (K, Q, k, or q).
      * @return True if the specified castling right is theoretically valid, false otherwise.
+     * @throws IllegalArgumentException If the type of castling right is invalid
      */
     public boolean getTheoreticalCastlingRight(char type) {
-        assert "KQkq".indexOf(type) != -1;
+        if ("KQkq".indexOf(type) == -1) throw new IllegalArgumentException("Invalid type of castling right: " + type);
         if (type == 'K' || type == 'Q') {
             if (get(Square.fromName("e1")) == null || !get(Square.fromName("e1")).equals(Piece.fromTypeAndColor(PieceType.KING, Color.WHITE))) {
                 return false;
@@ -155,10 +157,12 @@ public class Position {
      *
      * @param type   The type of castling right to set (K, Q, k, or q).
      * @param status The status indicating whether the castling right should be available (true) or not (false).
+     * @throws IllegalArgumentException If the type of castling right is invalid
      */
     public void setCastlingRight(char type, boolean status) {
-        assert "KQkq".indexOf(type) != -1;
-        assert !status || getTheoreticalCastlingRight(type);
+        if ("KQkq".indexOf(type) == -1) throw new IllegalArgumentException("Invalid type of castling right: " + type);
+        if (status && !getTheoreticalCastlingRight(type))
+            throw new IllegalArgumentException("Castling not possible for the type " + type);
 
         StringBuilder sb = new StringBuilder();
         for (char t : new char[]{'K', 'Q', 'k', 'q'}) {
@@ -339,17 +343,17 @@ public class Position {
      * Sets the position based on the given FEN (Forsyth-Edwards Notation) string.
      *
      * @param fen The FEN string representing the position to set.
-     * @throws InvalidFENException If the provided FEN string is invalid.
+     * @throws InvalidMoveException If the provided FEN string is invalid.
      */
     public void setFen(String fen) {
         String[] parts = fen.split(" ");
         if (parts.length != 6) {
-            throw new InvalidFENException("FEN must have 6 parts, but only has " + parts.length);
+            throw new InvalidMoveException("FEN must have 6 parts, but only has " + parts.length);
         }
 
         String[] rows = parts[0].split("/");
         if (rows.length != 8) {
-            throw new InvalidFENException("Position part of the FEN must have 8 rows, but only has " + rows.length);
+            throw new InvalidMoveException("Position part of the FEN must have 8 rows, but only has " + rows.length);
         }
 
         for (String row : rows) {
@@ -359,7 +363,7 @@ public class Position {
             for(char c : row.toCharArray()) {
                 if(c >= '1' && c <= '8') {
                     if (previousWasNumber) {
-                        throw new InvalidFENException("Position part of the FEN is invalid Several numbers in a row");
+                        throw new InvalidMoveException("Position part of the FEN is invalid Several numbers in a row");
                     }
 
                     rowSum += Character.getNumericValue(c);
@@ -368,29 +372,29 @@ public class Position {
                     rowSum++;
                     previousWasNumber = false;
                 } else {
-                    throw new InvalidFENException("Position part of the FEN is invalid: Invalid character " + c);
+                    throw new InvalidMoveException("Position part of the FEN is invalid: Invalid character " + c);
                 }
             }
 
             if(rowSum != 8) {
-                throw new InvalidFENException("Position part of the FEN is invalid: Invalid row length");
+                throw new InvalidMoveException("Position part of the FEN is invalid: Invalid row length");
             }
         }
 
         if (!parts[1].equals("w") && !parts[1].equals("b")) {
-            throw new InvalidFENException("Turn part of the FEN is invalid: Expected w or b, but was " + parts[1]);
+            throw new InvalidMoveException("Turn part of the FEN is invalid: Expected w or b, but was " + parts[1]);
         }
         if (!Pattern.matches("^(KQ?k?q?|Qk?q?|kq?|q|-)$", parts[2])) {
-            throw new InvalidFENException("Castling part of the FEN is invalid");
+            throw new InvalidMoveException("Castling part of the FEN is invalid");
         }
         if (!Pattern.matches("^(-|[a-h][36])$", parts[3])) {
-            throw new InvalidFENException("En-passant part of the FEN is invalid");
+            throw new InvalidMoveException("En-passant part of the FEN is invalid");
         }
         if (!Pattern.matches("^(0|[1-9][0-9]*)$", parts[4])) {
-            throw new InvalidFENException("Half move part of the FEN is invalid");
+            throw new InvalidMoveException("Half move part of the FEN is invalid");
         }
         if (!Pattern.matches("^[1-9][0-9]*$", parts[5])) {
-            throw new InvalidFENException("Full move part of the FEN is invalid");
+            throw new InvalidMoveException("Full move part of the FEN is invalid");
         }
 
         this.board = new Piece[128];
@@ -654,16 +658,17 @@ public class Position {
     /**
      * Makes a move on the current position, optionally validating its legality.
      * If the {@code validate} parameter is set to true, the method will check if the move is legal before making it.
-     * If the move is not legal, an assertion error will be thrown.
+     * If the move is not legal, an {@link IllegalArgumentException} will be thrown.
      * After making the move, the turn is toggled to the opposite player, and other game state variables are updated
      * accordingly.
      *
      * @param move     The move to be made.
      * @param validate Whether to validate the legality of the move.
-     * @throws AssertionError If the {@code validate} parameter is true and the move is not legal.
+     * @throws IllegalArgumentException If the {@code validate} parameter is true and the move is not legal.
      */
     public void makeMove(Move move, boolean validate) {
-        assert !validate || getLegalMoves().contains(move);
+        if (validate && !getLegalMoves().contains(move))
+            throw new IllegalArgumentException("Move is illegal in current position");
 
         Piece movingPiece = this.get(move.getSource());
         boolean hasCaptured = this.get(move.getTarget()) != null;
@@ -795,10 +800,10 @@ public class Position {
      *
      * @param move The move for which move information is generated.
      * @return MoveInfo object containing move details.
-     * @throws AssertionError if the given move is not a legal move in the current position.
+     * @throws IllegalArgumentException if the given move is not a legal move in the current position.
      */
     public MoveInfo getMoveInfo(Move move) {
-        assert getLegalMoves().contains(move);
+        if (!getLegalMoves().contains(move)) throw new IllegalArgumentException("Move is illegal in current position");
 
         Position copiedPosition = this.copy();
         copiedPosition.makeMove(move);
@@ -868,7 +873,7 @@ public class Position {
      *
      * @param san The move in SAN format to parse.
      * @return The Move object corresponding to the parsed SAN move.
-     * @throws AssertionError if the SAN string does not represent a valid move.
+     * @throws InvalidMoveException if the SAN string does not represent a valid move.
      */
     public Move parseSan(String san) {
         san = san.replace('0', 'O');
@@ -885,7 +890,7 @@ public class Position {
         } else {
             Pattern pattern = Pattern.compile("^([NBKRQ])?([a-h])?([1-8])?[-x]?([a-h][1-8])(=?[nbrqkNBRQK])?[+#]?\\Z");
             Matcher matcher = pattern.matcher(san);
-            if (!matcher.matches()) throw new AssertionError();
+            if (!matcher.matches()) throw new InvalidMoveException("Invalid SAN " + san);
 
             PieceType pieceType;
 
@@ -911,13 +916,13 @@ public class Position {
                         continue;
                     }
 
-                    assert source == null;
+                    if (source != null) throw new AmbiguousMoveException("Ambiguous SAN " + san);
                     source = move.getSource();
 
                 }
             }
 
-            assert source != null;
+            if (source == null) throw new InvalidMoveException("Found no valid move for san " + san);
 
             if(matcher.group(5) != null) {
                 char promotionSymbol = matcher.group(5).toLowerCase().charAt(0);

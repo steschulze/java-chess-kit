@@ -47,44 +47,44 @@ class SquareTest {
 
     @Test
     void testFromName_wrongLength() {
-        assertThrows(AssertionError.class, () -> Square.fromName("abc"));
+        assertThrows(IllegalArgumentException.class, () -> Square.fromName("abc"));
     }
 
     @Test
     void testFromName_wrongFile() {
-        assertThrows(AssertionError.class, () -> Square.fromName("s6"));
+        assertThrows(IllegalArgumentException.class, () -> Square.fromName("s6"));
     }
 
     @Test
     void testFromName_wrongRank() {
-        assertThrows(AssertionError.class, () -> Square.fromName("e9"));
-        assertThrows(AssertionError.class, () -> Square.fromName("e0"));
+        assertThrows(IllegalArgumentException.class, () -> Square.fromName("e9"));
+        assertThrows(IllegalArgumentException.class, () -> Square.fromName("e0"));
     }
 
     @Test
     void testFromRankAndFile_wrongRank() {
-        assertThrows(AssertionError.class, () -> Square.fromRankAndFile(9, 'd'));
-        assertThrows(AssertionError.class, () -> Square.fromRankAndFile(-1, 'd'));
+        assertThrows(IllegalArgumentException.class, () -> Square.fromRankAndFile(9, 'd'));
+        assertThrows(IllegalArgumentException.class, () -> Square.fromRankAndFile(-1, 'd'));
     }
 
     @Test
     void testFromRankAndFile_wrongFile() {
-        assertThrows(AssertionError.class, () -> Square.fromRankAndFile(4, 'n'));
+        assertThrows(IllegalArgumentException.class, () -> Square.fromRankAndFile(4, 'n'));
     }
 
     @Test
     void testFrom0x88Index_negativeIndex() {
-        assertThrows(AssertionError.class, () -> Square.from0x88Index(-2));
+        assertThrows(IndexOutOfBoundsException.class, () -> Square.from0x88Index(-2));
     }
 
     @Test
     void testFrom0x88Index_indexOutOfBound() {
-        assertThrows(AssertionError.class, () -> Square.from0x88Index(135));
+        assertThrows(IndexOutOfBoundsException.class, () -> Square.from0x88Index(135));
     }
 
     @Test
     void testFrom0x88Index_offBoardIndex() {
-        assertThrows(AssertionError.class, () -> Square.from0x88Index(0x2B));
+        assertThrows(IllegalArgumentException.class, () -> Square.from0x88Index(0x2B));
     }
 
     @Test

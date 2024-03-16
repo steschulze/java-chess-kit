@@ -14,11 +14,11 @@ class MoveTest {
 
     @Test
     void testMoveCreation_wrongPromotion() {
-        assertThrows(AssertionError.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             new Move(Square.fromName("e4"), Square.fromName("e5"), PieceType.KNIGHT);
         });
 
-        assertThrows(AssertionError.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             new Move(Square.fromName("e7"), Square.fromName("e8"), PieceType.PAWN);
         });
     }

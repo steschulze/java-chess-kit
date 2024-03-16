@@ -26,11 +26,15 @@ public class Square {
      *
      * @param name The algebraic notation of the square like "a1".
      * @return The Square object representing the specified square.
+     * @throws IllegalArgumentException If the square name is invalid
      */
     public static Square fromName(String name) {
-        assert name.length() == 2;
-        assert "abcdefgh".indexOf(name.charAt(0)) != -1;
-        assert "12345678".indexOf(name.charAt(1)) != -1;
+        if (name.length() != 2)
+            throw new IllegalArgumentException("Length of square name must be 2");
+        if ("abcdefgh".indexOf(name.charAt(0)) == -1)
+            throw new IllegalArgumentException("First character of square name must be between a and h");
+        if ("12345678".indexOf(name.charAt(1)) == -1)
+            throw new IllegalArgumentException("Second character of square name must be between 1 and 8");
 
         int x = name.charAt(0) - 'a';
         int y = name.charAt(1) - '1';
@@ -43,11 +47,14 @@ public class Square {
      *
      * @param index The index of the 0x88 board representation.
      * @return The Square object representing the specified square.
+     * @throws IndexOutOfBoundsException If the index is not between 0 and 127
+     * @throws IllegalArgumentException If the index is off the board
      * @see <a href="https://www.chessprogramming.org/0x88">0x88 board representation</a> for more details
      */
     public static Square from0x88Index(int index) {
-        assert index >= 0 && index <= 128;
-        assert (index & 0x88) == 0;
+        if (index < 0 || index >= 128)
+            throw new IndexOutOfBoundsException("Index must be between 0 and 127, but was " + index);
+        if ((index & 0x88) != 0) throw new IllegalArgumentException("Index is off the board");
 
         int x = index & 7;
         int y = index >> 4;
@@ -61,10 +68,11 @@ public class Square {
      * @param rank The rank of the square, an integer between 1 and 8.
      * @param file The file of the square, a char between 'a' and 'h'
      * @return The Square object representing the specified square.
+     * @throws IllegalArgumentException If the rank or file is out off range
      */
     public static Square fromRankAndFile(int rank, char file) {
-        assert rank >= 1 && rank <= 8;
-        assert "abcdefgh".indexOf(file) != -1;
+        if (rank < 1 || rank > 8) throw new IllegalArgumentException("Rank must be between 1 and 8");
+        if ("abcdefgh".indexOf(file) == -1) throw new IllegalArgumentException("File must be between a and h");
 
         int x = file - 'a';
         int y = rank - 1;

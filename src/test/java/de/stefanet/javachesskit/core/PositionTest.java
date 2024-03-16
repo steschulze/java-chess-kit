@@ -97,18 +97,18 @@ class PositionTest {
     @Test
     void testCastlingRight_wrongPieceType() {
         Position position = new Position();
-        assertThrows(AssertionError.class, () -> position.getCastlingRight('r'));
-        assertThrows(AssertionError.class, () -> position.setCastlingRight('r', false));
+        assertThrows(IllegalArgumentException.class, () -> position.getCastlingRight('r'));
+        assertThrows(IllegalArgumentException.class, () -> position.setCastlingRight('r', false));
     }
 
     @Test
     void testCastlingRight_emptyPosition() {
         Position position = new Position();
         position.clear();
-        assertThrows(AssertionError.class, () -> position.setCastlingRight('K', true));
-        assertThrows(AssertionError.class, () -> position.setCastlingRight('Q', true));
-        assertThrows(AssertionError.class, () -> position.setCastlingRight('k', true));
-        assertThrows(AssertionError.class, () -> position.setCastlingRight('q', true));
+        assertThrows(IllegalArgumentException.class, () -> position.setCastlingRight('K', true));
+        assertThrows(IllegalArgumentException.class, () -> position.setCastlingRight('Q', true));
+        assertThrows(IllegalArgumentException.class, () -> position.setCastlingRight('k', true));
+        assertThrows(IllegalArgumentException.class, () -> position.setCastlingRight('q', true));
     }
 
     @Test
@@ -140,7 +140,7 @@ class PositionTest {
     @Test
     void testTheoreticalCastlingRight_wrongPieceType() {
         Position position = new Position();
-        assertThrows(AssertionError.class, () -> position.getTheoreticalCastlingRight('b'));
+        assertThrows(IllegalArgumentException.class, () -> position.getTheoreticalCastlingRight('b'));
     }
 
     @Test
