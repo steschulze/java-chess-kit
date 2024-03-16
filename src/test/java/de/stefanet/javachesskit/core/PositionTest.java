@@ -218,9 +218,9 @@ class PositionTest {
         assertEquals(0, position.getHalfMoves());
         assertEquals(1, position.getMoveNumber());
 
-        assertThrows(AssertionError.class, () -> position.setEpFile(null));
-        assertThrows(AssertionError.class, () -> position.setEpFile('k'));
-        assertThrows(AssertionError.class, () -> position.setHalfMoves(-1));
+        assertThrows(IllegalArgumentException.class, () -> position.setEpFile(null));
+        assertThrows(IllegalArgumentException.class, () -> position.setEpFile('k'));
+        assertThrows(IllegalArgumentException.class, () -> position.setHalfMoves(-1));
 
         position.setEpFile('f');
         position.setHalfMoves(3);
@@ -241,7 +241,7 @@ class PositionTest {
     @Test
     void testPieceCounts_defaultPosition() {
         Position position = new Position();
-        assertThrows(AssertionError.class, () -> position.getPieceCounts("WB"));
+        assertThrows(IllegalArgumentException.class, () -> position.getPieceCounts("WB"));
         Map<PieceType, Integer> allPieces = position.getPieceCounts("wb");
 
         assertEquals(16, allPieces.get(PieceType.PAWN));

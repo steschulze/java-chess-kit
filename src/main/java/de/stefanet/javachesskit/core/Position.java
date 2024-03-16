@@ -4,6 +4,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Represents a chess position.
+ */
 public class Position {
     private Piece[] board;
     private Color turn;
@@ -12,25 +15,50 @@ public class Position {
     private int halfMoves;
     private int moveNumber;
 
+    /**
+     * Constructs a new Position with the default piece setup.
+     */
     public Position() {
         this("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     }
 
+    /**
+     * Constructs a new Position with the given FEN string.
+     *
+     * @param fen The FEN string representing the position.
+     */
     public Position(String fen) {
         this.castling = "KQkq";
         setFen(fen);
     }
 
+    /**
+     * Creates a deep copy of this Position object.
+     *
+     * @return A new Position object that is a copy of this position.
+     */
     public Position copy() {
         Position copy = new Position();
         copy.setFen(this.getFen());
         return copy;
     }
 
+    /**
+     * Returns the piece at the given square.
+     *
+     * @param square The square to get the piece from.
+     * @return The piece at the specified square or null if the square is empty.
+     */
     public Piece get(Square square) {
         return board[square.get0x88Index()];
     }
 
+    /**
+     * Sets the piece at the given square.
+     *
+     * @param square The square to set the piece at.
+     * @param piece  The piece to set, if null the square is cleared.
+     */
     public void set(Square square, Piece piece) {
         board[square.get0x88Index()] = piece;
 
@@ -41,32 +69,64 @@ public class Position {
         }
     }
 
+    /**
+     * Removes all pieces from the board and clears the castling rights.
+     */
     public void clear() {
         board = new Piece[128];
         castling = "";
     }
 
+    /**
+     * Resets the position to the default position.
+     */
     public void reset() {
         setFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     }
 
+    /**
+     * Gets the color of the player whose turn it is.
+     *
+     * @return The color representing the player whose turn it is (WHITE or BLACK).
+     */
     public Color getTurn() {
         return turn;
     }
 
+    /**
+     * Sets the color of the player whose turn it is.
+     *
+     * @param turn The color representing the player whose turn it is (WHITE or BLACK).
+     */
     public void setTurn(Color turn) {
         this.turn = turn;
     }
 
+    /**
+     * Toggles the turn between WHITE and BLACK.
+     * For example, if the current turn is WHITE, it changes it to BLACK, and vice versa.
+     */
     public void toggleTurn() {
         turn = turn.other();
     }
 
+    /**
+     * Checks if a specific castling right is currently available.
+     *
+     * @param type The type of castling right to check (K, Q, k, or q).
+     * @return True if the specified castling right is available, false otherwise.
+     */
     public boolean getCastlingRight(char type) {
         assert "KQkq".indexOf(type) != -1;
         return castling.indexOf(type) != -1;
     }
 
+    /**
+     * Checks if a specific theoretical castling right is valid based on the current board position.
+     *
+     * @param type The type of castling right to check (K, Q, k, or q).
+     * @return True if the specified castling right is theoretically valid, false otherwise.
+     */
     public boolean getTheoreticalCastlingRight(char type) {
         assert "KQkq".indexOf(type) != -1;
         if (type == 'K' || type == 'Q') {
@@ -90,6 +150,12 @@ public class Position {
         }
     }
 
+    /**
+     * Sets the availability of a specific castling right.
+     *
+     * @param type   The type of castling right to set (K, Q, k, or q).
+     * @param status The status indicating whether the castling right should be available (true) or not (false).
+     */
     public void setCastlingRight(char type, boolean status) {
         assert "KQkq".indexOf(type) != -1;
         assert !status || getTheoreticalCastlingRight(type);
@@ -107,34 +173,80 @@ public class Position {
         castling = sb.toString();
     }
 
+    /**
+     * Gets the file of the en passant target square.
+     *
+     * @return The file of the en passant target square (a, b, c, d, e, f, g, h),
+     * or null if there is no en passant target square.
+     */
     public Character getEpFile() {
         return epFile;
     }
 
+    /**
+     * Sets the file of the en passant target square.
+     *
+     * @param file The file of the en passant target square to set (a, b, c, d, e, f, g, h).
+     * @throws IllegalArgumentException if the specified file is null or not a valid file (not in the range a-h).
+     */
     public void setEpFile(Character file) {
-        assert file != null && "abcdefgh".indexOf(file) != -1;
+        if (file == null || "abcdefgh".indexOf(file) == -1) {
+            throw new IllegalArgumentException("Invalid En passant file");
+        }
         epFile = file;
     }
 
+    /**
+     * Gets the number of half moves since the last capture or pawn advance.
+     *
+     * @return The number of half moves since the last capture or pawn advance.
+     */
     public int getHalfMoves() {
         return halfMoves;
     }
 
+    /**
+     * Sets the number of half moves since the last capture or pawn advance.
+     *
+     * @param halfMoves The number of half moves to set, must be non-negative.
+     * @throws IllegalArgumentException if the specified number of half moves is negative.
+     */
     public void setHalfMoves(int halfMoves) {
-        assert halfMoves >= 0;
+        if (halfMoves < 0) {
+            throw new IllegalArgumentException("Number of half moves must be non-negative");
+        }
         this.halfMoves = halfMoves;
     }
 
+    /**
+     * Gets the number of the current full move.
+     * The full move counter starts at 1 and is incremented after each white move.
+     *
+     * @return The number of the current full move.
+     */
     public int getMoveNumber() {
         return moveNumber;
     }
 
+    /**
+     * Sets the number of the current full move.
+     *
+     * @param moveNumber The number of the current full move.
+     */
     public void setMoveNumber(int moveNumber) {
         this.moveNumber = moveNumber;
     }
 
+    /**
+     * Gets the counts of each piece type for the specified color on the board.
+     *
+     * @param color The color of the pieces to count. It can be "w" for white, "b" for black, "wb" or "bw" for both white and black.
+     * @return A map containing the counts of each piece type for the specified color. The keys represent the piece types (PAWN, ROOK, KNIGHT, BISHOP, QUEEN, KING), and the values represent the counts of each piece type.
+     * @throws IllegalArgumentException if the specified color string is invalid.
+     */
     public Map<PieceType, Integer> getPieceCounts(String color) {
-        assert color.equals("w") || color.equals("b") || color.equals("wb") || color.equals("bw");
+        if (!color.equals("w") && !color.equals("b") && !color.equals("wb") && !color.equals("bw"))
+            throw new IllegalArgumentException("Invalid color string: " + color);
 
         Map<PieceType, Integer> pieceCounts = new HashMap<>();
         pieceCounts.put(PieceType.PAWN, 0);
@@ -154,6 +266,12 @@ public class Position {
         return pieceCounts;
     }
 
+    /**
+     * Gets the square where the specified color's king is located.
+     *
+     * @param color The color of the king to locate.
+     * @return The square where the specified color's king is located, or null if the king is not found on the board.
+     */
     public Square getKingSquare(Color color) {
         for (Square square : Square.getAll()) {
             Piece piece = board[square.get0x88Index()];
@@ -164,6 +282,11 @@ public class Position {
         return null;
     }
 
+    /**
+     * Gets the FEN (Forsyth-Edwards Notation) representation of the current position.
+     *
+     * @return The FEN string representing the current position.
+     */
     public String getFen() {
         StringBuilder fen = new StringBuilder();
         int emptyCount = 0;
@@ -212,6 +335,12 @@ public class Position {
         return fen.toString();
     }
 
+    /**
+     * Sets the position based on the given FEN (Forsyth-Edwards Notation) string.
+     *
+     * @param fen The FEN string representing the position to set.
+     * @throws InvalidFENException If the provided FEN string is invalid.
+     */
     public void setFen(String fen) {
         String[] parts = fen.split(" ");
         if (parts.length != 6) {
@@ -308,6 +437,12 @@ public class Position {
         return String.format("Position.fromFen(%s)", getFen());
     }
 
+    /**
+     * Checks whether the king of the specified color is under attack.
+     *
+     * @param color The color of the king to check.
+     * @return {@code true} if the king is under attack, otherwise {@code false}.
+     */
     public boolean isKingAttacked(Color color) {
         Square square = this.getKingSquare(color);
 
@@ -316,10 +451,24 @@ public class Position {
         return this.isAttacked(color.other(), square);
     }
 
+    /**
+     * Checks whether the specified square is attacked by any piece of the given color.
+     *
+     * @param color  The color of the pieces to check for attackers.
+     * @param square The square to check for attacks.
+     * @return {@code true} if the square is attacked by any piece of the specified color, otherwise {@code false}.
+     */
     private boolean isAttacked(Color color, Square square) {
         return !this.getAttackers(color, square).isEmpty();
     }
 
+    /**
+     * Gets a list of squares from which pieces of the specified color are attacking the given square.
+     *
+     * @param color  The color of the attacking pieces.
+     * @param square The square being attacked.
+     * @return A list of squares from which pieces of the specified color are attacking the given square.
+     */
     private List<Square> getAttackers(Color color, Square square) {
         List<Square> attackingSquares = new ArrayList<>();
 
@@ -366,6 +515,13 @@ public class Position {
         return attackingSquares;
     }
 
+    /**
+     * Gets a list of all pseudo-legal moves for the current position.
+     * Pseudo-legal moves include all moves that could be made according to the rules of chess
+     * and might leave or put the current player's king in check .
+     *
+     * @return A list of all pseudo-legal moves for the current position.
+     */
     public List<Move> getPseudoLegalMoves() {
         List<Move> moves = new ArrayList<>();
 
@@ -465,6 +621,13 @@ public class Position {
         return moves;
     }
 
+    /**
+     * Gets a list of all legal moves for the current position.
+     * Legal moves are a subset of pseudo-legal moves and are those that do not leave the current player's king in check
+     * after the move has been made.
+     *
+     * @return A list of all legal moves for the current position.
+     */
     public List<Move> getLegalMoves() {
         List<Move> moves = new ArrayList<>();
         for (Move move : getPseudoLegalMoves()) {
@@ -477,10 +640,28 @@ public class Position {
         return moves;
     }
 
+    /**
+     * Makes a move on the current position with move validation.
+     * This method is a shorthand for calling {@code makeMove(move, true)}, which includes validation to ensure that the move
+     * is legal.
+     *
+     * @param move The move to be made.
+     */
     public void makeMove(Move move) {
         makeMove(move, true);
     }
 
+    /**
+     * Makes a move on the current position, optionally validating its legality.
+     * If the {@code validate} parameter is set to true, the method will check if the move is legal before making it.
+     * If the move is not legal, an assertion error will be thrown.
+     * After making the move, the turn is toggled to the opposite player, and other game state variables are updated
+     * accordingly.
+     *
+     * @param move     The move to be made.
+     * @param validate Whether to validate the legality of the move.
+     * @throws AssertionError If the {@code validate} parameter is true and the move is not legal.
+     */
     public void makeMove(Move move, boolean validate) {
         assert !validate || getLegalMoves().contains(move);
 
@@ -538,20 +719,40 @@ public class Position {
         }
     }
 
+    /**
+     * Checks if the current player is in check.
+     *
+     * @return {@code true} if the current player is in check, {@code false} otherwise.
+     */
     public boolean isCheck() {
         return this.isKingAttacked(this.getTurn());
     }
 
+    /**
+     * Checks if the current player is in checkmate.
+     *
+     * @return {@code true} if the current player is in checkmate, {@code false} otherwise.
+     */
     public boolean isCheckmate() {
         if (!isCheck()) return false;
         return getLegalMoves().isEmpty();
     }
 
+    /**
+     * Checks if the game is in a stalemate position.
+     *
+     * @return {@code true} if the game is in stalemate, {@code false} otherwise.
+     */
     public boolean isStalemate() {
         if (isCheck()) return false;
         return getLegalMoves().isEmpty();
     }
 
+    /**
+     * Checks if the current game position has insufficient material for either player to force a checkmate.
+     *
+     * @return {@code true} if the game position has insufficient material, {@code false} otherwise.
+     */
     public boolean isInsufficientMaterial() {
         Map<PieceType, Integer> pieceCounts = getPieceCounts("wb");
         int sum = pieceCounts.values().stream().mapToInt(Integer::intValue).sum();
@@ -579,10 +780,23 @@ public class Position {
         return false;
     }
 
+    /**
+     * Checks if the game is over, either due to checkmate, stalemate, or insufficient material.
+     *
+     * @return {@code true} if the game is over, {@code false} otherwise.
+     */
     public boolean isGameOver() {
         return this.isCheckmate() || this.isStalemate() || this.isInsufficientMaterial();
     }
 
+    /**
+     * Generates move information for the given move, including SAN (Standard Algebraic Notation) representation,
+     * captured piece, special flags (en passant, castling, check, checkmate), and the moved piece.
+     *
+     * @param move The move for which move information is generated.
+     * @return MoveInfo object containing move details.
+     * @throws AssertionError if the given move is not a legal move in the current position.
+     */
     public MoveInfo getMoveInfo(Move move) {
         assert getLegalMoves().contains(move);
 
@@ -649,6 +863,13 @@ public class Position {
                 enPassant, isKingSideCastling, isQueenSideCastling, isCheck, isCheckmate);
     }
 
+    /**
+     * Parses a move in Standard Algebraic Notation (SAN) format and returns the corresponding Move object.
+     *
+     * @param san The move in SAN format to parse.
+     * @return The Move object corresponding to the parsed SAN move.
+     * @throws AssertionError if the SAN string does not represent a valid move.
+     */
     public Move parseSan(String san) {
         san = san.replace('0', 'O');
         if (san.equals("O-O") || san.equals("O-O-O")) {
@@ -707,6 +928,12 @@ public class Position {
         }
     }
 
+    /**
+     * Returns a disambiguated move notation based on other legal moves on the board.
+     *
+     * @param move The move for which disambiguation is needed.
+     * @return A disambiguated move notation if disambiguation is required, otherwise an empty string.
+     */
     private String getDisambiguatedMove(Move move) {
         boolean sameFile = false;
         boolean sameRank = false;
