@@ -4,13 +4,17 @@ public class ZobristHasher {
 	private long[] randomArray;
 	private static int SIZE = 781;
 
-	public ZobristHasher() {
-		PRNG prng = new PRNG(249129);
+	public ZobristHasher(int seed) {
+		PRNG prng = new PRNG(seed);
 		this.randomArray = new long[SIZE];
 
 		for (int i = 0; i < SIZE; i++) {
 			this.randomArray[i] = prng.rand64();
 		}
+	}
+
+	public ZobristHasher() {
+		this.randomArray = Board.POLYGLOT_RANDOM;
 	}
 
 	public long hashPosition(Position position) {
@@ -20,7 +24,7 @@ public class ZobristHasher {
 			Piece piece = position.get(square);
 
 			if (piece != null) {
-				int pieceIndex = piece.getType().ordinal();
+				int pieceIndex = "pPnNbBrRqQkK".indexOf(piece.getSymbol());
 				key ^= randomArray[64 * pieceIndex + 8 * square.getY() + square.getX()];
 			}
 		}
