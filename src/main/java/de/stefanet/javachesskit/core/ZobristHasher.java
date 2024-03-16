@@ -42,7 +42,7 @@ public class ZobristHasher {
 			key ^= randomArray[771];
 		}
 
-		if (position.getEpFile() != null) {
+		if (position.getEpFile() != null && position.checkEnPassant(position.getEpFile())) {
 			key ^= randomArray[772 + position.getEpFile() - 'a'];
 		}
 

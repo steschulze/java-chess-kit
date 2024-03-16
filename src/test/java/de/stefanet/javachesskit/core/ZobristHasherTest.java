@@ -15,23 +15,23 @@ class ZobristHasherTest {
 	}
 
 	@Test
-	void testHashing_afterE2E4() {
+	void testHashing_after_e4() {
 		ZobristHasher hasher = new ZobristHasher();
 
-		Position position = new Position("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1");
+		Position position = new Position("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1");
 		assertEquals(0x823c9b50fd114196L, hasher.hashPosition(position));
 	}
 
 	@Test
-	void testHashing_afterE2E4_D7D5() {
+	void testHashing_after_e4_d5() {
 		ZobristHasher hasher = new ZobristHasher();
 
-		Position position = new Position("rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2");
+		Position position = new Position("rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2");
 		assertEquals(0x0756b94461c50fb0L, hasher.hashPosition(position));
 	}
 
 	@Test
-	void testHashing_afterE2E4_D7D5_E4E5() {
+	void testHashing_after_e4_d5_e5() {
 		ZobristHasher hasher = new ZobristHasher();
 
 		Position position = new Position("rnbqkbnr/ppp1pppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2");
@@ -39,7 +39,7 @@ class ZobristHasherTest {
 	}
 
 	@Test
-	void testHashing_afterE2E4_D7D5_E4E5_F7F5() {
+	void testHashing_after_e4_d5_e5_f5() {
 		ZobristHasher hasher = new ZobristHasher();
 
 		Position position = new Position("rnbqkbnr/ppp1p1pp/8/3pPp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 3");

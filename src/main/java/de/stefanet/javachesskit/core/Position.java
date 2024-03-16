@@ -153,6 +153,57 @@ public class Position {
     }
 
     /**
+     * Checks if en passant capture is theoretical possible on the specified file.
+     *
+     * @param file The file where en passant capture is to be checked.
+     * @return {@code true} if en passant capture is possible on the specified file, {@code false} otherwise.
+     * @throws IllegalArgumentException if the specified file is invalid.
+     */
+    public boolean checkEnPassant(char file) {
+        if ("abcdefgh".indexOf(file) == -1) throw new IllegalArgumentException("Invalid file " + file);
+        int rank = getTurn() == Color.WHITE ? 5 : 4;
+        int captureRank = getTurn() == Color.WHITE ? 6 : 3;
+
+        Square pawnSquare = Square.fromRankAndFile(rank, file);
+        Piece capturePiece = get(pawnSquare);
+        if (capturePiece == null || capturePiece.getType() != PieceType.PAWN || capturePiece.getColor() != getTurn().other()) {
+            return false;
+        }
+
+        Square captureSquare = Square.fromRankAndFile(captureRank, file);
+        if (get(captureSquare) != null) return false;
+
+        if (this.getTurn() == Color.WHITE) {
+            if (file > 'a') {
+                //check left file
+                Square square = Square.fromRankAndFile(rank, (char) (file - 1));
+                Piece piece = get(square);
+                if (piece != null && piece.getSymbol() == 'P') return true;
+            }
+            if (file < 'h') {
+                //check right file
+                Square square = Square.fromRankAndFile(rank, (char) (file + 1));
+                Piece piece = get(square);
+                if (piece != null && piece.getSymbol() == 'P') return true;
+            }
+        } else {
+            if (file > 'a') {
+                //check left file
+                Square square = Square.fromRankAndFile(rank, (char) (file - 1));
+                Piece piece = get(square);
+                if (piece != null && piece.getSymbol() == 'p') return true;
+            }
+            if (file < 'h') {
+                //check right file
+                Square square = Square.fromRankAndFile(rank, (char) (file + 1));
+                Piece piece = get(square);
+                if (piece != null && piece.getSymbol() == 'p') return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Sets the availability of a specific castling right.
      *
      * @param type   The type of castling right to set (K, Q, k, or q).
@@ -689,7 +740,11 @@ public class Position {
             }
 
             if (Math.abs(move.getTarget().getRank() - move.getSource().getRank()) == 2) {
-                this.epFile = move.getTarget().getFile();
+                if (checkEnPassant(move.getTarget().getFile())) {
+                    this.epFile = move.getTarget().getFile();
+                } else {
+                    this.epFile = null;
+                }
             }
 
             if (move.getPromotion() != null) {
