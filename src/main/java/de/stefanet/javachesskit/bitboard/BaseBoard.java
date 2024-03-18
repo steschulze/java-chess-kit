@@ -10,17 +10,17 @@ import static de.stefanet.javachesskit.bitboard.Bitboard.Squares.*;
 
 public class BaseBoard {
 	private static final String STARTING_BOARD_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
-	private long pawns;
-	private long knights;
-	private long bishops;
-	private long rooks;
-	private long queens;
-	private long kings;
+	protected long pawns;
+	protected long knights;
+	protected long bishops;
+	protected long rooks;
+	protected long queens;
+	protected long kings;
 
-	private long promoted;
-	private long whitePieces;
-	private long blackPieces;
-	private long occupied;
+	protected long promoted;
+	protected long whitePieces;
+	protected long blackPieces;
+	protected long occupied;
 
 	public BaseBoard() {
 		this(STARTING_BOARD_FEN);
@@ -36,7 +36,7 @@ public class BaseBoard {
 		}
 	}
 
-	private void clearBoard() {
+	protected void clearBoard() {
 		this.pawns = 0;
 		this.knights = 0;
 		this.bishops = 0;
@@ -51,7 +51,7 @@ public class BaseBoard {
 		this.occupied = 0;
 	}
 
-	public void resetBoard() {
+	protected void resetBoard() {
 		this.pawns = RANK_2 | RANK_7;
 		this.knights = B1 | G1 | B8 | G8;
 		this.bishops = C1 | F1 | C8 | F8;
@@ -286,7 +286,7 @@ public class BaseBoard {
 		return sb.toString();
 	}
 
-	private void setBoardFen(String fen) {
+	protected void setBoardFen(String fen) {
 		fen = fen.trim();
 		if (fen.contains(" ")) {
 			throw new IllegalArgumentException("Invalid board fen: contains space");
