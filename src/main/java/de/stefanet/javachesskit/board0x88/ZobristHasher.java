@@ -1,5 +1,9 @@
 package de.stefanet.javachesskit.board0x88;
 
+import de.stefanet.javachesskit.Color;
+import de.stefanet.javachesskit.Piece;
+import de.stefanet.javachesskit.Square;
+
 public class ZobristHasher {
 	private long[] randomArray;
 	private static int SIZE = 781;

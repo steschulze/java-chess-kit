@@ -1,9 +1,9 @@
 package de.stefanet.javachesskit.bitboard;
 
-import de.stefanet.javachesskit.board0x88.Color;
-import de.stefanet.javachesskit.board0x88.Piece;
-import de.stefanet.javachesskit.board0x88.PieceType;
-import de.stefanet.javachesskit.board0x88.Square;
+import de.stefanet.javachesskit.Color;
+import de.stefanet.javachesskit.Piece;
+import de.stefanet.javachesskit.PieceType;
+import de.stefanet.javachesskit.Square;
 import org.junit.jupiter.api.Test;
 
 import static de.stefanet.javachesskit.bitboard.Bitboard.Squares.*;

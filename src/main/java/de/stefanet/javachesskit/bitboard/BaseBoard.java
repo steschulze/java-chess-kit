@@ -1,6 +1,6 @@
 package de.stefanet.javachesskit.bitboard;
 
-import de.stefanet.javachesskit.board0x88.*;
+import de.stefanet.javachesskit.*;
 
 import java.util.HashMap;
 import java.util.Map;

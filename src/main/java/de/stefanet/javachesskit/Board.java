@@ -1,10 +1,5 @@
 package de.stefanet.javachesskit;
 
-import de.stefanet.javachesskit.board0x88.Color;
-import de.stefanet.javachesskit.board0x88.Piece;
-import de.stefanet.javachesskit.board0x88.PieceType;
-import de.stefanet.javachesskit.board0x88.Square;
-
 import java.util.Map;
 
 public interface Board {

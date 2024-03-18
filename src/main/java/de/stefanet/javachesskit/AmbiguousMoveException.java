@@ -1,4 +1,4 @@
-package de.stefanet.javachesskit.board0x88;
+package de.stefanet.javachesskit;
 
 public class AmbiguousMoveException extends RuntimeException {
 	public AmbiguousMoveException(String message) {

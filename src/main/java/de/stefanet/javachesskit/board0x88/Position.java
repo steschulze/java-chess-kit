@@ -1,6 +1,6 @@
 package de.stefanet.javachesskit.board0x88;
 
-import de.stefanet.javachesskit.Board;
+import de.stefanet.javachesskit.*;
 
 import java.util.*;
 import java.util.regex.Matcher;

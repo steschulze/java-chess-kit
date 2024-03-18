@@ -1,5 +1,7 @@
 package de.stefanet.javachesskit.board0x88;
 
+import de.stefanet.javachesskit.Piece;
+
 import java.util.Objects;
 
 /**
