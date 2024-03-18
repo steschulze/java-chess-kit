@@ -122,7 +122,7 @@ public class BaseBoard {
 		return null;
 	}
 
-	private Piece pieceAt(int index) {
+	public Piece pieceAt(int index) {
 		PieceType type = pieceTypeAt(index);
 		if (type != null) {
 			long mask = SQUARES[index];
@@ -132,7 +132,7 @@ public class BaseBoard {
 		return null;
 	}
 
-	private PieceType pieceTypeAt(int index) {
+	public PieceType pieceTypeAt(int index) {
 		long mask = SQUARES[index];
 
 		if ((this.occupied & mask) == 0) {
@@ -143,8 +143,6 @@ public class BaseBoard {
 			return PieceType.KNIGHT;
 		} else if ((this.bishops & mask) != 0) {
 			return PieceType.BISHOP;
-		} else if ((this.rooks & mask) != 0) {
-			return PieceType.ROOK;
 		} else if ((this.rooks & mask) != 0) {
 			return PieceType.ROOK;
 		} else if ((this.queens & mask) != 0) {
