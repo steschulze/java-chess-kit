@@ -98,6 +98,16 @@ public class Square {
         return squareList;
     }
 
+    public static Square fromIndex(int index) {
+        if (index < 0 || index > 63)
+            throw new IndexOutOfBoundsException("Index must be between 0 and 63, but was " + index);
+
+        int x = index / 8;
+        int y = index % 8;
+
+        return new Square(x, y);
+    }
+
     /**
      * Gets the x coordinate of the square, starting with 0 for the a-file.
      *
@@ -169,6 +179,16 @@ public class Square {
      */
     public int get0x88Index() {
         return this.x + 16 * this.y;
+    }
+
+    /**
+     * Gets the index of the square.
+     * Square a1 has index 0 and square h8 has index 63.
+     *
+     * @return The index of the square, an integer between 0 and 63
+     */
+    public int getIndex() {
+        return this.x + 8 * this.y;
     }
 
     /**
