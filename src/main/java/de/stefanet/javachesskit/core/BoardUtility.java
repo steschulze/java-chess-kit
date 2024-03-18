@@ -4,9 +4,12 @@ package de.stefanet.javachesskit.core;
 /**
  * Utility class providing precomputed attack and ray vectors for 0x88L board representation.
  */
-public final class Board {
+public final class BoardUtility {
 
-    private Board() {};
+    private BoardUtility() {
+    }
+
+    ;
 
     /**
      * Precomputed attack vector

@@ -534,7 +534,7 @@ public class Position {
             int diff = source.get0x88Index() - square.get0x88Index();
             int index = diff + 119;
 
-            if ((Board.ATTACKS[index] & (1 << piece.getType().ordinal())) != 0) {
+            if ((BoardUtility.ATTACKS[index] & (1 << piece.getType().ordinal())) != 0) {
                 if (piece.getType() == PieceType.PAWN) {
                     if (diff > 0) {
                         if (piece.getColor() == Color.BLACK) {
@@ -552,7 +552,7 @@ public class Position {
                     attackingSquares.add(source);
                 }
 
-                int offset = Board.RAYS[index];
+                int offset = BoardUtility.RAYS[index];
                 int targetIndex = source.get0x88Index() + offset;
                 boolean blocked = false;
                 while (targetIndex != square.get0x88Index()) {
