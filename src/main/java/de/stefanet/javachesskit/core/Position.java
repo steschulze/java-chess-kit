@@ -1,5 +1,7 @@
 package de.stefanet.javachesskit.core;
 
+import de.stefanet.javachesskit.Board;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,7 +9,7 @@ import java.util.regex.Pattern;
 /**
  * Represents a chess position.
  */
-public class Position {
+public class Position implements Board {
     private Piece[] board;
     private Color turn;
     private String castling;
@@ -37,6 +39,7 @@ public class Position {
      *
      * @return A new Position object that is a copy of this position.
      */
+    @Override
     public Position copy() {
         Position copy = new Position();
         copy.setFen(this.getFen());
@@ -49,6 +52,7 @@ public class Position {
      * @param square The square to get the piece from.
      * @return The piece at the specified square or null if the square is empty.
      */
+    @Override
     public Piece get(Square square) {
         return board[square.get0x88Index()];
     }
@@ -59,6 +63,7 @@ public class Position {
      * @param square The square to set the piece at.
      * @param piece  The piece to set, if null the square is cleared.
      */
+    @Override
     public void set(Square square, Piece piece) {
         board[square.get0x88Index()] = piece;
 
@@ -72,6 +77,7 @@ public class Position {
     /**
      * Removes all pieces from the board and clears the castling rights.
      */
+    @Override
     public void clear() {
         board = new Piece[128];
         castling = "";
@@ -80,6 +86,7 @@ public class Position {
     /**
      * Resets the position to the default position.
      */
+    @Override
     public void reset() {
         setFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     }
@@ -89,6 +96,7 @@ public class Position {
      *
      * @return The color representing the player whose turn it is (WHITE or BLACK).
      */
+    @Override
     public Color getTurn() {
         return turn;
     }
@@ -98,6 +106,7 @@ public class Position {
      *
      * @param turn The color representing the player whose turn it is (WHITE or BLACK).
      */
+    @Override
     public void setTurn(Color turn) {
         this.turn = turn;
     }
@@ -106,6 +115,7 @@ public class Position {
      * Toggles the turn between WHITE and BLACK.
      * For example, if the current turn is WHITE, it changes it to BLACK, and vice versa.
      */
+    @Override
     public void toggleTurn() {
         turn = turn.other();
     }
@@ -117,6 +127,7 @@ public class Position {
      * @return True if the specified castling right is available, false otherwise.
      * @throws IllegalArgumentException If the type of castling right is invalid
      */
+    @Override
     public boolean getCastlingRight(char type) {
         if ("KQkq".indexOf(type) == -1) throw new IllegalArgumentException("Invalid type of castling right: " + type);
         return castling.indexOf(type) != -1;
@@ -129,6 +140,7 @@ public class Position {
      * @return True if the specified castling right is theoretically valid, false otherwise.
      * @throws IllegalArgumentException If the type of castling right is invalid
      */
+    @Override
     public boolean getTheoreticalCastlingRight(char type) {
         if ("KQkq".indexOf(type) == -1) throw new IllegalArgumentException("Invalid type of castling right: " + type);
         if (type == 'K' || type == 'Q') {
@@ -210,6 +222,7 @@ public class Position {
      * @param status The status indicating whether the castling right should be available (true) or not (false).
      * @throws IllegalArgumentException If the type of castling right is invalid
      */
+    @Override
     public void setCastlingRight(char type, boolean status) {
         if ("KQkq".indexOf(type) == -1) throw new IllegalArgumentException("Invalid type of castling right: " + type);
         if (status && !getTheoreticalCastlingRight(type))
@@ -234,6 +247,7 @@ public class Position {
      * @return The file of the en passant target square (a, b, c, d, e, f, g, h),
      * or null if there is no en passant target square.
      */
+    @Override
     public Character getEpFile() {
         return epFile;
     }
@@ -244,6 +258,7 @@ public class Position {
      * @param file The file of the en passant target square to set (a, b, c, d, e, f, g, h).
      * @throws IllegalArgumentException if the specified file is null or not a valid file (not in the range a-h).
      */
+    @Override
     public void setEpFile(Character file) {
         if (file == null || "abcdefgh".indexOf(file) == -1) {
             throw new IllegalArgumentException("Invalid En passant file");
@@ -256,6 +271,7 @@ public class Position {
      *
      * @return The number of half moves since the last capture or pawn advance.
      */
+    @Override
     public int getHalfMoves() {
         return halfMoves;
     }
@@ -266,6 +282,7 @@ public class Position {
      * @param halfMoves The number of half moves to set, must be non-negative.
      * @throws IllegalArgumentException if the specified number of half moves is negative.
      */
+    @Override
     public void setHalfMoves(int halfMoves) {
         if (halfMoves < 0) {
             throw new IllegalArgumentException("Number of half moves must be non-negative");
@@ -279,6 +296,7 @@ public class Position {
      *
      * @return The number of the current full move.
      */
+    @Override
     public int getMoveNumber() {
         return moveNumber;
     }
@@ -288,6 +306,7 @@ public class Position {
      *
      * @param moveNumber The number of the current full move.
      */
+    @Override
     public void setMoveNumber(int moveNumber) {
         this.moveNumber = moveNumber;
     }
@@ -299,6 +318,7 @@ public class Position {
      * @return A map containing the counts of each piece type for the specified color. The keys represent the piece types (PAWN, ROOK, KNIGHT, BISHOP, QUEEN, KING), and the values represent the counts of each piece type.
      * @throws IllegalArgumentException if the specified color string is invalid.
      */
+    @Override
     public Map<PieceType, Integer> getPieceCounts(String color) {
         if (!color.equals("w") && !color.equals("b") && !color.equals("wb") && !color.equals("bw"))
             throw new IllegalArgumentException("Invalid color string: " + color);
@@ -327,6 +347,7 @@ public class Position {
      * @param color The color of the king to locate.
      * @return The square where the specified color's king is located, or null if the king is not found on the board.
      */
+    @Override
     public Square getKingSquare(Color color) {
         for (Square square : Square.getAll()) {
             Piece piece = board[square.get0x88Index()];
@@ -342,6 +363,7 @@ public class Position {
      *
      * @return The FEN string representing the current position.
      */
+    @Override
     public String getFen() {
         StringBuilder fen = new StringBuilder();
         int emptyCount = 0;
@@ -396,6 +418,7 @@ public class Position {
      * @param fen The FEN string representing the position to set.
      * @throws InvalidMoveException If the provided FEN string is invalid.
      */
+    @Override
     public void setFen(String fen) {
         String[] parts = fen.split(" ");
         if (parts.length != 6) {
