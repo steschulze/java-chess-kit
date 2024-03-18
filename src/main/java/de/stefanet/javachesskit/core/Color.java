@@ -13,17 +13,27 @@ public enum Color {
      * @return The corresponding color.
      * @throws IllegalArgumentException If the symbol is neither 'w' nor 'b'.
      */
-    static Color fromSymbol(char symbol) {
+    public static Color fromSymbol(char symbol) {
         if (symbol == 'w') return WHITE;
         else if (symbol == 'b') return BLACK;
         else throw new IllegalArgumentException("No Color for symbol " + symbol);
     }
 
     /**
+     * Gets the color from a boolean value.
+     *
+     * @param b The boolean value
+     * @return White if b is true, otherwise Black
+     */
+    public static Color fromBoolean(boolean b) {
+        return b ? WHITE : BLACK;
+    }
+
+    /**
      * Returns the opposite color
      * @return WHITE if the color is BLACK, otherwise BLACK
      */
-    Color other() {
+    public Color other() {
         if (this == WHITE) return BLACK;
         else return WHITE;
     }
@@ -32,7 +42,7 @@ public enum Color {
      * Returns the short name of the color ('w' or 'b').
      * @return The short color name.
      */
-    String shortName() {
+    public String shortName() {
         return name().toLowerCase().substring(0, 1);
     }
 
@@ -40,7 +50,7 @@ public enum Color {
      * Returns the full name of the color in lowercase ('white' or 'black').
      * @return The full color name.
      */
-    String fullName() {
+    public String fullName() {
         return name().toLowerCase();
     }
 
@@ -48,7 +58,7 @@ public enum Color {
      * Returns an integer indicating the moving direction of the pawns.
      * @return 1 for WHITE, -1 for BLACK.
      */
-    int forwardDirection() {
+    public int forwardDirection() {
         if (this == WHITE) return 1;
         else return -1;
     }
