@@ -102,8 +102,8 @@ public class Square {
         if (index < 0 || index > 63)
             throw new IndexOutOfBoundsException("Index must be between 0 and 63, but was " + index);
 
-        int x = index / 8;
-        int y = index % 8;
+        int x = index % 8;
+        int y = index / 8;
 
         return new Square(x, y);
     }
