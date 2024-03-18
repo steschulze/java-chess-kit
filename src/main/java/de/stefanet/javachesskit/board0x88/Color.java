@@ -1,4 +1,4 @@
-package de.stefanet.javachesskit.core;
+package de.stefanet.javachesskit.board0x88;
 
 /**
  * Enum representing the color of chess pieces. This can be either WHITE or BLACK.

@@ -1,4 +1,4 @@
-package de.stefanet.javachesskit.core;
+package de.stefanet.javachesskit.board0x88;
 
 /**
  * Exception thrown when an invalid FEN (Forsyth&ndash;Edwards Notation) string is encountered.

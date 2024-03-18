@@ -1,7 +1,7 @@
 package de.stefanet.javachesskit.examples;
 
-import de.stefanet.javachesskit.core.Move;
-import de.stefanet.javachesskit.core.Position;
+import de.stefanet.javachesskit.board0x88.Move;
+import de.stefanet.javachesskit.board0x88.Position;
 
 
 public class ScholarsMate {
