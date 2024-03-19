@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.*;
+import static de.stefanet.javachesskit.bitboard.Bitboard.SQUARES;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Squares.*;
 
 public class BaseBoard {

@@ -12,7 +12,7 @@ import static de.stefanet.javachesskit.bitboard.Bitboard.Files.FILE_A;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Files.FILE_H;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_1;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_8;
-import static de.stefanet.javachesskit.bitboard.Bitboard.Squares;
+import static de.stefanet.javachesskit.bitboard.Bitboard.SQUARES;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Squares.*;
 
 public class Board extends BaseBoard {
@@ -20,7 +20,7 @@ public class Board extends BaseBoard {
 	protected Color turn;
 	protected long castlingRights;
 
-	protected Long epSquare;
+	protected Square epSquare;
 
 	protected int fullMoveNumber;
 	protected int halfMoveClock;
@@ -75,7 +75,7 @@ public class Board extends BaseBoard {
 		setBoardFen(parts[0]);
 		this.turn = Color.fromSymbol(parts[1].charAt(0));
 		setCastlingFen(parts[2]);
-		this.epSquare = parts[3].equals("-") ? null : Squares.parseSquare(parts[3]);
+		this.epSquare = parts[3].equals("-") ? null : Square.parseSquare(parts[3]);
 		this.halfMoveClock = Integer.parseInt(parts[4]);
 		this.fullMoveNumber = Integer.parseInt(parts[5]);
 		clearStack();

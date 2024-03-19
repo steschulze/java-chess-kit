@@ -1,6 +1,22 @@
 package de.stefanet.javachesskit.bitboard;
 
+import static de.stefanet.javachesskit.bitboard.Bitboard.Files.*;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.*;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Squares.*;
+
 public class Bitboard {
+
+	static long[] FILES = {FILE_A, Files.FILE_B, FILE_C, Files.FILE_D, FILE_E, FILE_F, FILE_G, FILE_H};
+	static long[] RANKS = {RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8};
+
+	static long[] SQUARES = {A1, B1, C1, D1, E1, F1, G1, H1,
+			A2, B2, C2, D2, E2, F2, G2, H2,
+			A3, B3, C3, D3, E3, F3, G3, H3,
+			A4, B4, C4, D4, E4, F4, G4, H4,
+			A5, B5, C5, D5, E5, F5, G5, H5,
+			A6, B6, C6, D6, E6, F6, G6, H6,
+			A7, B7, C7, D7, E7, F7, G7, H7,
+			A8, B8, C8, D8, E8, F8, G8, H8};
 
 	public static class Files {
 		static long FILE_A = 0x0101010101010101L;
@@ -11,9 +27,6 @@ public class Bitboard {
 		static long FILE_F = FILE_E << 1;
 		static long FILE_G = FILE_F << 1;
 		static long FILE_H = FILE_G << 1;
-
-		static long[] FILES = {FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H};
-
 	}
 
 	static class Ranks {
@@ -25,8 +38,6 @@ public class Bitboard {
 		static long RANK_6 = RANK_5 << 8;
 		static long RANK_7 = RANK_6 << 8;
 		static long RANK_8 = RANK_7 << 8;
-
-		static long[] RANKS = {RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8};
 	}
 
 	static class Squares {
@@ -101,33 +112,5 @@ public class Bitboard {
 		static long F8 = 0x2000000000000000L;
 		static long G8 = 0x4000000000000000L;
 		static long H8 = 0x8000000000000000L;
-
-		static long[] SQUARES = {A1, B1, C1, D1, E1, F1, G1, H1,
-				A2, B2, C2, D2, E2, F2, G2, H2,
-				A3, B3, C3, D3, E3, F3, G3, H3,
-				A4, B4, C4, D4, E4, F4, G4, H4,
-				A5, B5, C5, D5, E5, F5, G5, H5,
-				A6, B6, C6, D6, E6, F6, G6, H6,
-				A7, B7, C7, D7, E7, F7, G7, H7,
-				A8, B8, C8, D8, E8, F8, G8, H8};
-
-		public static long parseSquare(String name) {
-			if (name.length() != 2) {
-				throw new IllegalArgumentException("Invalid square name length " + name);
-			}
-			char file = name.charAt(0);
-			char rank = name.charAt(1);
-
-			if (file < 'a' || file > 'h' || rank < '1' || rank > '8') {
-				throw new IllegalArgumentException("Invalid square name: " + name);
-			}
-
-			int fileIndex = name.charAt(0) - 'a';
-			int rankIndex = Character.getNumericValue(name.charAt(1)) - 1;
-
-			int index = rankIndex * 8 + fileIndex;
-
-			return SQUARES[index];
-		}
 	}
 }
