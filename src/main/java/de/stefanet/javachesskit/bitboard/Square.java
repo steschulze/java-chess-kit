@@ -42,6 +42,10 @@ public enum Square {
 		return values()[this.ordinal() ^ 7];
 	}
 
+	public static Square fromIndex(int index) {
+		return values()[index];
+	}
+
 	public static Square parseSquare(String name) {
 		return valueOf(name);
 	}

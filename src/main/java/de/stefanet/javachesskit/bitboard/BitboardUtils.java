@@ -2,6 +2,9 @@ package de.stefanet.javachesskit.bitboard;
 
 import java.util.Iterator;
 
+import static de.stefanet.javachesskit.bitboard.Bitboard.ALL;
+import static de.stefanet.javachesskit.bitboard.Bitboard.RAYS;
+
 public class BitboardUtils {
 	public static int lsb(long bb) {
 		return Long.numberOfTrailingZeros(bb);
@@ -129,5 +132,12 @@ public class BitboardUtils {
 		return (b >>> 7) & ~Bitboard.Files.FILE_A;
 	}
 
+	public static long ray(Square a, Square b) {
+		return RAYS[a.ordinal()][b.ordinal()];
+	}
 
+	public static long between(Square a, Square b) {
+		long bb = ray(a, b) & ((ALL << a.ordinal()) ^ (ALL << b.ordinal()));
+		return bb & (bb - 1);
+	}
 }

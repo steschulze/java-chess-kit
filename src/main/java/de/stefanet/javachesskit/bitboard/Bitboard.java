@@ -28,6 +28,11 @@ public class Bitboard {
 
 	static long BACKRANK = RANK_1 | RANK_7;
 
+	static long[] KNIGHT_ATTACKS;
+	static long[] KING_ATTACKS;
+	static long[] PAWN_ATTACKS;
+	static long[][] RAYS;
+
 	public static class Files {
 		static long FILE_A = 0x0101010101010101L;
 		static long FILE_B = FILE_A << 1;
