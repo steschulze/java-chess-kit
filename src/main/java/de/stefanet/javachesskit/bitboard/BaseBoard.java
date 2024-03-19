@@ -262,7 +262,7 @@ public class BaseBoard {
 		for (int y = 7; y >= 0; y--) {
 			for (int x = 0; x < 8; x++) {
 				int index = x + 8 * y;
-				Piece piece = pieceAt(index);
+				Piece piece = pieceAt(SQUARES[index]);
 
 				if (piece == null) {
 					empty++;

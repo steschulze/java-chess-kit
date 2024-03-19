@@ -3,7 +3,7 @@ package de.stefanet.javachesskit.bitboard;
 import de.stefanet.javachesskit.Color;
 import de.stefanet.javachesskit.Piece;
 import de.stefanet.javachesskit.PieceType;
-import de.stefanet.javachesskit.Square;
+import de.stefanet.javachesskit.bitboard.Bitboard.Squares;
 import org.junit.jupiter.api.Test;
 
 import static de.stefanet.javachesskit.bitboard.Bitboard.Squares.*;
@@ -15,10 +15,10 @@ class BaseBoardTest {
 	void testDefaultBoard() {
 		BaseBoard board = new BaseBoard();
 
-		assertEquals(new Piece('R'), board.get(Square.fromName("a1")));
-		assertEquals(new Piece('Q'), board.get(Square.fromName("d1")));
-		assertEquals(new Piece('p'), board.get(Square.fromName("e7")));
-		assertEquals(new Piece('n'), board.get(Square.fromName("g8")));
+		assertEquals(new Piece('R'), board.get(Squares.parseSquare("a1")));
+		assertEquals(new Piece('Q'), board.get(Squares.parseSquare("d1")));
+		assertEquals(new Piece('p'), board.get(Squares.parseSquare("e7")));
+		assertEquals(new Piece('n'), board.get(Squares.parseSquare("g8")));
 	}
 
 	@Test
@@ -103,13 +103,13 @@ class BaseBoardTest {
 	@Test
 	void testGet_emptySquare() {
 		BaseBoard board = new BaseBoard();
-		assertNull(board.get(Square.fromName("e4")));
+		assertNull(board.get(Squares.parseSquare("e4")));
 	}
 
 	@Test
 	void testPieceAt() {
 		BaseBoard board = new BaseBoard();
-		Piece piece = board.pieceAt(Square.fromName("d1").getIndex());
+		Piece piece = board.pieceAt(Squares.parseSquare("d1"));
 		assertNotNull(piece);
 		assertEquals(PieceType.QUEEN, piece.getType());
 		assertEquals(Color.WHITE, piece.getColor());
@@ -119,18 +119,17 @@ class BaseBoardTest {
 	@Test
 	void testPieceTypeAt() {
 		BaseBoard board = new BaseBoard();
-		Piece piece = board.pieceAt(Square.fromName("d1").getIndex());
-		assertNotNull(piece);
-		assertEquals(PieceType.QUEEN, piece.getType());
-		assertEquals(Color.WHITE, piece.getColor());
+		PieceType pieceType = board.pieceTypeAt(Squares.parseSquare("c8"));
+		assertNotNull(pieceType);
+		assertEquals(PieceType.BISHOP, pieceType);
 	}
 
 	@Test
 	void testKingSquare() {
 		BaseBoard board = new BaseBoard();
-		Square square = board.getKingSquare(Color.WHITE);
+		long square = board.getKingSquare(Color.WHITE);
 
-		assertEquals(Square.fromName("e1"), square);
+		assertEquals(E1, square);
 	}
 
 }

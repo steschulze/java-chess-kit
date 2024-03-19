@@ -113,7 +113,7 @@ public class Bitboard {
 
 		public static long parseSquare(String name) {
 			int fileIndex = name.charAt(0) - 'a';
-			int rankIndex = Character.getNumericValue(name.charAt(1));
+			int rankIndex = Character.getNumericValue(name.charAt(1)) - 1;
 
 			int index = rankIndex * 8 + fileIndex;
 
