@@ -86,7 +86,7 @@ public enum Square {
 			}
 		}
 
-		int m = (int) Math.ceil(Math.max(Math.max(fileDiff / 2, rankDiff / 2), (fileDiff + rankDiff) / 3));
+		int m = (int) Math.ceil(Math.max(Math.max(fileDiff / 2.0, rankDiff / 2.0), (fileDiff + rankDiff) / 3.0));
 		return m + ((m + fileDiff + rankDiff) % 2);
 	}
 
