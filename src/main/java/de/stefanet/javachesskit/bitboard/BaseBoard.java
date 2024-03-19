@@ -247,6 +247,17 @@ public class BaseBoard {
 		return pieceCounts;
 	}
 
+	public Color colorAt(Square square) {
+		long mask = SQUARES[square.ordinal()];
+		if ((this.whitePieces & mask) != 0) {
+			return Color.WHITE;
+		} else if ((this.blackPieces & mask) != 0) {
+			return Color.BLACK;
+		} else {
+			return null;
+		}
+	}
+
 	public long getKingSquare(Color color) {
 		long colorMask = (color == Color.WHITE) ? this.whitePieces : this.blackPieces;
 		long kingMask = this.kings & colorMask;
