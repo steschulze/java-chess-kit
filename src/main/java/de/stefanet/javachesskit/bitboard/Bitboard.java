@@ -112,6 +112,16 @@ public class Bitboard {
 				A8, B8, C8, D8, E8, F8, G8, H8};
 
 		public static long parseSquare(String name) {
+			if (name.length() != 2) {
+				throw new IllegalArgumentException("Invalid square name length " + name);
+			}
+			char file = name.charAt(0);
+			char rank = name.charAt(1);
+
+			if (file < 'a' || file > 'h' || rank < '1' || rank > '8') {
+				throw new IllegalArgumentException("Invalid square name: " + name);
+			}
+
 			int fileIndex = name.charAt(0) - 'a';
 			int rankIndex = Character.getNumericValue(name.charAt(1)) - 1;
 
