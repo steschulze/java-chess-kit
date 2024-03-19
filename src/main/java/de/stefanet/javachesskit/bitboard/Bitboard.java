@@ -1,5 +1,8 @@
 package de.stefanet.javachesskit.bitboard;
 
+import java.util.List;
+import java.util.Map;
+
 import static de.stefanet.javachesskit.bitboard.Bitboard.Files.*;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.*;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Squares.*;
@@ -28,10 +31,18 @@ public class Bitboard {
 
 	static long BACKRANK = RANK_1 | RANK_7;
 
-	static long[] KNIGHT_ATTACKS;
-	static long[] KING_ATTACKS;
-	static long[] PAWN_ATTACKS;
-	static long[][] RAYS;
+	static long[] KNIGHT_ATTACKS = Attacks.generateKnightAttacks();
+	static long[] KING_ATTACKS = Attacks.generateKingAttacks();
+	static long[][] PAWN_ATTACKS = Attacks.generatePawnAttacks();
+	static long[][] RAYS = Attacks.rays();
+
+	static long[] DIAGONAL_MASKS = Attacks.attackTable(-9, -7, 7, 9).getMaskTable();
+	static List<Map<Long, Long>> DIAGONAL_ATTACKS = Attacks.attackTable(-9, -7, 7, 9).getAttackTable();
+	static long[] FILE_MASKS = Attacks.attackTable(-8, 8).getMaskTable();
+	static List<Map<Long, Long>> FILE_ATTACKS = Attacks.attackTable(-8, 8).getAttackTable();
+
+	static long[] RANK_MASKS = Attacks.attackTable(-1, 1).getMaskTable();
+	static List<Map<Long, Long>> RANK_ATTACKS = Attacks.attackTable(-1, 1).getAttackTable();
 
 	public static class Files {
 		static long FILE_A = 0x0101010101010101L;
