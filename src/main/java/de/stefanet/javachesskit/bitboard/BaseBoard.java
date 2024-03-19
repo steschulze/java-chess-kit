@@ -28,7 +28,7 @@ public class BaseBoard {
 
 	public BaseBoard(String fen) {
 		if (fen == null) {
-			clearBoard();
+			this.clearBitboards();
 		} else if (fen.equals(STARTING_BOARD_FEN)) {
 			resetBoard();
 		} else {
@@ -37,6 +37,10 @@ public class BaseBoard {
 	}
 
 	protected void clearBoard() {
+		clearBitboards();
+	}
+
+	protected void clearBitboards() {
 		this.pawns = 0;
 		this.knights = 0;
 		this.bishops = 0;

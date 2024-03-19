@@ -144,9 +144,7 @@ public class Board extends BaseBoard {
 		clearBoard();
 	}
 
-	/**
-	 *
-	 */
+
 	@Override
 	protected void clearBoard() {
 		super.clearBoard();
