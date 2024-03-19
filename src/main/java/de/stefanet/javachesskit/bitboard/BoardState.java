@@ -1,7 +1,6 @@
 package de.stefanet.javachesskit.bitboard;
 
 import de.stefanet.javachesskit.Color;
-import de.stefanet.javachesskit.Square;
 
 public class BoardState {
 	private long pawns;
@@ -19,7 +18,7 @@ public class BoardState {
 	private Color turn;
 	private long castlingRights;
 
-	private Square epSquare;
+	private Long epSquare;
 
 	private int fullMoveNumber;
 	private int halfMoveClock;

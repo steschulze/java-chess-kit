@@ -111,5 +111,13 @@ public class Bitboard {
 				A7, B7, C7, D7, E7, F7, G7, H7,
 				A8, B8, C8, D8, E8, F8, G8, H8};
 
+		public static long parseSquare(String name) {
+			int fileIndex = name.charAt(0) - 'a';
+			int rankIndex = Character.getNumericValue(name.charAt(1));
+
+			int index = rankIndex * 8 + fileIndex;
+
+			return SQUARES[index];
+		}
 	}
 }

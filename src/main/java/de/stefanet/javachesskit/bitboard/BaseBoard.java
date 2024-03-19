@@ -1,6 +1,9 @@
 package de.stefanet.javachesskit.bitboard;
 
-import de.stefanet.javachesskit.*;
+import de.stefanet.javachesskit.Color;
+import de.stefanet.javachesskit.InvalidMoveException;
+import de.stefanet.javachesskit.Piece;
+import de.stefanet.javachesskit.PieceType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -115,48 +118,44 @@ public class BaseBoard {
 	}
 
 
-	public Piece get(Square square) {
-		PieceType type = pieceTypeAt(square.getIndex());
+	public Piece get(long square) {
+		PieceType type = pieceTypeAt(square);
 
 		if (type != null) {
-			long mask = SQUARES[square.getIndex()];
-			Color color = (this.whitePieces & mask) == 0 ? Color.BLACK : Color.WHITE;
+			Color color = (this.whitePieces & square) == 0 ? Color.BLACK : Color.WHITE;
 			return Piece.fromTypeAndColor(type, color);
 		}
 		return null;
 	}
 
-	public Piece pieceAt(int index) {
-		PieceType type = pieceTypeAt(index);
+	public Piece pieceAt(long square) {
+		PieceType type = pieceTypeAt(square);
 		if (type != null) {
-			long mask = SQUARES[index];
-			Color color = Color.fromBoolean((this.whitePieces & mask) != 0);
+			Color color = Color.fromBoolean((this.whitePieces & square) != 0);
 			return Piece.fromTypeAndColor(type, color);
 		}
 		return null;
 	}
 
-	public PieceType pieceTypeAt(int index) {
-		long mask = SQUARES[index];
-
-		if ((this.occupied & mask) == 0) {
+	public PieceType pieceTypeAt(long square) {
+		if ((this.occupied & square) == 0) {
 			return null;
-		} else if ((this.pawns & mask) != 0) {
+		} else if ((this.pawns & square) != 0) {
 			return PieceType.PAWN;
-		} else if ((this.knights & mask) != 0) {
+		} else if ((this.knights & square) != 0) {
 			return PieceType.KNIGHT;
-		} else if ((this.bishops & mask) != 0) {
+		} else if ((this.bishops & square) != 0) {
 			return PieceType.BISHOP;
-		} else if ((this.rooks & mask) != 0) {
+		} else if ((this.rooks & square) != 0) {
 			return PieceType.ROOK;
-		} else if ((this.queens & mask) != 0) {
+		} else if ((this.queens & square) != 0) {
 			return PieceType.QUEEN;
 		} else {
 			return PieceType.KING;
 		}
 	}
 
-	public void set(Square square, Piece piece) {
+	public void set(long square, Piece piece) {
 		if (piece == null) {
 			removePiece(square);
 		} else {
@@ -164,58 +163,56 @@ public class BaseBoard {
 		}
 	}
 
-	private void setPiece(Square square, PieceType type, Color color) {
+	private void setPiece(long square, PieceType type, Color color) {
 		removePiece(square);
-		long mask = SQUARES[square.getIndex()];
 
 		if (type == PieceType.PAWN) {
-			this.pawns |= mask;
+			this.pawns |= square;
 		} else if (type == PieceType.KNIGHT) {
-			this.knights |= mask;
+			this.knights |= square;
 		} else if (type == PieceType.BISHOP) {
-			this.bishops |= mask;
+			this.bishops |= square;
 		} else if (type == PieceType.ROOK) {
-			this.rooks |= mask;
+			this.rooks |= square;
 		} else if (type == PieceType.QUEEN) {
-			this.queens |= mask;
+			this.queens |= square;
 		} else if (type == PieceType.KING) {
-			this.kings |= mask;
+			this.kings |= square;
 		} else {
 			return;
 		}
 
-		this.occupied ^= mask;
+		this.occupied ^= square;
 		if (color == Color.WHITE) {
-			this.whitePieces ^= mask;
+			this.whitePieces ^= square;
 		} else {
-			this.blackPieces ^= mask;
+			this.blackPieces ^= square;
 		}
 	}
 
-	private PieceType removePiece(Square square) {
-		PieceType type = pieceTypeAt(square.getIndex());
-		long mask = SQUARES[square.getIndex()];
+	private PieceType removePiece(long square) {
+		PieceType type = pieceTypeAt(square);
 
 		if (type == PieceType.PAWN) {
-			this.pawns ^= mask;
+			this.pawns ^= square;
 		} else if (type == PieceType.KNIGHT) {
-			this.knights ^= mask;
+			this.knights ^= square;
 		} else if (type == PieceType.BISHOP) {
-			this.bishops ^= mask;
+			this.bishops ^= square;
 		} else if (type == PieceType.ROOK) {
-			this.rooks ^= mask;
+			this.rooks ^= square;
 		} else if (type == PieceType.QUEEN) {
-			this.queens ^= mask;
+			this.queens ^= square;
 		} else if (type == PieceType.KING) {
-			this.kings ^= mask;
+			this.kings ^= square;
 		} else {
 			return null;
 		}
 
-		this.occupied ^= mask;
-		this.whitePieces &= ~mask;
-		this.blackPieces &= ~mask;
-		this.promoted &= ~mask;
+		this.occupied ^= square;
+		this.whitePieces &= ~square;
+		this.blackPieces &= ~square;
+		this.promoted &= ~square;
 
 		return type;
 	}
@@ -244,17 +241,17 @@ public class BaseBoard {
 		return pieceCounts;
 	}
 
-	public Square getKingSquare(Color color) {
+	public long getKingSquare(Color color) {
 		long colorMask = (color == Color.WHITE) ? this.whitePieces : this.blackPieces;
 		long kingMask = this.kings & colorMask;
 
 		for (int i = 0; i < 64; i++) {
 			if (((kingMask >> i) & 1) == 1) {
-				return Square.fromIndex(i);
+				return SQUARES[i];
 			}
 		}
 
-		return null;
+		return 0;
 	}
 
 
@@ -333,7 +330,7 @@ public class BaseBoard {
 				square_index += Character.getNumericValue(c);
 			} else if ("pnbrkqPNBRKQ".indexOf(c) != -1) {
 				Piece piece = new Piece(c);
-				setPiece(Square.fromIndex(square_index), piece.getType(), piece.getColor());
+				setPiece(SQUARES[square_index], piece.getType(), piece.getColor());
 				square_index++;
 			} else {
 				square_index -= 16;

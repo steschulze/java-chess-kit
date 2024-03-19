@@ -2,7 +2,6 @@ package de.stefanet.javachesskit.bitboard;
 
 import de.stefanet.javachesskit.Color;
 import de.stefanet.javachesskit.InvalidMoveException;
-import de.stefanet.javachesskit.Square;
 import de.stefanet.javachesskit.board0x88.Move;
 
 import java.util.ArrayList;
@@ -13,14 +12,15 @@ import static de.stefanet.javachesskit.bitboard.Bitboard.Files.FILE_A;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Files.FILE_H;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_1;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_8;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Squares;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Squares.*;
 
 public class Board extends BaseBoard {
-	private final static String STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+	protected final static String STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 	protected Color turn;
 	protected long castlingRights;
 
-	protected Square epSquare;
+	protected Long epSquare;
 
 	protected int fullMoveNumber;
 	protected int halfMoveClock;
@@ -75,7 +75,7 @@ public class Board extends BaseBoard {
 		setBoardFen(parts[0]);
 		this.turn = Color.fromSymbol(parts[1].charAt(0));
 		setCastlingFen(parts[2]);
-		this.epSquare = parts[3].equals("-") ? null : Square.fromName(parts[3]);
+		this.epSquare = parts[3].equals("-") ? null : Squares.parseSquare(parts[3]);
 		this.halfMoveClock = Integer.parseInt(parts[4]);
 		this.fullMoveNumber = Integer.parseInt(parts[5]);
 		clearStack();
@@ -96,17 +96,17 @@ public class Board extends BaseBoard {
 			long colorMask = color == Color.WHITE ? this.whitePieces : this.blackPieces;
 			long rooks = colorMask & this.rooks & backrank;
 
-			Square kingSquare = getKingSquare(color);
+			long kingSquare = getKingSquare(color);
 
 			if (flag == 'q') {
-				if (kingSquare != null) { //TODO
+				if (kingSquare != 0) { //TODO
 					this.castlingRights |= rooks & -rooks;
 				} else {
 					this.castlingRights |= FILE_A & backrank;
 				}
 			} else if (flag == 'k') {
 				int rook = 0; //TODO
-				if (kingSquare != null) { //TODO
+				if (kingSquare != 0) { //TODO
 					this.castlingRights |= SQUARES[rook];
 				} else {
 					this.castlingRights |= FILE_H & backrank;
