@@ -32,8 +32,8 @@ public class BitboardUtils {
 		};
 	}
 
-	public static Iterator<Integer> scanReversed(long bb) {
-		return new Iterator<Integer>() {
+	public static Iterator<Square> scanReversed(long bb) {
+		return new Iterator<Square>() {
 			long currentBB = bb;
 
 			@Override
@@ -42,10 +42,10 @@ public class BitboardUtils {
 			}
 
 			@Override
-			public Integer next() {
+			public Square next() {
 				int square = msb(currentBB);
 				currentBB ^= 1L << square;
-				return square;
+				return Square.fromIndex(square);
 			}
 		};
 	}
