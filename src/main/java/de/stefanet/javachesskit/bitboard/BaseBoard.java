@@ -119,44 +119,47 @@ public class BaseBoard {
 	}
 
 
-	public Piece get(long square) {
+	public Piece get(Square square) {
+		long mask = SQUARES[square.ordinal()];
 		PieceType type = pieceTypeAt(square);
 
 		if (type != null) {
-			Color color = (this.whitePieces & square) == 0 ? Color.BLACK : Color.WHITE;
+			Color color = (this.whitePieces & mask) == 0 ? Color.BLACK : Color.WHITE;
 			return Piece.fromTypeAndColor(type, color);
 		}
 		return null;
 	}
 
-	public Piece pieceAt(long square) {
+	public Piece pieceAt(Square square) {
+		long mask = SQUARES[square.ordinal()];
 		PieceType type = pieceTypeAt(square);
 		if (type != null) {
-			Color color = Color.fromBoolean((this.whitePieces & square) != 0);
+			Color color = Color.fromBoolean((this.whitePieces & mask) != 0);
 			return Piece.fromTypeAndColor(type, color);
 		}
 		return null;
 	}
 
-	public PieceType pieceTypeAt(long square) {
-		if ((this.occupied & square) == 0) {
+	public PieceType pieceTypeAt(Square square) {
+		long mask = SQUARES[square.ordinal()];
+		if ((this.occupied & mask) == 0) {
 			return null;
-		} else if ((this.pawns & square) != 0) {
+		} else if ((this.pawns & mask) != 0) {
 			return PieceType.PAWN;
-		} else if ((this.knights & square) != 0) {
+		} else if ((this.knights & mask) != 0) {
 			return PieceType.KNIGHT;
-		} else if ((this.bishops & square) != 0) {
+		} else if ((this.bishops & mask) != 0) {
 			return PieceType.BISHOP;
-		} else if ((this.rooks & square) != 0) {
+		} else if ((this.rooks & mask) != 0) {
 			return PieceType.ROOK;
-		} else if ((this.queens & square) != 0) {
+		} else if ((this.queens & mask) != 0) {
 			return PieceType.QUEEN;
 		} else {
 			return PieceType.KING;
 		}
 	}
 
-	public void set(long square, Piece piece) {
+	public void set(Square square, Piece piece) {
 		if (piece == null) {
 			removePiece(square);
 		} else {
@@ -164,56 +167,58 @@ public class BaseBoard {
 		}
 	}
 
-	private void setPiece(long square, PieceType type, Color color) {
+	private void setPiece(Square square, PieceType type, Color color) {
+		long mask = SQUARES[square.ordinal()];
 		removePiece(square);
 
 		if (type == PieceType.PAWN) {
-			this.pawns |= square;
+			this.pawns |= mask;
 		} else if (type == PieceType.KNIGHT) {
-			this.knights |= square;
+			this.knights |= mask;
 		} else if (type == PieceType.BISHOP) {
-			this.bishops |= square;
+			this.bishops |= mask;
 		} else if (type == PieceType.ROOK) {
-			this.rooks |= square;
+			this.rooks |= mask;
 		} else if (type == PieceType.QUEEN) {
-			this.queens |= square;
+			this.queens |= mask;
 		} else if (type == PieceType.KING) {
-			this.kings |= square;
+			this.kings |= mask;
 		} else {
 			return;
 		}
 
-		this.occupied ^= square;
+		this.occupied ^= mask;
 		if (color == Color.WHITE) {
-			this.whitePieces ^= square;
+			this.whitePieces ^= mask;
 		} else {
-			this.blackPieces ^= square;
+			this.blackPieces ^= mask;
 		}
 	}
 
-	private PieceType removePiece(long square) {
+	private PieceType removePiece(Square square) {
+		long mask = SQUARES[square.ordinal()];
 		PieceType type = pieceTypeAt(square);
 
 		if (type == PieceType.PAWN) {
-			this.pawns ^= square;
+			this.pawns ^= mask;
 		} else if (type == PieceType.KNIGHT) {
-			this.knights ^= square;
+			this.knights ^= mask;
 		} else if (type == PieceType.BISHOP) {
-			this.bishops ^= square;
+			this.bishops ^= mask;
 		} else if (type == PieceType.ROOK) {
-			this.rooks ^= square;
+			this.rooks ^= mask;
 		} else if (type == PieceType.QUEEN) {
-			this.queens ^= square;
+			this.queens ^= mask;
 		} else if (type == PieceType.KING) {
-			this.kings ^= square;
+			this.kings ^= mask;
 		} else {
 			return null;
 		}
 
-		this.occupied ^= square;
-		this.whitePieces &= ~square;
-		this.blackPieces &= ~square;
-		this.promoted &= ~square;
+		this.occupied ^= mask;
+		this.whitePieces &= ~mask;
+		this.blackPieces &= ~mask;
+		this.promoted &= ~mask;
 
 		return type;
 	}
@@ -262,8 +267,7 @@ public class BaseBoard {
 
 		for (int y = 7; y >= 0; y--) {
 			for (int x = 0; x < 8; x++) {
-				int index = x + 8 * y;
-				Piece piece = pieceAt(SQUARES[index]);
+				Piece piece = pieceAt(Square.getSquare(x, y));
 
 				if (piece == null) {
 					empty++;
@@ -325,16 +329,16 @@ public class BaseBoard {
 		}
 
 		clearBoard();
-		int square_index = 56;
+		int index = 56;
 		for (char c : fen.toCharArray()) {
 			if (c >= '1' && c <= '8') {
-				square_index += Character.getNumericValue(c);
+				index += Character.getNumericValue(c);
 			} else if ("pnbrkqPNBRKQ".indexOf(c) != -1) {
 				Piece piece = new Piece(c);
-				setPiece(SQUARES[square_index], piece.getType(), piece.getColor());
-				square_index++;
+				setPiece(Square.fromIndex(index), piece.getType(), piece.getColor());
+				index++;
 			} else {
-				square_index -= 16;
+				index -= 16;
 			}
 		}
 
