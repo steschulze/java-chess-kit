@@ -18,6 +18,16 @@ public class Bitboard {
 			A7, B7, C7, D7, E7, F7, G7, H7,
 			A8, B8, C8, D8, E8, F8, G8, H8};
 
+	static long EMPTY = 0;
+	static long ALL = 0xFFFFFFFFFFFFFFFFL;
+	static long CORNERS = A1 | H1 | A8 | H8;
+	static long CENTER = D4 | E4 | D5 | E5;
+
+	static long LIGHT_SQUARES = 0x55AA55AA55AA55AAL;
+	static long DARK_SQUARES = 0xAA55AA55AA55AA55L;
+
+	static long BACKRANK = RANK_1 | RANK_7;
+
 	public static class Files {
 		static long FILE_A = 0x0101010101010101L;
 		static long FILE_B = FILE_A << 1;
