@@ -170,8 +170,19 @@ public class Board extends BaseBoard {
 		return Collections.emptyList();
 	}
 
+	public List<Move> generatePseudoLegalMoves() {
+
+		return Collections.emptyList();
+	}
+
 	public boolean isLegal(Move move) {
 
 		return false;
 	}
+
+	public boolean isPseudoLegal(Move move) {
+
+		return false;
+	}
+
 }
