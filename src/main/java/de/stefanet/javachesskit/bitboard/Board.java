@@ -1,16 +1,15 @@
 package de.stefanet.javachesskit.bitboard;
 
-import de.stefanet.javachesskit.Color;
-import de.stefanet.javachesskit.InvalidMoveException;
-import de.stefanet.javachesskit.board0x88.Move;
+import de.stefanet.javachesskit.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static de.stefanet.javachesskit.bitboard.Bitboard.Files.FILE_A;
-import static de.stefanet.javachesskit.bitboard.Bitboard.Files.FILE_H;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Files.*;
+import static de.stefanet.javachesskit.bitboard.Bitboard.PAWN_ATTACKS;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_1;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_8;
 import static de.stefanet.javachesskit.bitboard.Bitboard.SQUARES;
@@ -171,8 +170,178 @@ public class Board extends BaseBoard {
 	}
 
 	public List<Move> generatePseudoLegalMoves() {
+		return generatePseudoLegalMoves(Bitboard.ALL, Bitboard.ALL);
+	}
 
-		return Collections.emptyList();
+	public List<Move> generatePseudoLegalMoves(long sourceMask, long targetMask) {
+		List<Move> moveList = new ArrayList<>();
+		long ownPieces = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
+
+		// non pawn moves
+		long nonPawns = ownPieces & ~this.pawns & sourceMask;
+		for (Iterator<Square> it = BitboardUtils.scanReversed(nonPawns); it.hasNext(); ) {
+			Square source = it.next();
+			long moves = attackMask(source) & ~ownPieces & targetMask;
+			for (Iterator<Square> iter = BitboardUtils.scanReversed(moves); iter.hasNext(); ) {
+				Square target = iter.next();
+				moveList.add(new Move(source, target));
+			}
+		}
+
+		// castling moves
+		if ((targetMask & this.kings) != 0) {
+			moveList.addAll(generateCastlingMoves(sourceMask, targetMask));
+		}
+
+		long pawns = this.pawns & ownPieces & sourceMask;
+		if (pawns == 0) return moveList;
+
+		// pawn captures
+		long captures = pawns;
+		for (Iterator<Square> it = BitboardUtils.scanReversed(captures); it.hasNext(); ) {
+			Square source = it.next();
+
+			long targets = Bitboard.PAWN_ATTACKS[turn.ordinal()][source.ordinal()]
+					& targetMask & (turn.equals(Color.WHITE) ? this.blackPieces : this.whitePieces);
+
+			for (Iterator<Square> iter = BitboardUtils.scanReversed(targets); iter.hasNext(); ) {
+				Square target = iter.next();
+				if (target.isBackrank()) {
+					// pawn capture with promotion
+					moveList.add(new Move(source, target, PieceType.QUEEN));
+					moveList.add(new Move(source, target, PieceType.ROOK));
+					moveList.add(new Move(source, target, PieceType.BISHOP));
+					moveList.add(new Move(source, target, PieceType.KNIGHT));
+				} else {
+					// normal pawn capture
+					moveList.add(new Move(source, target));
+				}
+
+			}
+		}
+
+		// pawn advance
+		long singlePawnMoves;
+		long doublePawnMoves;
+
+		if (turn.equals(Color.WHITE)) {
+			singlePawnMoves = pawns << 8 & ~this.occupied;
+			doublePawnMoves = singlePawnMoves << 8 & ~this.occupied & (Bitboard.Ranks.RANK_3 | Bitboard.Ranks.RANK_4);
+		} else {
+			singlePawnMoves = pawns >> 8 & ~this.occupied;
+			doublePawnMoves = singlePawnMoves >> 8 & ~this.occupied & (Bitboard.Ranks.RANK_6 | Bitboard.Ranks.RANK_5);
+		}
+
+		singlePawnMoves &= targetMask;
+		doublePawnMoves &= targetMask;
+
+		// single pawn advance
+		for (Iterator<Square> it = BitboardUtils.scanReversed(singlePawnMoves); it.hasNext(); ) {
+			Square target = it.next();
+			Square source = Square.fromIndex(target.ordinal() + turn.forwardDirection() * 8);
+
+			if (target.isBackrank()) {
+				// pawn advance with promotion
+				moveList.add(new Move(source, target, PieceType.QUEEN));
+				moveList.add(new Move(source, target, PieceType.ROOK));
+				moveList.add(new Move(source, target, PieceType.BISHOP));
+				moveList.add(new Move(source, target, PieceType.KNIGHT));
+			} else {
+				// normal pawn advance
+				moveList.add(new Move(source, target));
+			}
+		}
+
+		// double pawn advance
+		for (Iterator<Square> it = BitboardUtils.scanReversed(doublePawnMoves); it.hasNext(); ) {
+			Square target = it.next();
+			Square source = Square.fromIndex(target.ordinal() + turn.forwardDirection() * 16);
+			moveList.add(new Move(source, target));
+		}
+
+		if (epSquare != null) {
+			moveList.addAll(generatePseudoLegalEnPassant(sourceMask, targetMask));
+		}
+		return moveList;
+	}
+
+	private List<Move> generatePseudoLegalEnPassant(long sourceMask, long targetMask) {
+		List<Move> moves = new ArrayList<>();
+
+		if (epSquare == null || (SQUARES[epSquare.ordinal()] & targetMask) == 0) return moves;
+
+		// epSquare is occupied
+		if ((SQUARES[epSquare.ordinal()] & this.occupied) != 0) return moves;
+
+		long colorMask = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
+		long rankMask = this.turn.equals(Color.WHITE) ? Bitboard.RANKS[4] : Bitboard.RANKS[3];
+		long attackMask = PAWN_ATTACKS[turn.other().ordinal()][epSquare.ordinal()];
+
+		long capturers = this.pawns & colorMask & sourceMask & attackMask & rankMask;
+
+		for (Iterator<Square> it = BitboardUtils.scanReversed(capturers); it.hasNext(); ) {
+			Square source = it.next();
+			moves.add(new Move(source, epSquare));
+		}
+
+		return moves;
+	}
+
+	private List<Move> generateCastlingMoves(long sourceMask, long targetMask) {
+		List<Move> moves = new ArrayList<>();
+
+		long backrank = this.turn.equals(Color.WHITE) ? RANK_1 : RANK_8;
+		long colorMask = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
+
+		long king = colorMask & this.kings & ~this.promoted & backrank & sourceMask;
+		king &= -king;
+
+		if (king == 0) return moves;
+
+		long c = FILE_C & backrank;
+		long d = FILE_D & backrank;
+		long f = FILE_F & backrank;
+		long g = FILE_G & backrank;
+
+		long castling = cleanCastlingRights() & backrank & targetMask;
+
+		for (Iterator<Square> it = BitboardUtils.scanReversed(castling); it.hasNext(); ) {
+			Square candidate = it.next();
+
+			long rook = SQUARES[candidate.ordinal()];
+			boolean queenSide = rook < king;
+
+			long kingTarget = queenSide ? c : g;
+			long rookTarget = queenSide ? d : f;
+
+			long kingPath = BitboardUtils.between(
+					Square.fromIndex(BitboardUtils.msb(king)),
+					Square.fromIndex(BitboardUtils.msb(kingTarget)));
+
+			long rookPath = BitboardUtils.between(
+					candidate,
+					Square.fromIndex(BitboardUtils.msb(rookTarget)));
+
+			if (!(((this.occupied ^ king ^ rook) &
+					(kingPath | rookPath | kingTarget | rookTarget)) != 0 ||
+					attackedForKing(kingPath | king, this.occupied ^ king) ||
+					attackedForKing(kingTarget, this.occupied ^ king ^ rook ^ rookTarget)
+			)) {
+				//TODO moves.add(...)
+			}
+		}
+
+		return moves;
+	}
+
+	private boolean attackedForKing(long l, long l1) {
+		//TODO
+		return false;
+	}
+
+	private long cleanCastlingRights() {
+		//TODO
+		return 0;
 	}
 
 	public boolean isLegal(Move move) {
