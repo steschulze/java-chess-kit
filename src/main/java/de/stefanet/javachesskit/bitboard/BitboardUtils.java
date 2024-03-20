@@ -3,7 +3,11 @@ package de.stefanet.javachesskit.bitboard;
 import static de.stefanet.javachesskit.bitboard.Bitboard.ALL;
 import static de.stefanet.javachesskit.bitboard.Bitboard.RAYS;
 
-public class BitboardUtils {
+public final class BitboardUtils {
+
+	private BitboardUtils() {
+	}
+
 	public static int lsb(long bb) {
 		return Long.numberOfTrailingZeros(bb);
 	}
