@@ -305,8 +305,6 @@ public class Board extends BaseBoard {
 		long castling = cleanCastlingRights() & backrank & targetMask;
 
 		for (int index : BitboardUtils.scanReversed(castling)) {
-			Square candidate = Square.fromIndex(index);
-
 			long rook = SQUARES[index];
 			boolean queenSide = rook < king;
 
@@ -314,12 +312,12 @@ public class Board extends BaseBoard {
 			long rookTarget = queenSide ? d : f;
 
 			long kingPath = BitboardUtils.between(
-					Square.fromIndex(BitboardUtils.msb(king)),
-					Square.fromIndex(BitboardUtils.msb(kingTarget)));
+					BitboardUtils.msb(king),
+					BitboardUtils.msb(kingTarget));
 
 			long rookPath = BitboardUtils.between(
-					candidate,
-					Square.fromIndex(BitboardUtils.msb(rookTarget)));
+					index,
+					BitboardUtils.msb(rookTarget));
 
 			if (!(((this.occupied ^ king ^ rook) &
 					(kingPath | rookPath | kingTarget | rookTarget)) != 0 ||

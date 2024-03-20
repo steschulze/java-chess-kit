@@ -1,7 +1,5 @@
 package de.stefanet.javachesskit.bitboard;
 
-import de.stefanet.javachesskit.Square;
-
 import static de.stefanet.javachesskit.bitboard.Bitboard.ALL;
 import static de.stefanet.javachesskit.bitboard.Bitboard.RAYS;
 
@@ -124,12 +122,12 @@ public class BitboardUtils {
 		return (b >>> 7) & ~Bitboard.Files.FILE_A;
 	}
 
-	public static long ray(Square a, Square b) {
-		return RAYS[a.ordinal()][b.ordinal()];
+	public static long ray(int a, int b) {
+		return RAYS[a][b];
 	}
 
-	public static long between(Square a, Square b) {
-		long bb = ray(a, b) & ((ALL << a.ordinal()) ^ (ALL << b.ordinal()));
+	public static long between(int a, int b) {
+		long bb = ray(a, b) & ((ALL << a) ^ (ALL << b));
 		return bb & (bb - 1);
 	}
 }
