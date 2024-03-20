@@ -195,7 +195,18 @@ public class BaseBoard {
 		}
 	}
 
-	private PieceType removePiece(Square square) {
+	public Piece removePiece(Square square) {
+		Color color = Color.fromBoolean((this.whitePieces & SQUARES[square.ordinal()]) != 0);
+		PieceType pieceType = removePieceType(square);
+
+		if (pieceType != null) {
+			return Piece.fromTypeAndColor(pieceType, color);
+		}
+
+		return null;
+	}
+
+	private PieceType removePieceType(Square square) {
 		long mask = SQUARES[square.ordinal()];
 		PieceType type = pieceTypeAt(square);
 
