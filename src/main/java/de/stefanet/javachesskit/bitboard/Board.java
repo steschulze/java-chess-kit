@@ -4,7 +4,6 @@ import de.stefanet.javachesskit.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -179,11 +178,11 @@ public class Board extends BaseBoard {
 
 		// non pawn moves
 		long nonPawns = ownPieces & ~this.pawns & sourceMask;
-		for (Iterator<Square> it = BitboardUtils.scanReversed(nonPawns); it.hasNext(); ) {
-			Square source = it.next();
+		for (int index : BitboardUtils.scanReversed(nonPawns)) {
+			Square source = Square.fromIndex(index);
 			long moves = attackMask(source) & ~ownPieces & targetMask;
-			for (Iterator<Square> iter = BitboardUtils.scanReversed(moves); iter.hasNext(); ) {
-				Square target = iter.next();
+			for (int targetIndex : BitboardUtils.scanReversed(moves)) {
+				Square target = Square.fromIndex(targetIndex);
 				moveList.add(new Move(source, target));
 			}
 		}
@@ -198,14 +197,14 @@ public class Board extends BaseBoard {
 
 		// pawn captures
 		long captures = pawns;
-		for (Iterator<Square> it = BitboardUtils.scanReversed(captures); it.hasNext(); ) {
-			Square source = it.next();
+		for (int captureIndex : BitboardUtils.scanReversed(captures)) {
+			Square source = Square.fromIndex(captureIndex);
 
 			long targets = Bitboard.PAWN_ATTACKS[turn.ordinal()][source.ordinal()]
 					& targetMask & (turn.equals(Color.WHITE) ? this.blackPieces : this.whitePieces);
 
-			for (Iterator<Square> iter = BitboardUtils.scanReversed(targets); iter.hasNext(); ) {
-				Square target = iter.next();
+			for (int targetIndex : BitboardUtils.scanReversed(targets)) {
+				Square target = Square.fromIndex(targetIndex);
 				if (target.isBackrank()) {
 					// pawn capture with promotion
 					moveList.add(new Move(source, target, PieceType.QUEEN));
@@ -236,9 +235,9 @@ public class Board extends BaseBoard {
 		doublePawnMoves &= targetMask;
 
 		// single pawn advance
-		for (Iterator<Square> it = BitboardUtils.scanReversed(singlePawnMoves); it.hasNext(); ) {
-			Square target = it.next();
-			Square source = Square.fromIndex(target.ordinal() + turn.forwardDirection() * 8);
+		for (int index : BitboardUtils.scanReversed(singlePawnMoves)) {
+			Square target = Square.fromIndex(index);
+			Square source = Square.fromIndex(index + turn.forwardDirection() * 8);
 
 			if (target.isBackrank()) {
 				// pawn advance with promotion
@@ -253,9 +252,9 @@ public class Board extends BaseBoard {
 		}
 
 		// double pawn advance
-		for (Iterator<Square> it = BitboardUtils.scanReversed(doublePawnMoves); it.hasNext(); ) {
-			Square target = it.next();
-			Square source = Square.fromIndex(target.ordinal() + turn.forwardDirection() * 16);
+		for (int index : BitboardUtils.scanReversed(doublePawnMoves)) {
+			Square target = Square.fromIndex(index);
+			Square source = Square.fromIndex(index + turn.forwardDirection() * 16);
 			moveList.add(new Move(source, target));
 		}
 
@@ -279,8 +278,8 @@ public class Board extends BaseBoard {
 
 		long capturers = this.pawns & colorMask & sourceMask & attackMask & rankMask;
 
-		for (Iterator<Square> it = BitboardUtils.scanReversed(capturers); it.hasNext(); ) {
-			Square source = it.next();
+		for (int index : BitboardUtils.scanReversed(capturers)) {
+			Square source = Square.fromIndex(index);
 			moves.add(new Move(source, epSquare));
 		}
 
@@ -305,10 +304,10 @@ public class Board extends BaseBoard {
 
 		long castling = cleanCastlingRights() & backrank & targetMask;
 
-		for (Iterator<Square> it = BitboardUtils.scanReversed(castling); it.hasNext(); ) {
-			Square candidate = it.next();
+		for (int index : BitboardUtils.scanReversed(castling)) {
+			Square candidate = Square.fromIndex(index);
 
-			long rook = SQUARES[candidate.ordinal()];
+			long rook = SQUARES[index];
 			boolean queenSide = rook < king;
 
 			long kingTarget = queenSide ? c : g;

@@ -3,7 +3,6 @@ package de.stefanet.javachesskit.bitboard;
 import de.stefanet.javachesskit.*;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import static de.stefanet.javachesskit.bitboard.Bitboard.*;
@@ -428,8 +427,8 @@ public class BaseBoard {
 	public Map<Square, Piece> getPieceMap(long mask) {
 		Map<Square, Piece> result = new HashMap<>();
 
-		for (Iterator<Square> it = BitboardUtils.scanReversed(mask); it.hasNext(); ) {
-			Square square = it.next();
+		for (int index : BitboardUtils.scanReversed(mask)) {
+			Square square = Square.fromIndex(index);
 			result.put(square, pieceAt(square));
 		}
 
