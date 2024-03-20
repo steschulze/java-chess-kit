@@ -5,6 +5,7 @@ import de.stefanet.javachesskit.InvalidMoveException;
 import de.stefanet.javachesskit.board0x88.Move;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -154,5 +155,23 @@ public class Board extends BaseBoard {
 	private void clearStack() {
 		this.moveList.clear();
 		this.stateList.clear();
+	}
+
+	public LegalMoveGenerator legalMoves() {
+		return new LegalMoveGenerator(this);
+	}
+
+	public PseudoLegalMoveGenerator pseudoLegalMoves() {
+		return new PseudoLegalMoveGenerator(this);
+	}
+
+	public List<Move> generateLegalMoves() {
+
+		return Collections.emptyList();
+	}
+
+	public boolean isLegal(Move move) {
+
+		return false;
 	}
 }
