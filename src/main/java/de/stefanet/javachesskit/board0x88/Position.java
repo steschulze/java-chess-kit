@@ -144,22 +144,22 @@ public class Position implements Board {
     public boolean getTheoreticalCastlingRight(char type) {
         if ("KQkq".indexOf(type) == -1) throw new IllegalArgumentException("Invalid type of castling right: " + type);
         if (type == 'K' || type == 'Q') {
-            if (get(Square.fromName("e1")) == null || !get(Square.fromName("e1")).equals(Piece.fromTypeAndColor(PieceType.KING, Color.WHITE))) {
+            if (get(Square.parseSquare("e1")) == null || !get(Square.parseSquare("e1")).equals(Piece.fromTypeAndColor(PieceType.KING, Color.WHITE))) {
                 return false;
             }
             if (type == 'K') {
-                return get(Square.fromName("h1")) != null && get(Square.fromName("h1")).equals(Piece.fromTypeAndColor(PieceType.ROOK, Color.WHITE));
+                return get(Square.parseSquare("h1")) != null && get(Square.parseSquare("h1")).equals(Piece.fromTypeAndColor(PieceType.ROOK, Color.WHITE));
             } else {
-                return get(Square.fromName("a1")) != null && get(Square.fromName("a1")).equals(Piece.fromTypeAndColor(PieceType.ROOK, Color.WHITE));
+                return get(Square.parseSquare("a1")) != null && get(Square.parseSquare("a1")).equals(Piece.fromTypeAndColor(PieceType.ROOK, Color.WHITE));
             }
         } else {
-            if (get(Square.fromName("e8")) == null || !get(Square.fromName("e8")).equals(Piece.fromTypeAndColor(PieceType.KING, Color.BLACK))) {
+            if (get(Square.parseSquare("e8")) == null || !get(Square.parseSquare("e8")).equals(Piece.fromTypeAndColor(PieceType.KING, Color.BLACK))) {
                 return false;
             }
             if (type == 'k') {
-                return get(Square.fromName("h8")) != null && get(Square.fromName("h8")).equals(Piece.fromTypeAndColor(PieceType.ROOK, Color.BLACK));
+                return get(Square.parseSquare("h8")) != null && get(Square.parseSquare("h8")).equals(Piece.fromTypeAndColor(PieceType.ROOK, Color.BLACK));
             } else {
-                return get(Square.fromName("a8")) != null && get(Square.fromName("a8")).equals(Piece.fromTypeAndColor(PieceType.ROOK, Color.BLACK));
+                return get(Square.parseSquare("a8")) != null && get(Square.parseSquare("a8")).equals(Piece.fromTypeAndColor(PieceType.ROOK, Color.BLACK));
             }
         }
     }
@@ -176,38 +176,38 @@ public class Position implements Board {
         int rank = getTurn() == Color.WHITE ? 5 : 4;
         int captureRank = getTurn() == Color.WHITE ? 6 : 3;
 
-        Square pawnSquare = Square.fromRankAndFile(rank, file);
+        Square pawnSquare = Square.getSquare(rank, file);
         Piece capturePiece = get(pawnSquare);
         if (capturePiece == null || capturePiece.getType() != PieceType.PAWN || capturePiece.getColor() != getTurn().other()) {
             return false;
         }
 
-        Square captureSquare = Square.fromRankAndFile(captureRank, file);
+        Square captureSquare = Square.getSquare(captureRank, file);
         if (get(captureSquare) != null) return false;
 
         if (this.getTurn() == Color.WHITE) {
             if (file > 'a') {
                 //check left file
-                Square square = Square.fromRankAndFile(rank, (char) (file - 1));
+                Square square = Square.getSquare(rank, (char) (file - 1));
                 Piece piece = get(square);
                 if (piece != null && piece.getSymbol() == 'P') return true;
             }
             if (file < 'h') {
                 //check right file
-                Square square = Square.fromRankAndFile(rank, (char) (file + 1));
+                Square square = Square.getSquare(rank, (char) (file + 1));
                 Piece piece = get(square);
                 if (piece != null && piece.getSymbol() == 'P') return true;
             }
         } else {
             if (file > 'a') {
                 //check left file
-                Square square = Square.fromRankAndFile(rank, (char) (file - 1));
+                Square square = Square.getSquare(rank, (char) (file - 1));
                 Piece piece = get(square);
                 if (piece != null && piece.getSymbol() == 'p') return true;
             }
             if (file < 'h') {
                 //check right file
-                Square square = Square.fromRankAndFile(rank, (char) (file + 1));
+                Square square = Square.getSquare(rank, (char) (file + 1));
                 Piece piece = get(square);
                 if (piece != null && piece.getSymbol() == 'p') return true;
             }
@@ -349,7 +349,7 @@ public class Position implements Board {
      */
     @Override
     public Square getKingSquare(Color color) {
-        for (Square square : Square.getAll()) {
+        for (Square square : Square.values()) {
             Piece piece = board[square.get0x88Index()];
             if (piece != null && piece.getColor() == color && piece.getType() == PieceType.KING) {
                 return square;
@@ -370,7 +370,7 @@ public class Position implements Board {
 
         for (int y = 7; y >= 0; y--) {
             for (int x = 0; x < 8; x++) {
-                int i = new Square(x, y).get0x88Index();
+                int i = x + 16 * y;
                 Piece piece = board[i];
                 if (piece == null) {
                     emptyCount++;
@@ -550,7 +550,7 @@ public class Position implements Board {
     private List<Square> getAttackers(Color color, Square square) {
         List<Square> attackingSquares = new ArrayList<>();
 
-        for (Square source : Square.getAll()) {
+        for (Square source : Square.values()) {
             Piece piece = get(source);
             if (piece == null || piece.getColor() != color) continue;
 
@@ -611,7 +611,7 @@ public class Position implements Board {
         PIECE_OFFSETS.put(PieceType.QUEEN, new int[]{-17, -16, -15, -1, 1, 15, 16, 17});
         PIECE_OFFSETS.put(PieceType.KING, new int[]{-17, -16, -15, -1, 1, 15, 16, 17});
 
-        for (Square square : Square.getAll()) {
+        for (Square square : Square.values()) {
             Piece piece = get(square);
             if (piece == null || piece.getColor() != this.getTurn()) continue;
 
@@ -774,7 +774,7 @@ public class Position implements Board {
                 this.set(move.getTarget(), Piece.fromTypeAndColor(move.getPromotion(), movingPiece.getColor()));
             }
         } else if (movingPiece.getType() == PieceType.KING) {
-            int steps = move.getTarget().getX() - move.getSource().getX();
+            int steps = move.getTarget().getFileIndex() - move.getSource().getFileIndex();
 
             if (Math.abs(steps) == 2) {
                 int rookTargetIndex;
@@ -850,7 +850,7 @@ public class Position implements Board {
             if (whiteHasBishop && blackHasBishop) {
                 Boolean color = null;
 
-                for (Square square : Square.getAll()) {
+                for (Square square : Square.values()) {
                     Piece piece = this.get(square);
                     if (piece != null && piece.getType() == PieceType.BISHOP) {
                         if (color != null && color != square.isLight()) return false;
@@ -899,9 +899,9 @@ public class Position implements Board {
         }
 
         boolean isKingSideCastling = movedPiece.getType() == PieceType.KING
-                && (move.getTarget().getX() - move.getSource().getX() == 2);
+                && (move.getTarget().getFileIndex() - move.getSource().getFileIndex() == 2);
         boolean isQueenSideCastling = movedPiece.getType() == PieceType.KING
-                && (move.getTarget().getX() - move.getSource().getX() == -2);
+                && (move.getTarget().getFileIndex() - move.getSource().getFileIndex() == -2);
 
         boolean isCheck = copiedPosition.isCheck();
         boolean isCheckmate = copiedPosition.isCheckmate();
@@ -957,12 +957,12 @@ public class Position implements Board {
         san = san.replace('0', 'O');
         if (san.equals("O-O") || san.equals("O-O-O")) {
             int rank = this.getTurn() == Color.WHITE ? 1 : 8;
-            Square source = Square.fromRankAndFile(rank, 'e');
+            Square source = Square.getSquare(rank, 'e');
             Square target;
             if (san.equals("O-O")) {
-                target = Square.fromRankAndFile(rank, 'g');
+                target = Square.getSquare(rank, 'g');
             } else {
-                target = Square.fromRankAndFile(rank, 'c');
+                target = Square.getSquare(rank, 'c');
             }
             return new Move(source, target);
         } else {
@@ -980,7 +980,7 @@ public class Position implements Board {
             }
 
 
-            Square target = Square.fromName(matcher.group(4));
+            Square target = Square.parseSquare(matcher.group(4));
             PieceType promotionType = null;
             Square source = null;
 

@@ -1,9 +1,6 @@
 package de.stefanet.javachesskit.board0x88;
 
-import de.stefanet.javachesskit.Color;
-import de.stefanet.javachesskit.Piece;
-import de.stefanet.javachesskit.PieceType;
-import de.stefanet.javachesskit.Square;
+import de.stefanet.javachesskit.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -22,11 +19,11 @@ class PositionTest {
     @Test
     void testDefaultPosition() {
         Position position = new Position();
-        Piece piece1 = position.get(Square.fromName("a1"));
-        Piece piece2 = position.get(Square.fromName("b8"));
-        Piece piece3 = position.get(Square.fromName("f1"));
-        Piece piece4 = position.get(Square.fromName("d8"));
-        Piece piece5 = position.get(Square.fromName("e1"));
+        Piece piece1 = position.get(Square.parseSquare("a1"));
+        Piece piece2 = position.get(Square.parseSquare("b8"));
+        Piece piece3 = position.get(Square.parseSquare("f1"));
+        Piece piece4 = position.get(Square.parseSquare("d8"));
+        Piece piece5 = position.get(Square.parseSquare("e1"));
 
         assertEquals(PieceType.ROOK, piece1.getType());
         assertEquals(Color.WHITE, piece1.getColor());
@@ -49,8 +46,8 @@ class PositionTest {
         Position position = new Position();
         position.clear();
 
-        position.set(Square.fromName("e4"), new Piece('P'));
-        position.set(Square.fromName("d5"), new Piece('n'));
+        position.set(Square.parseSquare("e4"), new Piece('P'));
+        position.set(Square.parseSquare("d5"), new Piece('n'));
 
         String expectedFEN = "8/8/8/3n4/4P3/8/8/8 w - - 0 1";
 
@@ -129,11 +126,11 @@ class PositionTest {
     void testTheoreticalCastlingRight_setupPosition() {
         Position position = new Position();
         position.clear();
-        position.set(Square.fromName("e1"), new Piece('K'));
-        position.set(Square.fromName("h1"), new Piece('R'));
-        position.set(Square.fromName("a1"), new Piece('B'));
-        position.set(Square.fromName("e8"), new Piece('k'));
-        position.set(Square.fromName("a8"), new Piece('r'));
+        position.set(Square.parseSquare("e1"), new Piece('K'));
+        position.set(Square.parseSquare("h1"), new Piece('R'));
+        position.set(Square.parseSquare("a1"), new Piece('B'));
+        position.set(Square.parseSquare("e8"), new Piece('k'));
+        position.set(Square.parseSquare("a8"), new Piece('r'));
 
         assertTrue(position.getTheoreticalCastlingRight('K'));
         assertFalse(position.getTheoreticalCastlingRight('Q'));
@@ -150,14 +147,14 @@ class PositionTest {
     @Test
     void testTheoreticalCastlingRight_emptyKingSquare() {
         Position position = new Position();
-        position.set(Square.fromName("e1"), null);
+        position.set(Square.parseSquare("e1"), null);
 
         assertFalse(position.getTheoreticalCastlingRight('K'));
         assertFalse(position.getTheoreticalCastlingRight('Q'));
         assertTrue(position.getTheoreticalCastlingRight('k'));
         assertTrue(position.getTheoreticalCastlingRight('q'));
 
-        position.set(Square.fromName("e8"), null);
+        position.set(Square.parseSquare("e8"), null);
         assertFalse(position.getTheoreticalCastlingRight('K'));
         assertFalse(position.getTheoreticalCastlingRight('Q'));
         assertFalse(position.getTheoreticalCastlingRight('k'));
@@ -167,14 +164,14 @@ class PositionTest {
     @Test
     void testTheoreticalCastlingRight_otherPieceOnKingSquare() {
         Position position = new Position();
-        position.set(Square.fromName("e1"), new Piece('Q'));
+        position.set(Square.parseSquare("e1"), new Piece('Q'));
 
         assertFalse(position.getTheoreticalCastlingRight('K'));
         assertFalse(position.getTheoreticalCastlingRight('Q'));
         assertTrue(position.getTheoreticalCastlingRight('k'));
         assertTrue(position.getTheoreticalCastlingRight('q'));
 
-        position.set(Square.fromName("e8"), new Piece('r'));
+        position.set(Square.parseSquare("e8"), new Piece('r'));
 
         assertFalse(position.getTheoreticalCastlingRight('K'));
         assertFalse(position.getTheoreticalCastlingRight('Q'));
@@ -185,28 +182,28 @@ class PositionTest {
     @Test
     void testTheoreticalCastlingRight_emptyRookSquare() {
         Position position = new Position();
-        position.set(Square.fromName("a1"), null);
+        position.set(Square.parseSquare("a1"), null);
 
         assertTrue(position.getTheoreticalCastlingRight('K'));
         assertFalse(position.getTheoreticalCastlingRight('Q'));
         assertTrue(position.getTheoreticalCastlingRight('k'));
         assertTrue(position.getTheoreticalCastlingRight('q'));
 
-        position.set(Square.fromName("h1"), null);
+        position.set(Square.parseSquare("h1"), null);
 
         assertFalse(position.getTheoreticalCastlingRight('K'));
         assertFalse(position.getTheoreticalCastlingRight('Q'));
         assertTrue(position.getTheoreticalCastlingRight('k'));
         assertTrue(position.getTheoreticalCastlingRight('q'));
 
-        position.set(Square.fromName("a8"), null);
+        position.set(Square.parseSquare("a8"), null);
 
         assertFalse(position.getTheoreticalCastlingRight('K'));
         assertFalse(position.getTheoreticalCastlingRight('Q'));
         assertTrue(position.getTheoreticalCastlingRight('k'));
         assertFalse(position.getTheoreticalCastlingRight('q'));
 
-        position.set(Square.fromName("h8"), null);
+        position.set(Square.parseSquare("h8"), null);
 
         assertFalse(position.getTheoreticalCastlingRight('K'));
         assertFalse(position.getTheoreticalCastlingRight('Q'));
@@ -269,7 +266,7 @@ class PositionTest {
     @Test
     void testEquals() {
         Position position1 = new Position();
-        position1.set(Square.fromName("a1"), null);
+        position1.set(Square.parseSquare("a1"), null);
 
         Position position2 = new Position("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/1NBQKBNR w Kkq - 0 1");
 
@@ -294,8 +291,8 @@ class PositionTest {
         Position position = new Position();
         position.clear();
 
-        position.set(Square.fromName("c3"), new Piece('K'));
-        position.set(Square.fromName("e6"), new Piece('k'));
+        position.set(Square.parseSquare("c3"), new Piece('K'));
+        position.set(Square.parseSquare("e6"), new Piece('k'));
 
         assertTrue(position.isInsufficientMaterial());
     }
@@ -305,9 +302,9 @@ class PositionTest {
         Position position = new Position();
         position.clear();
 
-        position.set(Square.fromName("c3"), new Piece('K'));
-        position.set(Square.fromName("d3"), new Piece('N'));
-        position.set(Square.fromName("e6"), new Piece('k'));
+        position.set(Square.parseSquare("c3"), new Piece('K'));
+        position.set(Square.parseSquare("d3"), new Piece('N'));
+        position.set(Square.parseSquare("e6"), new Piece('k'));
 
         assertTrue(position.isInsufficientMaterial());
     }
@@ -317,10 +314,10 @@ class PositionTest {
         Position position = new Position();
         position.clear();
 
-        position.set(Square.fromName("e4"), new Piece('K'));
-        position.set(Square.fromName("c1"), new Piece('B'));
-        position.set(Square.fromName("e6"), new Piece('k'));
-        position.set(Square.fromName("d8"), new Piece('b'));
+        position.set(Square.parseSquare("e4"), new Piece('K'));
+        position.set(Square.parseSquare("c1"), new Piece('B'));
+        position.set(Square.parseSquare("e6"), new Piece('k'));
+        position.set(Square.parseSquare("d8"), new Piece('b'));
 
         assertTrue(position.isInsufficientMaterial());
     }
@@ -417,15 +414,15 @@ class PositionTest {
         Position position = new Position();
         position.clear();
 
-        position.set(Square.fromName("e1"), new Piece('K'));
-        position.set(Square.fromName("e8"), new Piece('k'));
+        position.set(Square.parseSquare("e1"), new Piece('K'));
+        position.set(Square.parseSquare("e8"), new Piece('k'));
 
         List<Move> legalMoves = position.getLegalMoves();
 
         assertFalse(legalMoves.contains(Move.fromUCI("e1g1")));
         assertFalse(legalMoves.contains(Move.fromUCI("e1c1")));
 
-        position.set(Square.fromName("h1"), new Piece('R'));
+        position.set(Square.parseSquare("h1"), new Piece('R'));
         position.setCastlingRight('K', true);
 
         legalMoves = position.getLegalMoves();
@@ -433,7 +430,7 @@ class PositionTest {
         assertTrue(legalMoves.contains(Move.fromUCI("e1g1")));
         assertFalse(legalMoves.contains(Move.fromUCI("e1c1")));
 
-        position.set(Square.fromName("a1"), new Piece('R'));
+        position.set(Square.parseSquare("a1"), new Piece('R'));
         position.setCastlingRight('Q', true);
 
         legalMoves = position.getLegalMoves();

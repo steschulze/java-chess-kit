@@ -1,223 +1,124 @@
 package de.stefanet.javachesskit;
 
-import java.util.ArrayList;
-import java.util.List;
+public enum Square {
+	A1, B1, C1, D1, E1, F1, G1, H1,
+	A2, B2, C2, D2, E2, F2, G2, H2,
+	A3, B3, C3, D3, E3, F3, G3, H3,
+	A4, B4, C4, D4, E4, F4, G4, H4,
+	A5, B5, C5, D5, E5, F5, G5, H5,
+	A6, B6, C6, D6, E6, F6, G6, H6,
+	A7, B7, C7, D7, E7, F7, G7, H7,
+	A8, B8, C8, D8, E8, F8, G8, H8;
 
-/**
- * Represents a square on a chessboard.
- */
-public class Square {
-    private final int x;
-    private final int y;
+	public String getName() {
+		return name().toLowerCase();
+	}
 
-    /**
-     * Constructs a Square with given x and y coordinates.
-     *
-     * @param x The x coordinate, starting with 0 for the a-file
-     * @param y The y coordinate, starting with 0 for the first rank
-     */
-    public Square(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
+	public char getFile() {
+		return this.name().toLowerCase().charAt(0);
+	}
 
-    /**
-     * Creates a Square from its name.
-     *
-     * @param name The algebraic notation of the square like "a1".
-     * @return The Square object representing the specified square.
-     * @throws IllegalArgumentException If the square name is invalid
-     */
-    public static Square fromName(String name) {
-        if (name.length() != 2)
-            throw new IllegalArgumentException("Length of square name must be 2");
-        if ("abcdefgh".indexOf(name.charAt(0)) == -1)
-            throw new IllegalArgumentException("First character of square name must be between a and h");
-        if ("12345678".indexOf(name.charAt(1)) == -1)
-            throw new IllegalArgumentException("Second character of square name must be between 1 and 8");
+	public int getRank() {
+		return Character.getNumericValue(this.name().charAt(1));
+	}
 
-        int x = name.charAt(0) - 'a';
-        int y = name.charAt(1) - '1';
+	public int getFileIndex() {
+		return this.ordinal() & 7;
+	}
 
-        return new Square(x, y);
-    }
+	public int getRankIndex() {
+		return this.ordinal() >> 3;
+	}
 
-    /**
-     * Creates a Square from its 0x88 index.
-     *
-     * @param index The index of the 0x88 board representation.
-     * @return The Square object representing the specified square.
-     * @throws IndexOutOfBoundsException If the index is not between 0 and 127
-     * @throws IllegalArgumentException If the index is off the board
-     * @see <a href="https://www.chessprogramming.org/0x88">0x88 board representation</a> for more details
-     */
-    public static Square from0x88Index(int index) {
-        if (index < 0 || index >= 128)
-            throw new IndexOutOfBoundsException("Index must be between 0 and 127, but was " + index);
-        if ((index & 0x88) != 0) throw new IllegalArgumentException("Index is off the board");
+	public int get0x88Index() {
+		return this.getFileIndex() + 16 * this.getRankIndex();
+	}
 
-        int x = index & 7;
-        int y = index >> 4;
+	public boolean isCornerSquare() {
+		return this == A1 || this == A8 || this == H1 || this == H8;
+	}
 
-        return new Square(x, y);
-    }
+	public boolean isBackrank() {
+		return getRank() == 1 || getRank() == 8;
+	}
 
-    /**
-     * Creates a Square from its rank and file.
-     *
-     * @param rank The rank of the square, an integer between 1 and 8.
-     * @param file The file of the square, a char between 'a' and 'h'
-     * @return The Square object representing the specified square.
-     * @throws IllegalArgumentException If the rank or file is out off range
-     */
-    public static Square fromRankAndFile(int rank, char file) {
-        if (rank < 1 || rank > 8) throw new IllegalArgumentException("Rank must be between 1 and 8");
-        if ("abcdefgh".indexOf(file) == -1) throw new IllegalArgumentException("File must be between a and h");
+	public boolean isDark() {
+		return (getRankIndex() + getFileIndex()) % 2 == 0;
+	}
 
-        int x = file - 'a';
-        int y = rank - 1;
+	public boolean isLight() {
+		return !isLight();
+	}
 
-        return new Square(x, y);
-    }
+	public Square mirrorVertically() {
+		return values()[this.ordinal() ^ 56];
+	}
 
-    /**
-     * Gets a list of all squares on the chessboard.
-     *
-     * @return A list containing all squares.
-     */
-    public static List<Square> getAll() {
-        List<Square> squareList = new ArrayList<>();
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) {
-                Square square = new Square(x, y);
-                squareList.add(square);
-            }
+	public Square mirrorHorizontally() {
+		return values()[this.ordinal() ^ 7];
+	}
 
-        }
+	public static Square fromIndex(int index) {
+		return values()[index];
+	}
 
-        return squareList;
-    }
+	public static Square from0x88Index(int index) {
+		if (index < 0 || index >= 128)
+			throw new IndexOutOfBoundsException("Index must be between 0 and 127, but was " + index);
+		if ((index & 0x88) != 0) throw new IllegalArgumentException("Index is off the board");
 
-    public static Square fromIndex(int index) {
-        if (index < 0 || index > 63)
-            throw new IndexOutOfBoundsException("Index must be between 0 and 63, but was " + index);
+		int fileIndex = index & 7;
+		int rankIndex = index >> 4;
 
-        int x = index % 8;
-        int y = index / 8;
+		return getSquare(fileIndex, rankIndex);
+	}
 
-        return new Square(x, y);
-    }
+	public static Square parseSquare(String name) {
+		return valueOf(name);
+	}
 
-    /**
-     * Gets the x coordinate of the square, starting with 0 for the a-file.
-     *
-     * @return The x coordinate, an integer between 0 and 7
-     */
-    public int getX() {
-        return x;
-    }
+	public static Square getSquare(int fileIndex, int rankIndex) {
+		if (fileIndex < 0 || fileIndex > 7 || rankIndex < 0 || rankIndex > 7) {
+			throw new IllegalArgumentException("Invalid file or rank index");
+		}
+		return values()[rankIndex * 8 + fileIndex];
+	}
 
-    /**
-     * Gets the y coordinate of the square, starting with 0 for the first rank.
-     *
-     * @return The y coordinate, an integer between 0 and 7
-     */
-    public int getY() {
-        return y;
-    }
+	public static Square getSquare(char file, int rank) {
+		if (file < 'a' || file > 'h' || rank < 1 || rank > 8) {
+			throw new IllegalArgumentException("Invalid file or rank index");
+		}
+		int index = (rank - 1) * 8 + (file - 'a');
+		return values()[index];
+	}
 
-    /**
-     * Checks if the square is dark.
-     *
-     * @return {@code True} if the square is dark, otherwise {@code false}.
-     */
-    public boolean isDark() {
-        return (this.x + this.y) % 2 == 0;
-    }
+	public static int distance(Square square, Square other) {
+		return Math.max(
+				Math.abs(square.getFileIndex() - other.getFileIndex()),
+				Math.abs(square.getRankIndex() - other.getRankIndex()));
+	}
 
-    /**
-     * Checks if the square is light.
-     *
-     * @return {@code True} if the square is light, otherwise {@code false}.
-     */
-    public boolean isLight() {
-        return !isDark();
-    }
+	public static int manhattanDistance(Square square, Square other) {
+		return Math.abs(square.getFileIndex() - other.getFileIndex()) +
+				Math.abs(square.getRankIndex() - other.getRankIndex());
+	}
 
-    /**
-     * Gets the rank of the square.
-     *
-     * @return The rank, an integer between 1 and 8
-     */
-    public int getRank() {
-        return y + 1;
-    }
+	public static int knightDistance(Square square, Square other) {
+		int fileDiff = Math.abs(square.getFileIndex() - other.getFileIndex());
+		int rankDiff = Math.abs(square.getRankIndex() - other.getRankIndex());
 
-    /**
-     * Gets the file of the square.
-     *
-     * @return The file, a character between 'a' and 'h'
-     */
-    public char getFile() {
-        return (char) (this.x + 'a');
-    }
+		if (fileDiff + rankDiff == 1) {
+			return 3;
+		} else if (fileDiff == rankDiff && fileDiff == 2) {
+			return 4;
+		} else if (fileDiff == rankDiff && fileDiff == 1) {
+			if (square.isCornerSquare() || other.isCornerSquare()) {
+				return 4;
+			}
+		}
 
-    /**
-     * Gets the algebraic notation of the square.
-     *
-     * @return The algebraic notation like "a1"
-     */
-    public String getName() {
-        return String.valueOf(getFile()) + getRank();
-    }
-
-    /**
-     * Gets the 0x88 index of the square.
-     *
-     * @return The 0x88 index, an integer between 0 and 119
-     * @see <a href="https://www.chessprogramming.org/0x88">0x88 board representation</a> for more details
-     */
-    public int get0x88Index() {
-        return this.x + 16 * this.y;
-    }
-
-    /**
-     * Gets the index of the square.
-     * Square a1 has index 0 and square h8 has index 63.
-     *
-     * @return The index of the square, an integer between 0 and 63
-     */
-    public int getIndex() {
-        return this.x + 8 * this.y;
-    }
-
-    /**
-     * Checks if the square is on the backrank (1 or 8).
-     *
-     * @return True if the square is on the backrank, otherwise false.
-     */
-    public boolean isBackrank() {
-        return this.y == 0 || this.y == 7;
-    }
-
-    @Override
-    public String toString() {
-        return "Square.fromName('" + this.getName() + "')";
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null || getClass() != obj.getClass())
-            return false;
-        Square other = (Square) obj;
-        return this.getX() == other.getX() && this.getY() == other.getY();
-    }
-
-    @Override
-    public int hashCode() {
-        return this.get0x88Index();
-    }
+		int m = (int) Math.ceil(Math.max(Math.max(fileDiff / 2.0, rankDiff / 2.0), (fileDiff + rankDiff) / 3.0));
+		return m + ((m + fileDiff + rankDiff) % 2);
+	}
 
 }

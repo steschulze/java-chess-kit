@@ -1,6 +1,6 @@
 package de.stefanet.javachesskit.examples;
 
-import de.stefanet.javachesskit.board0x88.Move;
+import de.stefanet.javachesskit.Move;
 import de.stefanet.javachesskit.board0x88.Position;
 
 

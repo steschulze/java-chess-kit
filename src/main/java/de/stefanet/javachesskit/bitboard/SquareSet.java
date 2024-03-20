@@ -1,5 +1,7 @@
 package de.stefanet.javachesskit.bitboard;
 
+import de.stefanet.javachesskit.Square;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;

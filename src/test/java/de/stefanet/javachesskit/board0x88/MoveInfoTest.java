@@ -1,6 +1,7 @@
 package de.stefanet.javachesskit.board0x88;
 
-import de.stefanet.javachesskit.Square;
+import de.stefanet.javachesskit.Move;
+import de.stefanet.javachesskit.MoveInfo;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,7 +40,7 @@ class MoveInfoTest {
 	void testHashCode() {
 		Position position = new Position();
 		MoveInfo moveInfo1 = position.getMoveInfo(Move.fromUCI("e2e4"));
-		MoveInfo moveInfo2 = position.getMoveInfo(new Move(Square.fromName("e2"), Square.fromName("e4")));
+		MoveInfo moveInfo2 = position.getMoveInfo(new Move(Square.parseSquare("e2"), Square.parseSquare("e4")));
 		MoveInfo moveInfo3 = position.getMoveInfo(Move.fromUCI("d2d4"));
 
 		assertEquals(moveInfo1.hashCode(), moveInfo2.hashCode());

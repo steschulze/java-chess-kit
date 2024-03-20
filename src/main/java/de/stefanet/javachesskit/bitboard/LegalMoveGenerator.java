@@ -1,6 +1,6 @@
 package de.stefanet.javachesskit.bitboard;
 
-import de.stefanet.javachesskit.board0x88.Move;
+import de.stefanet.javachesskit.Move;
 
 import java.util.ArrayList;
 import java.util.Iterator;

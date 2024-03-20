@@ -9,10 +9,10 @@ class SquareTest {
 
     @Test
     void testSquareEquality() {
-        Square square1 = Square.fromName("b4");
-        Square square2 = Square.fromName("b4");
-        Square square3 = Square.fromName("b3");
-        Square square4 = Square.fromName("f3");
+        Square square1 = Square.parseSquare("b4");
+        Square square2 = Square.parseSquare("b4");
+        Square square3 = Square.parseSquare("b3");
+        Square square4 = Square.parseSquare("f3");
 
         assertEquals(square1, square1);
         assertEquals(square1, square2);
@@ -27,50 +27,50 @@ class SquareTest {
 
     @Test
     void testSimpleProperties() {
-        Square f7 = Square.fromName("f7");
+        Square f7 = Square.parseSquare("f7");
         assertFalse(f7.isDark());
         assertTrue(f7.isLight());
         assertEquals(7, f7.getRank());
         assertEquals('f', f7.getFile());
         assertEquals("f7", f7.getName());
         assertEquals(101, f7.get0x88Index());
-        assertEquals(5, f7.getX());
-        assertEquals(6, f7.getY());
+        assertEquals(5, f7.getFileIndex());
+        assertEquals(6, f7.getRankIndex());
         assertFalse(f7.isBackrank());
     }
 
     @Test
     void testCreation() {
-        assertEquals(new Square(3, 5), Square.fromName("d6"));
-        assertEquals(Square.from0x88Index(2), Square.fromName("c1"));
-        assertEquals(Square.fromRankAndFile(2, 'g'), Square.fromName("g2"));
+        assertEquals(Square.getSquare(3, 5), Square.parseSquare("d6"));
+        assertEquals(Square.from0x88Index(2), Square.parseSquare("c1"));
+        assertEquals(Square.getSquare(2, 'g'), Square.parseSquare("g2"));
     }
 
     @Test
     void testFromName_wrongLength() {
-        assertThrows(IllegalArgumentException.class, () -> Square.fromName("abc"));
+        assertThrows(IllegalArgumentException.class, () -> Square.parseSquare("abc"));
     }
 
     @Test
     void testFromName_wrongFile() {
-        assertThrows(IllegalArgumentException.class, () -> Square.fromName("s6"));
+        assertThrows(IllegalArgumentException.class, () -> Square.parseSquare("s6"));
     }
 
     @Test
     void testFromName_wrongRank() {
-        assertThrows(IllegalArgumentException.class, () -> Square.fromName("e9"));
-        assertThrows(IllegalArgumentException.class, () -> Square.fromName("e0"));
+        assertThrows(IllegalArgumentException.class, () -> Square.parseSquare("e9"));
+        assertThrows(IllegalArgumentException.class, () -> Square.parseSquare("e0"));
     }
 
     @Test
     void testFromRankAndFile_wrongRank() {
-        assertThrows(IllegalArgumentException.class, () -> Square.fromRankAndFile(9, 'd'));
-        assertThrows(IllegalArgumentException.class, () -> Square.fromRankAndFile(-1, 'd'));
+        assertThrows(IllegalArgumentException.class, () -> Square.getSquare(9, 'd'));
+        assertThrows(IllegalArgumentException.class, () -> Square.getSquare(-1, 'd'));
     }
 
     @Test
     void testFromRankAndFile_wrongFile() {
-        assertThrows(IllegalArgumentException.class, () -> Square.fromRankAndFile(4, 'n'));
+        assertThrows(IllegalArgumentException.class, () -> Square.getSquare(4, 'n'));
     }
 
     @Test
@@ -89,33 +89,24 @@ class SquareTest {
     }
 
     @Test
-    void testGetAllSquares() {
-        Square a1 = Square.fromName("a1");
-        Square h8 = Square.fromName("h8");
-
-        assertTrue(Square.getAll().contains(a1));
-        assertTrue(Square.getAll().contains(h8));
-    }
-
-    @Test
     void testIsLightSquare() {
-        Square d1 = Square.fromName("d1");
+        Square d1 = Square.parseSquare("d1");
         assertTrue(d1.isLight());
         assertFalse(d1.isDark());
     }
 
     @Test
     void testIsDarkSquare() {
-        Square d8 = Square.fromName("d8");
+        Square d8 = Square.parseSquare("d8");
         assertTrue(d8.isDark());
         assertFalse(d8.isLight());
     }
 
     @Test
     void testIsBackrank() {
-        Square a1 = Square.fromName("a1");
-        Square h8 = Square.fromName("h8");
-        Square e4 = Square.fromName("e4");
+        Square a1 = Square.parseSquare("a1");
+        Square h8 = Square.parseSquare("h8");
+        Square e4 = Square.parseSquare("e4");
 
         assertTrue(a1.isBackrank());
         assertTrue(h8.isBackrank());
@@ -124,13 +115,13 @@ class SquareTest {
 
     @Test
     void testToString() {
-        Square square = Square.fromRankAndFile(3, 'c');
+        Square square = Square.getSquare(3, 'c');
         assertEquals("Square.fromName('c3')", square.toString());
     }
 
     @Test
     void testHashCode() {
-        Square square = Square.fromName("e4");
+        Square square = Square.parseSquare("e4");
         assertEquals(0x34, square.hashCode());
     }
 

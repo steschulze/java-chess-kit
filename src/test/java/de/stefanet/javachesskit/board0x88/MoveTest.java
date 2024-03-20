@@ -1,7 +1,7 @@
 package de.stefanet.javachesskit.board0x88;
 
+import de.stefanet.javachesskit.Move;
 import de.stefanet.javachesskit.PieceType;
-import de.stefanet.javachesskit.Square;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,18 +10,18 @@ class MoveTest {
 
     @Test
     void testGetUciMove_promotion() {
-        Move move = new Move(Square.fromName("d7"), Square.fromName("e8"), PieceType.KNIGHT);
+        Move move = new Move(Square.parseSquare("d7"), Square.parseSquare("e8"), PieceType.KNIGHT);
         assertEquals("d7e8n", move.getUciMove());
     }
 
     @Test
     void testMoveCreation_wrongPromotion() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new Move(Square.fromName("e4"), Square.fromName("e5"), PieceType.KNIGHT);
+            new Move(Square.parseSquare("e4"), Square.parseSquare("e5"), PieceType.KNIGHT);
         });
 
         assertThrows(IllegalArgumentException.class, () -> {
-            new Move(Square.fromName("e7"), Square.fromName("e8"), PieceType.PAWN);
+            new Move(Square.parseSquare("e7"), Square.parseSquare("e8"), PieceType.PAWN);
         });
     }
 
@@ -64,7 +64,7 @@ class MoveTest {
 
     @Test
     void testHashCode() {
-        Move move1 = new Move(Square.fromName("e7"), Square.fromName("e8"));
+        Move move1 = new Move(Square.parseSquare("e7"), Square.parseSquare("e8"));
         Move move2 = Move.fromUCI("e7e8");
         Move move3 = Move.fromUCI("e7e8r");
 

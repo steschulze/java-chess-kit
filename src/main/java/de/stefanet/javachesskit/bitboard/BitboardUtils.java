@@ -1,5 +1,7 @@
 package de.stefanet.javachesskit.bitboard;
 
+import de.stefanet.javachesskit.Square;
+
 import java.util.Iterator;
 
 import static de.stefanet.javachesskit.bitboard.Bitboard.ALL;

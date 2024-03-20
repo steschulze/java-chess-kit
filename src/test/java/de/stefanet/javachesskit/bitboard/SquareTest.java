@@ -2,7 +2,7 @@ package de.stefanet.javachesskit.bitboard;
 
 import org.junit.jupiter.api.Test;
 
-import static de.stefanet.javachesskit.bitboard.Square.*;
+import static de.stefanet.javachesskit.Square.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SquareTest {

@@ -1,9 +1,6 @@
 package de.stefanet.javachesskit.bitboard;
 
-import de.stefanet.javachesskit.Color;
-import de.stefanet.javachesskit.InvalidMoveException;
-import de.stefanet.javachesskit.Piece;
-import de.stefanet.javachesskit.PieceType;
+import de.stefanet.javachesskit.*;
 
 import java.util.HashMap;
 import java.util.Iterator;

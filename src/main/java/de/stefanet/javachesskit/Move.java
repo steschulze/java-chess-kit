@@ -1,7 +1,4 @@
-package de.stefanet.javachesskit.board0x88;
-
-import de.stefanet.javachesskit.PieceType;
-import de.stefanet.javachesskit.Square;
+package de.stefanet.javachesskit;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -62,8 +59,8 @@ public class Move {
         Matcher matcher = uci_regex.matcher(move);
         if (!matcher.matches()) throw new IllegalArgumentException("No uci format: " + move);
 
-        Square source = Square.fromName(matcher.group(1));
-        Square target = Square.fromName(matcher.group(2));
+        Square source = Square.parseSquare(matcher.group(1));
+        Square target = Square.parseSquare(matcher.group(2));
         PieceType promotion = null;
         if (!matcher.group(3).isEmpty()) {
             promotion = PieceType.fromSymbol(matcher.group(3).charAt(0));
