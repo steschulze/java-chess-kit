@@ -8,8 +8,8 @@ import de.stefanet.javachesskit.PieceType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static de.stefanet.javachesskit.bitboard.Bitboard.*;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.*;
-import static de.stefanet.javachesskit.bitboard.Bitboard.SQUARES;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Squares.*;
 
 public class BaseBoard {
@@ -269,6 +269,69 @@ public class BaseBoard {
 		return null;
 	}
 
+	public SquareSet pieces(PieceType type, Color color) {
+		return new SquareSet(pieceMask(type, color));
+	}
+
+	public long attackMask(Square square) {
+		long mask = SQUARES[square.ordinal()];
+
+		if ((mask & this.pawns) != 0) {
+			int color = (mask & this.whitePieces) != 0 ? 0 : 1;
+			return PAWN_ATTACKS[color][square.ordinal()];
+		} else if ((mask & this.knights) != 0) {
+			return KNIGHT_ATTACKS[square.ordinal()];
+		} else if ((mask & this.knights) != 0) {
+			return KING_ATTACKS[square.ordinal()];
+		} else {
+			long attacks = 0;
+			if ((mask & this.bishops) != 0 || (mask & this.queens) != 0) {
+				Map<Long, Long> attackMap = DIAGONAL_ATTACKS.get(square.ordinal());
+				attacks = attackMap.get(DIAGONAL_MASKS[square.ordinal()] & this.occupied);
+			}
+			if ((mask & this.rooks) != 0 || (mask & this.queens) != 0) {
+				Map<Long, Long> rankAttackMap = RANK_ATTACKS.get(square.ordinal());
+				Map<Long, Long> fileAttackMap = FILE_ATTACKS.get(square.ordinal());
+
+				attacks |= rankAttackMap.get(RANK_MASKS[square.ordinal()] & this.occupied)
+						| fileAttackMap.get(FILE_MASKS[square.ordinal()] & this.occupied);
+			}
+			return attacks;
+		}
+	}
+
+	public SquareSet attacks(Square square) {
+		return new SquareSet(attackMask(square));
+	}
+
+	private long attackersMask(Color color, Square square, long occupied) {
+		long rankPieces = RANK_MASKS[square.ordinal()] & occupied;
+		long filePieces = FILE_MASKS[square.ordinal()] & occupied;
+		long diagPieces = DIAGONAL_MASKS[square.ordinal()] & occupied;
+
+		long queensAndRooks = this.queens | this.rooks;
+		long queensAndBishops = this.queens | this.bishops;
+
+		long attackers = (KING_ATTACKS[square.ordinal()] & this.kings) |
+				KNIGHT_ATTACKS[square.ordinal()] & this.knights |
+				RANK_ATTACKS.get(square.ordinal()).get(rankPieces) & queensAndRooks |
+				FILE_ATTACKS.get(square.ordinal()).get(rankPieces) & queensAndRooks |
+				DIAGONAL_ATTACKS.get(square.ordinal()).get(diagPieces) & queensAndBishops |
+				PAWN_ATTACKS[color.other().ordinal()][square.ordinal()] & this.pawns;
+		return attackers & (color == Color.WHITE ? this.whitePieces : this.blackPieces);
+	}
+
+	public long attackersMask(Color color, Square square) {
+		return attackersMask(color, square, this.occupied);
+	}
+
+	public boolean isAttackedBy(Color color, Square square) {
+		return attackersMask(color, square) != 0;
+	}
+
+	public SquareSet attackers(Color color, Square square) {
+		return new SquareSet(attackersMask(color, square));
+	}
 
 	public String getBoardFen() {
 		StringBuilder sb = new StringBuilder();
