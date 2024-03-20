@@ -258,17 +258,15 @@ public class BaseBoard {
 		}
 	}
 
-	public long getKingSquare(Color color) {
+	public Square getKingSquare(Color color) {
 		long colorMask = (color == Color.WHITE) ? this.whitePieces : this.blackPieces;
-		long kingMask = this.kings & colorMask;
-
-		for (int i = 0; i < 64; i++) {
-			if (((kingMask >> i) & 1) == 1) {
-				return SQUARES[i];
-			}
+		long kingMask = this.kings & colorMask & ~this.promoted;
+		if (kingMask != 0) {
+			return Square.fromIndex(BitboardUtils.msb(kingMask));
 		}
 
-		return 0;
+
+		return null;
 	}
 
 
