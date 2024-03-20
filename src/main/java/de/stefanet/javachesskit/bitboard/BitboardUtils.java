@@ -2,8 +2,6 @@ package de.stefanet.javachesskit.bitboard;
 
 import de.stefanet.javachesskit.Square;
 
-import java.util.Iterator;
-
 import static de.stefanet.javachesskit.bitboard.Bitboard.ALL;
 import static de.stefanet.javachesskit.bitboard.Bitboard.RAYS;
 
@@ -16,22 +14,18 @@ public class BitboardUtils {
 		return 63 - Long.numberOfLeadingZeros(bb);
 	}
 
-	public static Iterator<Square> scanForward(long bb) {
-		return new Iterator<Square>() {
-			long currentBB = bb;
+	public static int[] scanForward(long bb) {
+		int count = Long.bitCount(bb);
+		int[] indices = new int[count];
 
-			@Override
-			public boolean hasNext() {
-				return currentBB != 0;
+		int index = 0;
+		for (int i = 0; i <= 63 && index < count; i++) {
+			if (((bb >> i) & 1) == 1) {
+				indices[index++] = i;
 			}
+		}
 
-			@Override
-			public Square next() {
-				int square = Long.numberOfTrailingZeros(currentBB);
-				currentBB ^= 1L << square;
-				return Square.fromIndex(square);
-			}
-		};
+		return indices;
 	}
 
 	public static int[] scanReversed(long bb) {

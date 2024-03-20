@@ -35,7 +35,9 @@ public class SquareSet implements Set<Square> {
 
 	@Override
 	public Iterator<Square> iterator() {
-		return BitboardUtils.scanForward(mask);
+		return Arrays.stream(BitboardUtils.scanForward(mask))
+				.mapToObj(Square::fromIndex)
+				.iterator();
 	}
 
 	@Override
