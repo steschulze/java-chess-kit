@@ -6,6 +6,7 @@ import de.stefanet.javachesskit.Piece;
 import de.stefanet.javachesskit.PieceType;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import static de.stefanet.javachesskit.bitboard.Bitboard.*;
@@ -425,5 +426,27 @@ public class BaseBoard {
 			}
 		}
 
+	}
+
+	public Map<Square, Piece> getPieceMap(long mask) {
+		Map<Square, Piece> result = new HashMap<>();
+
+		for (Iterator<Square> it = BitboardUtils.scanReversed(mask); it.hasNext(); ) {
+			Square square = it.next();
+			result.put(square, pieceAt(square));
+		}
+
+		return result;
+	}
+
+	public Map<Square, Piece> getPieceMap() {
+		return getPieceMap(Bitboard.ALL);
+	}
+
+	public void setPieceMap(Map<Square, Piece> pieceMap) {
+		clearBitboards();
+		for (Map.Entry<Square, Piece> entry : pieceMap.entrySet()) {
+			set(entry.getKey(), entry.getValue());
+		}
 	}
 }
