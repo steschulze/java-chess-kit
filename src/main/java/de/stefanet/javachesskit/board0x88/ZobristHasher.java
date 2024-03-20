@@ -2,6 +2,7 @@ package de.stefanet.javachesskit.board0x88;
 
 import de.stefanet.javachesskit.Color;
 import de.stefanet.javachesskit.Piece;
+import de.stefanet.javachesskit.Square;
 
 public class ZobristHasher {
 	private long[] randomArray;
@@ -23,12 +24,12 @@ public class ZobristHasher {
 	public long hashPosition(Position position) {
 		long key = 0;
 
-		for (Square square : Square.getAll()) {
+		for (Square square : Square.values()) {
 			Piece piece = position.get(square);
 
 			if (piece != null) {
 				int pieceIndex = "pPnNbBrRqQkK".indexOf(piece.getSymbol());
-				key ^= randomArray[64 * pieceIndex + 8 * square.getY() + square.getX()];
+				key ^= randomArray[64 * pieceIndex + 8 * square.getRankIndex() + square.getFileIndex()];
 			}
 		}
 

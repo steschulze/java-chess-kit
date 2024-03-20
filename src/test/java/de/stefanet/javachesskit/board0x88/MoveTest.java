@@ -2,6 +2,7 @@ package de.stefanet.javachesskit.board0x88;
 
 import de.stefanet.javachesskit.Move;
 import de.stefanet.javachesskit.PieceType;
+import de.stefanet.javachesskit.Square;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +29,7 @@ class MoveTest {
     @Test
     void testEquals() {
         Move move1 = Move.fromUCI("e2e4");
-        Move move2 = new Move(Square.fromRankAndFile(2, 'e'), Square.fromRankAndFile(4, 'e'));
+        Move move2 = new Move(Square.getSquare(2, 'e'), Square.getSquare(4, 'e'));
         assertEquals(move1, move1);
         assertEquals(move1, move2);
         assertNotEquals("e2e4", move1);
@@ -58,7 +59,7 @@ class MoveTest {
 
     @Test
     void testToString() {
-        Move move = new Move(Square.fromRankAndFile(2, 'a'), Square.fromRankAndFile(4, 'a'));
+        Move move = new Move(Square.getSquare(2, 'a'), Square.getSquare(4, 'a'));
         assertEquals("Move.fromUCI(a2a4)", move.toString());
     }
 
