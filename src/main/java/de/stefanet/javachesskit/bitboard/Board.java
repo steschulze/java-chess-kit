@@ -324,7 +324,22 @@ public class Board extends BaseBoard {
 					attackedForKing(kingPath | king, this.occupied ^ king) ||
 					attackedForKing(kingTarget, this.occupied ^ king ^ rook ^ rookTarget)
 			)) {
-				//TODO moves.add(...)
+				Square source = Square.fromIndex(BitboardUtils.msb(king));
+				Square target = Square.fromIndex(index);
+
+				if (source == Square.E1 && (this.kings & E1) != 0) {
+					if (target == Square.H1) {
+						moves.add(new Move(Square.E1, Square.G1));
+					} else if (target == Square.A1) {
+						moves.add(new Move(Square.E1, Square.C1));
+					}
+				} else if (source == Square.E8 && (this.kings & E8) != 0) {
+					if (target == Square.H8) {
+						moves.add(new Move(Square.E8, Square.G8));
+					} else if (target == Square.A8) {
+						moves.add(new Move(Square.E8, Square.C8));
+					}
+				}
 			}
 		}
 
