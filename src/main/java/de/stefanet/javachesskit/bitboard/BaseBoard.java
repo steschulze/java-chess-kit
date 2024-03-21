@@ -312,7 +312,7 @@ public class BaseBoard {
 		return new SquareSet(attackMask(square));
 	}
 
-	private long attackersMask(Color color, Square square, long occupied) {
+	protected long attackersMask(Color color, Square square, long occupied) {
 		long rankPieces = RANK_MASKS[square.ordinal()] & occupied;
 		long filePieces = FILE_MASKS[square.ordinal()] & occupied;
 		long diagPieces = DIAGONAL_MASKS[square.ordinal()] & occupied;

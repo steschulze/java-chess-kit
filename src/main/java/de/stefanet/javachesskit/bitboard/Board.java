@@ -346,8 +346,10 @@ public class Board extends BaseBoard {
 		return moves;
 	}
 
-	private boolean attackedForKing(long l, long l1) {
-		//TODO
+	private boolean attackedForKing(long path, long occupied) {
+		for (int index : BitboardUtils.scanReversed(path)) {
+			if (attackersMask(turn.other(), Square.fromIndex(index), occupied) != 0) return true;
+		}
 		return false;
 	}
 
