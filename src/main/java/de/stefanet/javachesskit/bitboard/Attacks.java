@@ -2,7 +2,10 @@ package de.stefanet.javachesskit.bitboard;
 
 import de.stefanet.javachesskit.Square;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static de.stefanet.javachesskit.bitboard.Bitboard.*;
 
@@ -42,22 +45,19 @@ public class Attacks {
 				((Bitboard.Files.FILE_A | Bitboard.Files.FILE_H) & ~Bitboard.FILES[file]));
 	}
 
-	private static Iterator<Long> carryRippler(long mask) {
-		return new Iterator<Long>() {
-			long subset = EMPTY;
+	private static long[] carryRippler(long mask) {
+		int size = (int) Math.pow(2, Long.bitCount(mask));
 
-			@Override
-			public boolean hasNext() {
-				return subset != 0;
-			}
+		long[] result = new long[size];
+		int index = 0;
 
-			@Override
-			public Long next() {
-				long currentSubset = subset;
-				subset = (subset - mask) & mask;
-				return currentSubset;
-			}
-		};
+		long subset = 0;
+		do {
+			result[index++] = subset;
+			subset = (subset - mask) & mask;
+		} while (subset != 0 && index < size);
+
+		return result;
 	}
 
 	public static AttackTable attackTable(int... deltas) {
@@ -68,8 +68,7 @@ public class Attacks {
 			Map<Long, Long> squareAttacks = new HashMap<>();
 			long mask = Attacks.slidingAttacks(square, 0, deltas) & ~edges(square);
 
-			for (Iterator<Long> it = carryRippler(mask); it.hasNext(); ) {
-				long subset = it.next();
+			for (long subset : carryRippler(mask)) {
 				squareAttacks.put(subset, Attacks.slidingAttacks(square, subset, deltas));
 			}
 
@@ -87,12 +86,12 @@ public class Attacks {
 			long[] raysRow = new long[64];
 
 			for (int b = 0; b < SQUARES.length; b++) {
-				if ((DIAGONAL_ATTACKS.get(a).get(0) & SQUARES[b]) != EMPTY) {
-					raysRow[b] = (DIAGONAL_ATTACKS.get(a).get(0) & DIAGONAL_ATTACKS.get(b).get(0)) | SQUARES[a] | SQUARES[b];
-				} else if ((RANK_ATTACKS.get(a).get(0) & SQUARES[b]) != EMPTY) {
-					raysRow[b] = RANK_ATTACKS.get(a).get(0) | SQUARES[a];
-				} else if ((FILE_ATTACKS.get(a).get(0) & SQUARES[b]) != EMPTY) {
-					raysRow[b] = FILE_ATTACKS.get(a).get(0) | SQUARES[a];
+				if ((DIAGONAL_ATTACKS.get(a).get(0L) & SQUARES[b]) != EMPTY) {
+					raysRow[b] = (DIAGONAL_ATTACKS.get(a).get(0L) & DIAGONAL_ATTACKS.get(b).get(0L)) | SQUARES[a] | SQUARES[b];
+				} else if ((RANK_ATTACKS.get(a).get(0L) & SQUARES[b]) != EMPTY) {
+					raysRow[b] = RANK_ATTACKS.get(a).get(0L) | SQUARES[a];
+				} else if ((FILE_ATTACKS.get(a).get(0L) & SQUARES[b]) != EMPTY) {
+					raysRow[b] = FILE_ATTACKS.get(a).get(0L) | SQUARES[a];
 				} else {
 					raysRow[b] = EMPTY;
 				}

@@ -34,7 +34,6 @@ public class Bitboard {
 	static long[] KNIGHT_ATTACKS = Attacks.generateKnightAttacks();
 	static long[] KING_ATTACKS = Attacks.generateKingAttacks();
 	static long[][] PAWN_ATTACKS = Attacks.generatePawnAttacks();
-	static long[][] RAYS = Attacks.rays();
 
 	static long[] DIAGONAL_MASKS = Attacks.attackTable(-9, -7, 7, 9).getMaskTable();
 	static List<Map<Long, Long>> DIAGONAL_ATTACKS = Attacks.attackTable(-9, -7, 7, 9).getAttackTable();
@@ -43,6 +42,7 @@ public class Bitboard {
 
 	static long[] RANK_MASKS = Attacks.attackTable(-1, 1).getMaskTable();
 	static List<Map<Long, Long>> RANK_ATTACKS = Attacks.attackTable(-1, 1).getAttackTable();
+	static long[][] RAYS = Attacks.rays();
 
 	public static class Files {
 		static long FILE_A = 0x0101010101010101L;
