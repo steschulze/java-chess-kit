@@ -7,11 +7,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static de.stefanet.javachesskit.bitboard.Bitboard.*;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Files.*;
-import static de.stefanet.javachesskit.bitboard.Bitboard.PAWN_ATTACKS;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_1;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_8;
-import static de.stefanet.javachesskit.bitboard.Bitboard.SQUARES;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Squares.*;
 
 public class Board extends BaseBoard {
@@ -286,6 +285,10 @@ public class Board extends BaseBoard {
 		return moves;
 	}
 
+	private List<Move> generateCastlingMoves() {
+		return generateCastlingMoves(ALL, ALL);
+	}
+
 	private List<Move> generateCastlingMoves(long sourceMask, long targetMask) {
 		List<Move> moves = new ArrayList<>();
 
@@ -376,8 +379,43 @@ public class Board extends BaseBoard {
 	}
 
 	public boolean isPseudoLegal(Move move) {
+		PieceType type = pieceTypeAt(move.getSource());
+		if (type == null) return false;
 
-		return false;
+		long sourceMask = SQUARES[move.getSource().ordinal()];
+		long targetMask = SQUARES[move.getTarget().ordinal()];
+
+		long colorMask = turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
+
+		if ((colorMask & sourceMask) == 0)
+			return false;
+
+		if (move.getPromotion() != null) {
+			if (type != PieceType.PAWN)
+				return false;
+
+			if (turn.equals(Color.WHITE) && move.getTarget().getRank() != 8) {
+				return false;
+			} else if (turn.equals(Color.BLACK) && move.getTarget().getRank() != 1) {
+				return false;
+			}
+		}
+
+		if (type == PieceType.KING) {
+			if (generateCastlingMoves().contains(move)) {
+				return true;
+			}
+		}
+
+		if ((colorMask & targetMask) != 0) {
+			return false;
+		}
+
+		if (type == PieceType.PAWN) {
+			return generatePseudoLegalMoves(sourceMask, targetMask).contains(move);
+		}
+
+		return (attackMask(move.getSource()) & targetMask) != 0;
 	}
 
 }
