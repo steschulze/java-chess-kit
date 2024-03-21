@@ -354,8 +354,20 @@ public class Board extends BaseBoard {
 	}
 
 	private long cleanCastlingRights() {
-		//TODO
-		return 0;
+		long castling = this.castlingRights & this.rooks;
+		long whiteCastling = castling & RANK_1 & this.whitePieces;
+		long blackCastling = castling & RANK_8 & this.blackPieces;
+
+		whiteCastling &= (A1 | H1);
+		blackCastling &= (A8 | H8);
+
+		if ((this.whitePieces & this.kings & ~this.promoted & E1) == 0) {
+			whiteCastling = 0;
+		}
+		if ((this.blackPieces & this.kings & ~this.promoted & E8) == 0) {
+			blackCastling = 0;
+		}
+		return whiteCastling | blackCastling;
 	}
 
 	public boolean isLegal(Move move) {
