@@ -2,10 +2,7 @@ package de.stefanet.javachesskit.bitboard;
 
 import de.stefanet.javachesskit.Square;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public class SquareSet implements Set<Square> {
 
@@ -134,5 +131,18 @@ public class SquareSet implements Set<Square> {
 	@Override
 	public void clear() {
 		this.mask = 0;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		SquareSet other = (SquareSet) o;
+		return this.mask == other.mask;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(mask);
 	}
 }
