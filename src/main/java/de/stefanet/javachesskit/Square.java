@@ -74,7 +74,7 @@ public enum Square {
 	}
 
 	public static Square parseSquare(String name) {
-		return valueOf(name);
+		return valueOf(name.toUpperCase());
 	}
 
 	public static Square getSquare(int fileIndex, int rankIndex) {

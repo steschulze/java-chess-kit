@@ -2,9 +2,7 @@ package de.stefanet.javachesskit.bitboard;
 
 import de.stefanet.javachesskit.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static de.stefanet.javachesskit.bitboard.Bitboard.*;
@@ -167,12 +165,12 @@ public class Board extends BaseBoard {
 		return Collections.emptyList();
 	}
 
-	public List<Move> generatePseudoLegalMoves() {
+	public Set<Move> generatePseudoLegalMoves() {
 		return generatePseudoLegalMoves(Bitboard.ALL, Bitboard.ALL);
 	}
 
-	public List<Move> generatePseudoLegalMoves(long sourceMask, long targetMask) {
-		List<Move> moveList = new ArrayList<>();
+	public Set<Move> generatePseudoLegalMoves(long sourceMask, long targetMask) {
+		Set<Move> moveList = new HashSet<>();
 		long ownPieces = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
 
 		// non pawn moves
@@ -263,8 +261,8 @@ public class Board extends BaseBoard {
 		return moveList;
 	}
 
-	private List<Move> generatePseudoLegalEnPassant(long sourceMask, long targetMask) {
-		List<Move> moves = new ArrayList<>();
+	private Set<Move> generatePseudoLegalEnPassant(long sourceMask, long targetMask) {
+		Set<Move> moves = new HashSet<>();
 
 		if (epSquare == null || (SQUARES[epSquare.ordinal()] & targetMask) == 0) return moves;
 
@@ -285,12 +283,12 @@ public class Board extends BaseBoard {
 		return moves;
 	}
 
-	private List<Move> generateCastlingMoves() {
+	private Set<Move> generateCastlingMoves() {
 		return generateCastlingMoves(ALL, ALL);
 	}
 
-	private List<Move> generateCastlingMoves(long sourceMask, long targetMask) {
-		List<Move> moves = new ArrayList<>();
+	private Set<Move> generateCastlingMoves(long sourceMask, long targetMask) {
+		Set<Move> moves = new HashSet<>();
 
 		long backrank = this.turn.equals(Color.WHITE) ? RANK_1 : RANK_8;
 		long colorMask = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
