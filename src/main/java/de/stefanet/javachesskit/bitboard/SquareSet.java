@@ -8,6 +8,10 @@ public class SquareSet implements Set<Square> {
 
 	private long mask;
 
+	public SquareSet() {
+		this(0);
+	}
+
 	public SquareSet(long squares) {
 		this.mask = squares;
 	}
@@ -24,7 +28,7 @@ public class SquareSet implements Set<Square> {
 
 	@Override
 	public boolean contains(Object o) {
-		if (o.getClass() != Square.class) return false;
+		if (o == null || o.getClass() != Square.class) return false;
 
 		Square square = (Square) o;
 		return (Bitboard.SQUARES[square.ordinal()] & mask) != 0;
@@ -112,7 +116,7 @@ public class SquareSet implements Set<Square> {
 		for (Iterator<Square> iterator = iterator(); iterator.hasNext(); ) {
 			Square square = iterator.next();
 			if (!c.contains(square)) {
-				iterator.remove();
+				remove(square);
 				modified = true;
 			}
 		}
