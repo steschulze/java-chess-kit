@@ -6,6 +6,8 @@ import de.stefanet.javachesskit.PieceType;
 import de.stefanet.javachesskit.Square;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
+
 import static de.stefanet.javachesskit.bitboard.Bitboard.Squares.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -129,7 +131,19 @@ class BaseBoardTest {
 		BaseBoard board = new BaseBoard();
 		Square square = board.getKingSquare(Color.WHITE);
 
-		assertEquals(E1, square);
+		assertEquals(Square.E1, square);
+	}
+
+	@Test
+	void testPieceMap() {
+		BaseBoard board1 = new BaseBoard();
+		BaseBoard board2 = new BaseBoard(null);
+
+		board2.setPieceMap(board1.getPieceMap());
+		assertEquals(board1, board2);
+
+		board2.setPieceMap(Collections.emptyMap());
+		assertNotEquals(board1, board2);
 	}
 
 }

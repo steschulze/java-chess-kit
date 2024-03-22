@@ -4,6 +4,7 @@ import de.stefanet.javachesskit.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static de.stefanet.javachesskit.bitboard.Bitboard.*;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.*;
@@ -444,5 +445,27 @@ public class BaseBoard {
 		for (Map.Entry<Square, Piece> entry : pieceMap.entrySet()) {
 			set(entry.getKey(), entry.getValue());
 		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		BaseBoard board = (BaseBoard) o;
+		return pawns == board.pawns &&
+				knights == board.knights &&
+				bishops == board.bishops &&
+				rooks == board.rooks &&
+				queens == board.queens &&
+				kings == board.kings &&
+				promoted == board.promoted &&
+				whitePieces == board.whitePieces &&
+				blackPieces == board.blackPieces &&
+				occupied == board.occupied;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(pawns, knights, bishops, rooks, queens, kings, promoted, whitePieces, blackPieces, occupied);
 	}
 }
