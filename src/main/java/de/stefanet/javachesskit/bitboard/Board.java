@@ -236,7 +236,7 @@ public class Board extends BaseBoard {
 		// single pawn advance
 		for (int index : BitboardUtils.scanReversed(singlePawnMoves)) {
 			Square target = Square.fromIndex(index);
-			Square source = Square.fromIndex(index + turn.forwardDirection() * 8);
+			Square source = Square.fromIndex(index - turn.forwardDirection() * 8);
 
 			if (target.isBackrank()) {
 				// pawn advance with promotion
@@ -253,7 +253,7 @@ public class Board extends BaseBoard {
 		// double pawn advance
 		for (int index : BitboardUtils.scanReversed(doublePawnMoves)) {
 			Square target = Square.fromIndex(index);
-			Square source = Square.fromIndex(index + turn.forwardDirection() * 16);
+			Square source = Square.fromIndex(index - turn.forwardDirection() * 16);
 			moveList.add(new Move(source, target));
 		}
 
