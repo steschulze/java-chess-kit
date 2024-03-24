@@ -372,8 +372,174 @@ public class Board extends BaseBoard {
 	}
 
 	public boolean isLegal(Move move) {
+		return isPseudoLegal(move) && !isKingInCheck(move);
+	}
+
+	private boolean isKingInCheck(Move move) {
+		Square kingSquare = this.getKingSquare(this.turn);
+
+		if (kingSquare == null) {
+			return false;
+		}
+
+		long checkers = attackersMask(turn.other(), kingSquare);
+		if (checkers != 0 &&
+				!generateEvations(
+						kingSquare.ordinal(),
+						checkers,
+						SQUARES[move.getSource().ordinal()],
+						SQUARES[move.getTarget().ordinal()]
+				).contains(move)) {
+			return true;
+		}
+
+		return isSafe(kingSquare, this.sliderBlockers(kingSquare.ordinal()), move);
+	}
+
+	private boolean isSafe(Square kingSquare, long blockers, Move move) {
+		if (move.getSource() == kingSquare) {
+			if (isCastling(move)) {
+				return true;
+			} else {
+				return !isAttackedBy(turn.other(), move.getTarget());
+			}
+		} else if (isEnPassant(move)) {
+			return (pinMask(turn, move.getSource()) & SQUARES[move.getTarget().ordinal()]) != 0 &&
+					!epSkewered(kingSquare, move.getSource());
+		} else {
+			return (blockers & SQUARES[move.getSource().ordinal()]) == 0 ||
+					(BitboardUtils.ray(move.getSource().ordinal(), move.getTarget().ordinal())
+							& SQUARES[kingSquare.ordinal()]) != 0;
+		}
+	}
+
+	private boolean epSkewered(Square kingSquare, Square capturer) {
+		if (this.epSquare == null) {
+			throw new IllegalStateException("No ep square");
+		}
+
+		int lastDouble = this.epSquare.ordinal() + ((this.turn == Color.WHITE) ? -8 : 8);
+
+		long occupancy = (this.occupied & ~SQUARES[lastDouble] &
+				~SQUARES[capturer.ordinal()] | SQUARES[this.epSquare.ordinal()]);
+
+		long colorMask = this.turn.equals(Color.WHITE) ? this.blackPieces : this.whitePieces;
+		long horizontalAttackers = colorMask & (this.rooks | this.queens);
+		if ((RANK_ATTACKS.get(kingSquare.ordinal())
+				.get((RANK_MASKS[kingSquare.ordinal()] & occupancy)) & horizontalAttackers) != 0) {
+			return true;
+		}
+
+		long diagonalAttackers = colorMask & (this.bishops | this.queens);
+		if ((DIAGONAL_ATTACKS.get(kingSquare.ordinal())
+				.get((DIAGONAL_MASKS[kingSquare.ordinal()] & occupancy)) & diagonalAttackers) != 0) {
+			return true;
+		}
 
 		return false;
+
+	}
+
+	private long pinMask(Color color, Square square) {
+		Square king = getKingSquare(color);
+		if (king == null) {
+			return Bitboard.ALL;
+		}
+
+		long squareMask = Bitboard.SQUARES[square.ordinal()];
+
+		long[][] attacks = new long[][]{
+				{Bitboard.FILE_ATTACKS.get(king.ordinal()).get(0L), this.rooks | this.queens},
+				{Bitboard.RANK_ATTACKS.get(king.ordinal()).get(0L), this.rooks | this.queens},
+				{Bitboard.DIAGONAL_ATTACKS.get(king.ordinal()).get(0L), this.bishops | this.queens}
+		};
+
+		for (long[] attack : attacks) {
+			long rays = attack[0];
+			if ((rays & squareMask) != 0) {
+				long snipers = rays & attack[1] & this.occupied & (color == Color.WHITE ? this.blackPieces : this.whitePieces);
+				for (int sniper : BitboardUtils.scanReversed(snipers)) {
+					if ((BitboardUtils.between(sniper, king.ordinal()) & (this.occupied | squareMask)) == squareMask) {
+						return BitboardUtils.ray(king.ordinal(), sniper);
+					}
+				}
+				break;
+			}
+		}
+
+		return Bitboard.ALL;
+	}
+
+	private boolean isCastling(Move move) {
+		if ((this.kings & SQUARES[move.getSource().ordinal()]) != 0) {
+			int diff = move.getSource().getFileIndex() - move.getTarget().getFileIndex();
+			long colorMask = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
+			return Math.abs(diff) > 1 || ((this.rooks & colorMask & SQUARES[move.getTarget().ordinal()]) != 0);
+		}
+		return false;
+	}
+
+	private boolean isEnPassant(Move move) {
+		return (this.epSquare == move.getTarget() &&
+				((this.pawns & SQUARES[move.getSource().ordinal()]) != 0) &&
+				(Math.abs(move.getTarget().ordinal() - move.getSource().ordinal()) == 7 ||
+						Math.abs(move.getTarget().ordinal() - move.getSource().ordinal()) == 9) &&
+				((this.occupied & SQUARES[move.getTarget().ordinal()]) == 0));
+	}
+
+	private long sliderBlockers(int kingSquareIndex) {
+		long rooksAndQueens = this.rooks | this.queens;
+		long bishopsAndQueens = this.bishops | this.queens;
+
+		long snipers = ((RANK_ATTACKS.get(kingSquareIndex).get(0L) & rooksAndQueens) |
+				(FILE_ATTACKS.get(kingSquareIndex).get(0L) & rooksAndQueens) |
+				(DIAGONAL_ATTACKS.get(kingSquareIndex).get(0L) & bishopsAndQueens));
+
+		long blockers = 0;
+		long colorMask = this.turn.equals(Color.WHITE) ? this.blackPieces : this.whitePieces;
+		for (int sniper : BitboardUtils.scanReversed(snipers & colorMask)) {
+			long b = BitboardUtils.between(kingSquareIndex, sniper);
+
+			if (b != 0 && SQUARES[BitboardUtils.msb(b)] == b) {
+				blockers |= b;
+			}
+		}
+
+		return blockers & (this.occupied & ~colorMask);
+	}
+
+	private Set<Move> generateEvations(int kingSquareIndex, long checkers, long sourceMask, long targetMask) {
+		Set<Move> moves = new HashSet<>();
+
+		long sliders = checkers & (this.bishops | this.rooks | this.queens);
+		long attacked = 0;
+
+		for (int checker : BitboardUtils.scanReversed(sliders)) {
+			attacked |= BitboardUtils.ray(kingSquareIndex, checker) & ~SQUARES[checker];
+		}
+		if ((SQUARES[kingSquareIndex] & sourceMask) != 0) {
+			long colorMask = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
+			long mask = KING_ATTACKS[kingSquareIndex] & ~colorMask & ~attacked & targetMask;
+			int[] targets = BitboardUtils.scanReversed(mask);
+			for (int target : targets) {
+				moves.add(new Move(Square.fromIndex(kingSquareIndex), Square.fromIndex(target)));
+			}
+		}
+		int checker = BitboardUtils.msb(checkers);
+		if (SQUARES[checker] == checkers) {
+			long target = BitboardUtils.between(kingSquareIndex, checker) | checkers;
+			moves.addAll(generatePseudoLegalMoves(~this.kings & sourceMask, target & targetMask));
+
+			if (this.epSquare != null && (SQUARES[epSquare.ordinal()] & target) != 0) {
+				int lastDouble = this.epSquare.ordinal() - 8 * turn.forwardDirection();
+				if (lastDouble == checker) {
+					moves.addAll(generatePseudoLegalEnPassant(sourceMask, targetMask));
+				}
+			}
+		}
+
+
+		return moves;
 	}
 
 	public boolean isPseudoLegal(Move move) {
