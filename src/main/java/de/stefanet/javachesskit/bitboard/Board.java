@@ -756,6 +756,17 @@ public class Board extends BaseBoard {
 		this.turn = turn.other();
 	}
 
+	public Move pop() {
+		Move move = this.moveStack.pop();
+		this.stateStack.pop().restore(this);
+
+		return move;
+	}
+
+	public Move peek() {
+		return this.moveStack.peek();
+	}
+
 	private boolean isZeroingMove(Move move) {
 		long moveMask = SQUARES[move.getSource().ordinal()] ^ SQUARES[move.getTarget().ordinal()];
 		long otherColorMask = this.turn.equals(Color.WHITE) ? this.blackPieces : this.whitePieces;
