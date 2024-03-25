@@ -126,7 +126,7 @@ public class Attacks {
 	public static long[][] generatePawnAttacks() {
 		long[][] pawnAttacks = new long[2][64];
 
-		int[][] deltas = {{-7, -9}, {7, 9}};
+		int[][] deltas = {{7, 9}, {-7, -9}};
 
 		for (int i = 0; i < 2; i++) {
 			long[] attacks = new long[64];

@@ -48,7 +48,7 @@ public class Board extends BaseBoard {
 		}
 	}
 
-	private void setFen(String fen) {
+	public void setFen(String fen) {
 		String[] parts = fen.split(" ");
 
 		if (parts.length != 6) {
@@ -230,7 +230,7 @@ public class Board extends BaseBoard {
 		for (int captureIndex : BitboardUtils.scanReversed(captures)) {
 			Square source = Square.fromIndex(captureIndex);
 
-			long targets = Bitboard.PAWN_ATTACKS[turn.ordinal()][source.ordinal()]
+			long targets = Bitboard.PAWN_ATTACKS[turn.ordinal()][captureIndex]
 					& targetMask & (turn.equals(Color.WHITE) ? this.blackPieces : this.whitePieces);
 
 			for (int targetIndex : BitboardUtils.scanReversed(targets)) {
@@ -426,7 +426,7 @@ public class Board extends BaseBoard {
 			return true;
 		}
 
-		return isSafe(kingSquare, this.sliderBlockers(kingSquare.ordinal()), move);
+		return !isSafe(kingSquare, this.sliderBlockers(kingSquare.ordinal()), move);
 	}
 
 	private boolean isSafe(Square kingSquare, long blockers, Move move) {
@@ -625,7 +625,7 @@ public class Board extends BaseBoard {
 		}
 		fen.append(" ");
 		fen.append(getCastlingFen()).append(" ");
-		fen.append(this.epSquare == null ? "-" : this.epSquare).append(" ");
+		fen.append(this.epSquare == null ? "-" : this.epSquare.getName()).append(" ");
 
 		fen.append(this.halfMoveClock).append(" ");
 		fen.append(this.fullMoveNumber);
