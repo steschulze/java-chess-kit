@@ -2,9 +2,9 @@ package de.stefanet.javachesskit.bitboard;
 
 import de.stefanet.javachesskit.*;
 
-import java.util.ArrayList;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -25,8 +25,8 @@ public class Board extends BaseBoard {
 	protected int halfMoveClock;
 
 	protected long promoted;
-	private List<Move> moveList;
-	private List<BoardState> stateList;
+	private Deque<Move> moveStack;
+	private Deque<BoardState> stateStack;
 
 	public Board() {
 		this(STARTING_FEN);
@@ -36,8 +36,8 @@ public class Board extends BaseBoard {
 		super(null);
 
 		this.epSquare = null;
-		this.moveList = new ArrayList<>();
-		this.stateList = new ArrayList<>();
+		this.moveStack = new ArrayDeque<>();
+		this.stateStack = new ArrayDeque<>();
 
 		if (fen == null) {
 			clear();
@@ -151,8 +151,8 @@ public class Board extends BaseBoard {
 	}
 
 	private void clearStack() {
-		this.moveList.clear();
-		this.stateList.clear();
+		this.moveStack.clear();
+		this.stateStack.clear();
 	}
 
 	public LegalMoveGenerator legalMoves() {
@@ -664,8 +664,8 @@ public class Board extends BaseBoard {
 	public void push(Move move) {
 		BoardState state = this.getBoardState();
 		this.castlingRights = cleanCastlingRights();
-		this.stateList.add(state);
-		this.moveList.add(move);
+		this.stateStack.add(state);
+		this.moveStack.add(move);
 
 		Square epSquare = this.epSquare;
 		this.epSquare = null;
