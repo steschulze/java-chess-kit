@@ -2,7 +2,10 @@ package de.stefanet.javachesskit.bitboard;
 
 import de.stefanet.javachesskit.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static de.stefanet.javachesskit.bitboard.Bitboard.*;
@@ -160,9 +163,39 @@ public class Board extends BaseBoard {
 		return new PseudoLegalMoveGenerator(this);
 	}
 
-	public List<Move> generateLegalMoves() {
+	public Set<Move> generateLegalMoves(long fromMask, long toMask) {
+		Set<Move> legalMoves = new HashSet<>();
 
-		return Collections.emptyList();
+		long colorMask = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
+		long kingMask = this.kings & colorMask;
+
+		if (kingMask != 0) {
+			int king = BitboardUtils.msb(kingMask);
+			long blockers = sliderBlockers(king);
+			long checkers = attackersMask(turn.other(), Square.fromIndex(king));
+
+			if (checkers != 0) {
+				for (Move move : generateEvations(king, checkers, fromMask, toMask)) {
+					if (isSafe(Square.fromIndex(king), blockers, move)) {
+						legalMoves.add(move);
+					}
+				}
+			} else {
+				for (Move move : generatePseudoLegalMoves(fromMask, toMask)) {
+					if (isSafe(Square.fromIndex(king), blockers, move)) {
+						legalMoves.add(move);
+					}
+				}
+			}
+		} else {
+			legalMoves.addAll(generatePseudoLegalMoves(fromMask, toMask));
+		}
+
+		return legalMoves;
+	}
+
+	public Set<Move> generateLegalMoves() {
+		return generateLegalMoves(ALL, ALL);
 	}
 
 	public Set<Move> generatePseudoLegalMoves() {
