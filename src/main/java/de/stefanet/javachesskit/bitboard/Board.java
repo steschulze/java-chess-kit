@@ -133,7 +133,7 @@ public class Board extends BaseBoard {
 		clearStack();
 	}
 
-	private void clear() {
+	void clear() {
 		this.turn = Color.WHITE;
 		this.castlingRights = 0;
 		this.epSquare = null;
