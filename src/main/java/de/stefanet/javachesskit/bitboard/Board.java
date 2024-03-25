@@ -660,4 +660,110 @@ public class Board extends BaseBoard {
 
 		return castlingFen.toString();
 	}
+
+	public void push(Move move) {
+		BoardState state = this.getBoardState();
+		this.castlingRights = cleanCastlingRights();
+		this.stateList.add(state);
+		this.moveList.add(move);
+
+		Square epSquare = this.epSquare;
+		this.epSquare = null;
+
+		// increment move counters
+		this.halfMoveClock++;
+		if (this.turn == Color.BLACK) {
+			this.fullMoveNumber++;
+		}
+
+		if (move == null) {
+			this.turn = this.turn.other();
+			return;
+		}
+
+		// zero the half move clock
+		if (this.isZeroingMove(move)) {
+			this.halfMoveClock = 0;
+		}
+
+		long sourceMask = SQUARES[move.getSource().ordinal()];
+		long targetMask = SQUARES[move.getTarget().ordinal()];
+		long colorMask = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
+
+		boolean promoted = (this.promoted & sourceMask) != 0;
+		PieceType type = removePieceType(move.getSource());
+
+		if (type == null) {
+			throw new InvalidMoveException("No piece at source square");
+		}
+
+		Square captureSquare = move.getTarget();
+		PieceType capturedPieceType = pieceTypeAt(captureSquare);
+
+		// update castling rights
+		this.castlingRights &= ~targetMask & ~sourceMask;
+		if (type == PieceType.KING && !promoted) {
+			if (turn == Color.WHITE) {
+				this.castlingRights &= ~RANK_1;
+			} else {
+				this.castlingRights &= ~RANK_8;
+			}
+		}
+
+		if (type == PieceType.PAWN) {
+			int diff = move.getTarget().ordinal() - move.getSource().ordinal();
+
+			if (diff == 16 && move.getSource().getRank() == 2) {
+				this.epSquare = Square.fromIndex(move.getSource().ordinal() + 8);
+			} else if (diff == -16 && move.getSource().getRank() == 7) {
+				this.epSquare = Square.fromIndex(move.getSource().ordinal() - 8);
+			} else if (move.getTarget() == epSquare &&
+					(Math.abs(diff) == 7 || Math.abs(diff) == 9) &&
+					capturedPieceType == null) {
+				captureSquare = Square.fromIndex(epSquare.ordinal() - 8 * turn.forwardDirection());
+				capturedPieceType = removePieceType(captureSquare);
+
+			}
+		}
+
+		if (move.getPromotion() != null) {
+			promoted = true;
+			type = move.getPromotion();
+		}
+
+		boolean castling = type == PieceType.KING && (colorMask & targetMask) != 0;
+		if (castling) {
+			boolean queenSide = move.getTarget().getFile() < move.getSource().getFile();
+			removePieceType(move.getSource());
+			removePieceType(move.getTarget());
+			if (queenSide) {
+				set(turn == Color.WHITE ? Square.C1 : Square.C8,
+						Piece.fromTypeAndColor(PieceType.KING, turn));
+				set(turn == Color.WHITE ? Square.D1 : Square.D8,
+						Piece.fromTypeAndColor(PieceType.ROOK, turn));
+			} else {
+				set(turn == Color.WHITE ? Square.G1 : Square.G8,
+						Piece.fromTypeAndColor(PieceType.KING, turn));
+				set(turn == Color.WHITE ? Square.F1 : Square.F8,
+						Piece.fromTypeAndColor(PieceType.ROOK, turn));
+			}
+		} else {
+			setPiece(move.getTarget(), type, this.turn, promoted);
+			if (capturedPieceType != null) {
+				this.halfMoveClock = 0;
+			}
+		}
+		this.turn = turn.other();
+	}
+
+	private boolean isZeroingMove(Move move) {
+		long moveMask = SQUARES[move.getSource().ordinal()] ^ SQUARES[move.getTarget().ordinal()];
+		long otherColorMask = this.turn.equals(Color.WHITE) ? this.blackPieces : this.whitePieces;
+
+		return (moveMask & this.pawns) != 0 || (moveMask & otherColorMask) != 0;
+	}
+
+	private BoardState getBoardState() {
+		return new BoardState(this);
+	}
 }
