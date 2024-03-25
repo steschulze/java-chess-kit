@@ -165,7 +165,11 @@ public class BaseBoard {
 		}
 	}
 
-	private void setPiece(Square square, PieceType type, Color color) {
+	protected void setPiece(Square square, PieceType type, Color color) {
+		setPiece(square, type, color, false);
+	}
+
+	protected void setPiece(Square square, PieceType type, Color color, boolean promoted) {
 		long mask = SQUARES[square.ordinal()];
 		removePiece(square);
 
@@ -191,6 +195,10 @@ public class BaseBoard {
 		} else {
 			this.blackPieces ^= mask;
 		}
+
+		if (promoted) {
+			this.promoted ^= mask;
+		}
 	}
 
 	public Piece removePiece(Square square) {
@@ -204,7 +212,7 @@ public class BaseBoard {
 		return null;
 	}
 
-	private PieceType removePieceType(Square square) {
+	protected PieceType removePieceType(Square square) {
 		long mask = SQUARES[square.ordinal()];
 		PieceType type = pieceTypeAt(square);
 
