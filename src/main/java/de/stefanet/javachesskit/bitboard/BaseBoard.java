@@ -290,7 +290,7 @@ public class BaseBoard {
 			return PAWN_ATTACKS[color][square.ordinal()];
 		} else if ((mask & this.knights) != 0) {
 			return KNIGHT_ATTACKS[square.ordinal()];
-		} else if ((mask & this.knights) != 0) {
+		} else if ((mask & this.kings) != 0) {
 			return KING_ATTACKS[square.ordinal()];
 		} else {
 			long attacks = 0;
