@@ -324,7 +324,7 @@ public class BaseBoard {
 		long attackers = (KING_ATTACKS[square.ordinal()] & this.kings) |
 				KNIGHT_ATTACKS[square.ordinal()] & this.knights |
 				RANK_ATTACKS.get(square.ordinal()).get(rankPieces) & queensAndRooks |
-				FILE_ATTACKS.get(square.ordinal()).get(rankPieces) & queensAndRooks |
+				FILE_ATTACKS.get(square.ordinal()).get(filePieces) & queensAndRooks |
 				DIAGONAL_ATTACKS.get(square.ordinal()).get(diagPieces) & queensAndBishops |
 				PAWN_ATTACKS[color.other().ordinal()][square.ordinal()] & this.pawns;
 		return attackers & (color == Color.WHITE ? this.whitePieces : this.blackPieces);
