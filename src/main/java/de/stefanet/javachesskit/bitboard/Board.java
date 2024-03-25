@@ -615,4 +615,49 @@ public class Board extends BaseBoard {
 		return (attackMask(move.getSource()) & targetMask) != 0;
 	}
 
+	public String getFen() {
+		StringBuilder fen = new StringBuilder();
+		fen.append(getBoardFen()).append(" ");
+		if (turn == Color.WHITE) {
+			fen.append("w");
+		} else {
+			fen.append("b");
+		}
+		fen.append(" ");
+		fen.append(getCastlingFen()).append(" ");
+		fen.append(this.epSquare == null ? "-" : this.epSquare).append(" ");
+
+		fen.append(this.halfMoveClock).append(" ");
+		fen.append(this.fullMoveNumber);
+		return fen.toString();
+	}
+
+	private String getCastlingFen() {
+		StringBuilder castlingFen = new StringBuilder();
+
+		for (Color color : Color.values()) {
+			Square kingSquare = getKingSquare(color);
+			if (kingSquare == null) {
+				continue;
+			}
+			char kingFile = kingSquare.getFile();
+			long backrank = color == Color.WHITE ? RANK_1 : RANK_8;
+
+			for (int rookSquare : BitboardUtils.scanReversed(cleanCastlingRights() & backrank)) {
+				char rookFile = Square.fromIndex(rookSquare).getFile();
+				char c;
+				if (rookFile < kingFile) {
+					c = 'q';
+				} else {
+					c = 'k';
+				}
+				castlingFen.append(color == Color.WHITE ? Character.toUpperCase(c) : c);
+			}
+		}
+		if (castlingFen.length() == 0) {
+			castlingFen.append("-");
+		}
+
+		return castlingFen.toString();
+	}
 }
