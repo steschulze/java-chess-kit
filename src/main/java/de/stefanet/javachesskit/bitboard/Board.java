@@ -504,6 +504,16 @@ public class Board extends BaseBoard {
 		return false;
 	}
 
+	private boolean isKingsideCastling(Move move) {
+		return isCastling(move) &&
+				move.getTarget().getFileIndex() > move.getSource().getFileIndex();
+	}
+
+	private boolean isQueensideCastling(Move move) {
+		return isCastling(move) &&
+				move.getTarget().getFileIndex() < move.getSource().getFileIndex();
+	}
+
 	private boolean isEnPassant(Move move) {
 		return (this.epSquare == move.getTarget() &&
 				((this.pawns & SQUARES[move.getSource().ordinal()]) != 0) &&
