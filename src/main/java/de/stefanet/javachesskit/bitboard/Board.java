@@ -85,7 +85,12 @@ public class Board extends BaseBoard {
 			this.castlingRights = 0;
 			return;
 		}
-		//TODO check castlingFen with regex
+
+		Pattern pattern = Pattern.compile("^(-|\\bK?Q?k?q?)$");
+		if (!pattern.matcher(castlingFen).matches()) {
+			throw new IllegalArgumentException("Invalid castling fen: " + castlingFen);
+		}
+
 		this.castlingRights = 0;
 
 		for (char flag : castlingFen.toCharArray()) {
