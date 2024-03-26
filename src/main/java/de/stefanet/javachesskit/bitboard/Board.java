@@ -140,9 +140,13 @@ public class Board extends BaseBoard {
 		clearStack();
 	}
 
-	private void clearStack() {
+	protected void clearStack() {
 		this.moveStack.clear();
 		this.stateStack.clear();
+	}
+
+	public int ply() {
+		return 2 * (this.fullMoveNumber - 1) + this.turn.ordinal();
 	}
 
 	public LegalMoveGenerator legalMoves() {
