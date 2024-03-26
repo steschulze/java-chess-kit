@@ -181,4 +181,72 @@ class BoardTest {
 
 	}
 
+	@Test
+	void testAmbiguousMove() {
+		Board board = new Board("8/8/1n6/3R1P2/1n6/2k2K2/3p4/r6r b - - 0 82");
+		assertThrows(AmbiguousMoveException.class, () -> board.parseSan("Rf1"));
+		assertThrows(AmbiguousMoveException.class, () -> board.parseSan("Nd5"));
+	}
+
+	@Test
+	void testSan_newline() {
+		Board board = new Board("rnbqk2r/ppppppbp/5np1/8/8/5NP1/PPPPPPBP/RNBQK2R w KQkq - 2 4");
+		assertThrows(InvalidMoveException.class, () -> board.parseSan("0-0\n"));
+		assertThrows(InvalidMoveException.class, () -> board.parseSan("Nc3\n"));
+	}
+
+	@Test
+	void testSan_pawnCapture_withoutFile() {
+		Board board = new Board("2rq1rk1/pb2bppp/1p2p3/n1ppPn2/2PP4/PP3N2/1B1NQPPP/RB3RK1 b - - 4 13");
+		assertThrows(IllegalMoveException.class, () -> board.parseSan("c4"));
+	}
+
+	@Test
+	void testSan_enPassant_withoutFile() {
+		Board board = new Board("4k3/8/8/4Pp2/8/8/8/4K3 w - f6 0 2");
+		assertThrows(IllegalMoveException.class, () -> board.parseSan("f6"));
+	}
+
+	@Test
+	void testPromotion_withCheck() {
+		Board board = new Board("8/8/8/3R1P2/8/2k2K2/3p4/r7 b - - 0 82");
+		board.pushSan("d1=Q+");
+		assertEquals("8/8/8/3R1P2/8/2k2K2/8/r2q4 w - - 0 83", board.getFen());
+	}
+
+	@Test
+	void testCleanCastlingRights() {
+		Board board = new Board();
+		board.setBoardFen("k6K/8/8/pppppppp/8/8/8/QqQq4");
+
+		assertEquals(Bitboard.EMPTY, board.cleanCastlingRights());
+		assertEquals("k6K/8/8/pppppppp/8/8/8/QqQq4 w - - 0 1", board.getFen());
+
+		board.pushSan("Qxc5");
+
+		assertEquals(Bitboard.EMPTY, board.cleanCastlingRights());
+		assertEquals("k6K/8/8/ppQppppp/8/8/8/Qq1q4 b - - 0 1", board.getFen());
+	}
+
+	@Test
+	void testFen_enPassant() {
+		Board board = new Board();
+		board.pushSan("e4");
+		assertEquals("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", board.getFen());
+	}
+
+	@Test
+	void testPly() {
+		Board board = new Board();
+		assertEquals(0, board.ply());
+		board.pushSan("e4");
+		assertEquals(1, board.ply());
+		board.pushSan("e5");
+		assertEquals(2, board.ply());
+		board.clearStack();
+		assertEquals(2, board.ply());
+		board.pushSan("Nf3");
+		assertEquals(3, board.ply());
+	}
+
 }
