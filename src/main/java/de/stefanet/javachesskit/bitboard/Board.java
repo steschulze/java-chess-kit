@@ -2,10 +2,8 @@ package de.stefanet.javachesskit.bitboard;
 
 import de.stefanet.javachesskit.*;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static de.stefanet.javachesskit.bitboard.Bitboard.*;
@@ -379,7 +377,7 @@ public class Board extends BaseBoard {
 		return false;
 	}
 
-	private long cleanCastlingRights() {
+	protected long cleanCastlingRights() {
 		long castling = this.castlingRights & this.rooks;
 		long whiteCastling = castling & RANK_1 & this.whitePieces;
 		long blackCastling = castling & RANK_8 & this.blackPieces;
@@ -778,5 +776,97 @@ public class Board extends BaseBoard {
 
 	private BoardState getBoardState() {
 		return new BoardState(this);
+	}
+
+	public Move pushSan(String san) {
+		Move move = this.parseSan(san);
+		this.push(move);
+		return move;
+	}
+
+	public Move parseSan(String san) {
+		try {
+			if (Arrays.asList("O-O", "O-O+", "O-O#", "0-0", "0-0+", "0-0#").contains(san)) {
+				return generateCastlingMoves().stream()
+						.filter(this::isKingsideCastling)
+						.findFirst()
+						.orElseThrow(() -> new IllegalMoveException("Illegal san: " + san + " in " + getFen()));
+			} else if (Arrays.asList("O-O-O", "O-O-O+", "O-O-O#", "0-0-0", "0-0-0+", "0-0-0#").contains(san)) {
+				return generateCastlingMoves().stream()
+						.filter(this::isQueensideCastling)
+						.findFirst()
+						.orElseThrow(() -> new IllegalMoveException("Illegal san: " + san + " in " + getFen()));
+			}
+		} catch (Exception e) {
+			throw new IllegalMoveException("Illegal san: " + san + " in " + getFen());
+		}
+
+		String regex = "^([NBKRQ])?([a-h])?([1-8])?[\\-x]?([a-h][1-8])(=?[nbrqkNBRQK])?[+#]?\\Z";
+		Matcher matcher = Pattern.compile(regex).matcher(san);
+
+		if (!matcher.matches()) {
+			throw new InvalidMoveException("Invalid san: " + san + " in " + getFen());
+		}
+
+		// filter target square
+		Square targetSquare = Square.parseSquare(matcher.group(4));
+		long colorMask = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
+		long targetMask = SQUARES[targetSquare.ordinal()] & ~colorMask;
+
+		// filter promotion type
+		String promotion = matcher.group(5);
+		PieceType promotionType = null;
+
+		if (promotion != null) {
+			promotionType = PieceType.fromSymbol(promotion.charAt(1)); //TODO
+		}
+
+		// filter source square
+		long sourceMask = ALL;
+
+		String file = matcher.group(2);
+		if (file != null) {
+			sourceMask &= FILE_MASKS[file.charAt(0) - 'a'];
+		}
+
+		String rank = matcher.group(3);
+		if (rank != null) {
+			sourceMask &= RANK_MASKS[rank.charAt(0) - '1'];
+		}
+
+		// filter piece type
+		PieceType pieceType = PieceType.PAWN;
+		String piece = matcher.group(1);
+		if (piece != null) {
+			pieceType = PieceType.fromSymbol(piece.charAt(0));
+			sourceMask &= pieceMask(pieceType, this.turn);
+		} else {
+			sourceMask &= this.pawns;
+
+			// no pawn capture when file not specified
+			if (file == null) {
+				sourceMask &= FILES[targetSquare.getFileIndex()];
+			}
+		}
+
+		// match legal moves
+		Move match = null;
+		for (Move move : generateLegalMoves(sourceMask, targetMask)) {
+			if (move.getPromotion() != promotionType) {
+				continue;
+			}
+			if (move.getTarget() == targetSquare) {
+				if (match != null) {
+					throw new AmbiguousMoveException("Ambiguous san: " + san + " in " + getFen());
+				}
+				match = move;
+			}
+		}
+
+		if (match == null) {
+			throw new IllegalMoveException("Illegal san: " + san + " in " + getFen());
+		}
+
+		return match;
 	}
 }

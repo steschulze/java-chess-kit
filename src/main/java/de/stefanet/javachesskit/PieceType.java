@@ -30,6 +30,7 @@ public enum PieceType {
      * @throws IllegalArgumentException If the symbol does not correspond to any piece type.
      */
     public static PieceType fromSymbol(char symbol) {
+        symbol = Character.toLowerCase(symbol);
         switch (symbol) {
             case 'p':
                 return PAWN;
