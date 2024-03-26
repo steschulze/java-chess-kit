@@ -97,24 +97,11 @@ public class Board extends BaseBoard {
 			Color color = Character.isUpperCase(flag) ? Color.WHITE : Color.BLACK;
 			flag = Character.toLowerCase(flag);
 			long backrank = color == Color.WHITE ? RANK_1 : RANK_8;
-			long colorMask = color == Color.WHITE ? this.whitePieces : this.blackPieces;
-			long rooks = colorMask & this.rooks & backrank;
-
-			Square kingSquare = getKingSquare(color);
 
 			if (flag == 'q') {
-				if (kingSquare != null) { //TODO
-					this.castlingRights |= rooks & -rooks;
-				} else {
-					this.castlingRights |= FILE_A & backrank;
-				}
+				this.castlingRights |= FILE_A & backrank;
 			} else if (flag == 'k') {
-				int rook = 0; //TODO
-				if (kingSquare != null) { //TODO
-					this.castlingRights |= SQUARES[rook];
-				} else {
-					this.castlingRights |= FILE_H & backrank;
-				}
+				this.castlingRights |= FILE_H & backrank;
 			}
 		}
 
