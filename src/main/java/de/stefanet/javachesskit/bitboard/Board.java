@@ -310,11 +310,11 @@ public class Board extends BaseBoard {
 		return moves;
 	}
 
-	private Set<Move> generateCastlingMoves() {
+	public Set<Move> generateCastlingMoves() {
 		return generateCastlingMoves(ALL, ALL);
 	}
 
-	private Set<Move> generateCastlingMoves(long sourceMask, long targetMask) {
+	public Set<Move> generateCastlingMoves(long sourceMask, long targetMask) {
 		Set<Move> moves = new HashSet<>();
 
 		long backrank = this.turn.equals(Color.WHITE) ? RANK_1 : RANK_8;
@@ -396,6 +396,57 @@ public class Board extends BaseBoard {
 			blackCastling = 0;
 		}
 		return whiteCastling | blackCastling;
+	}
+
+	public boolean hasCastlingRights(Color color) {
+		long backrank = color == Color.WHITE ? RANK_1 : RANK_8;
+		return (this.castlingRights & backrank) != 0;
+	}
+
+	public boolean hasKingsideCastlingRights(Color color) {
+		long backrank = color == Color.WHITE ? RANK_1 : RANK_8;
+		long colorMask = color == Color.WHITE ? this.whitePieces : this.blackPieces;
+		long kingMask = this.kings & colorMask & backrank;
+
+		if (kingMask == 0) {
+			return false;
+		}
+
+		long castlingRights = this.cleanCastlingRights() & backrank;
+
+		while (castlingRights != 0) {
+			long rook = castlingRights & -castlingRights;
+
+			if (rook > kingMask) {
+				return true;
+			}
+			castlingRights &= castlingRights - 1;
+		}
+
+		return false;
+	}
+
+	public boolean hasQueensideCastlingRights(Color color) {
+		long backrank = color == Color.WHITE ? RANK_1 : RANK_8;
+		long colorMask = color == Color.WHITE ? this.whitePieces : this.blackPieces;
+		long kingMask = this.kings & colorMask & backrank;
+
+		if (kingMask == 0) {
+			return false;
+		}
+
+		long castlingRights = this.cleanCastlingRights() & backrank;
+
+		while (castlingRights != 0) {
+			long rook = castlingRights & -castlingRights;
+
+			if (rook < kingMask) {
+				return true;
+			}
+			castlingRights &= castlingRights - 1;
+		}
+
+		return false;
 	}
 
 	public boolean isLegal(Move move) {
