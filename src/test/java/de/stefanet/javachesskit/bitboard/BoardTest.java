@@ -249,4 +249,36 @@ class BoardTest {
 		assertEquals(3, board.ply());
 	}
 
+	@Test
+	void testCastling() {
+		Board board = new Board("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 1 1");
+		Move move = board.parseSan("O-O");
+
+		assertEquals(Move.fromUCI("e1g1"), move);
+		assertTrue(board.legalMoves().contains(move));
+
+		board.push(move);
+
+		move = board.parseSan("O-O-O");
+
+		assertEquals(Move.fromUCI("e8c8"), move);
+		assertTrue(board.legalMoves().contains(move));
+
+		board.push(move);
+
+		assertEquals("2kr3r/8/8/8/8/8/8/R4RK1 w - - 3 2", board.getFen());
+
+		board.pop();
+		board.pop();
+		assertEquals("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 1 1", board.getFen());
+	}
+
+	@Test
+	void testCastlingSan() {
+		Board board = new Board("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 1 1");
+		assertEquals(Move.fromUCI("e1g1"), board.parseSan("O-O"));
+		assertThrows(IllegalMoveException.class, () -> board.parseSan("Kg1"));
+		assertThrows(IllegalMoveException.class, () -> board.parseSan("Kh1"));
+	}
+
 }
