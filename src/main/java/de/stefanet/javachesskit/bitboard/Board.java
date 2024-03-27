@@ -668,8 +668,8 @@ public class Board extends BaseBoard {
 	public void push(Move move) {
 		BoardState state = this.getBoardState();
 		this.castlingRights = cleanCastlingRights();
-		this.stateStack.add(state);
-		this.moveStack.add(move);
+		this.stateStack.push(state);
+		this.moveStack.push(move);
 
 		Square epSquare = this.epSquare;
 		this.epSquare = null;
@@ -735,21 +735,18 @@ public class Board extends BaseBoard {
 			type = move.getPromotion();
 		}
 
-		boolean castling = type == PieceType.KING && (colorMask & targetMask) != 0;
+		boolean castling = type == PieceType.KING && (move.getTarget().getFile() == 'g' || move.getTarget().getFile() == 'c');
 		if (castling) {
 			boolean queenSide = move.getTarget().getFile() < move.getSource().getFile();
 			removePieceType(move.getSource());
-			removePieceType(move.getTarget());
 			if (queenSide) {
-				set(turn == Color.WHITE ? Square.C1 : Square.C8,
-						Piece.fromTypeAndColor(PieceType.KING, turn));
-				set(turn == Color.WHITE ? Square.D1 : Square.D8,
-						Piece.fromTypeAndColor(PieceType.ROOK, turn));
+				removePieceType(turn == Color.WHITE ? Square.A1 : Square.A8);
+				setPiece(turn == Color.WHITE ? Square.C1 : Square.C8, PieceType.KING, turn);
+				setPiece(turn == Color.WHITE ? Square.D1 : Square.D8, PieceType.ROOK, turn);
 			} else {
-				set(turn == Color.WHITE ? Square.G1 : Square.G8,
-						Piece.fromTypeAndColor(PieceType.KING, turn));
-				set(turn == Color.WHITE ? Square.F1 : Square.F8,
-						Piece.fromTypeAndColor(PieceType.ROOK, turn));
+				removePieceType(turn == Color.WHITE ? Square.H1 : Square.H8);
+				setPiece(turn == Color.WHITE ? Square.G1 : Square.G8, PieceType.KING, turn);
+				setPiece(turn == Color.WHITE ? Square.F1 : Square.F8, PieceType.ROOK, turn);
 			}
 		} else {
 			setPiece(move.getTarget(), type, this.turn, promoted);
