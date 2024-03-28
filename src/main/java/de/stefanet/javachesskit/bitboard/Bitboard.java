@@ -29,7 +29,7 @@ public class Bitboard {
 	static long LIGHT_SQUARES = 0x55AA55AA55AA55AAL;
 	static long DARK_SQUARES = 0xAA55AA55AA55AA55L;
 
-	static long BACKRANK = RANK_1 | RANK_7;
+	static long BACKRANK = RANK_1 | RANK_8;
 
 	static long[] KNIGHT_ATTACKS = Attacks.generateKnightAttacks();
 	static long[] KING_ATTACKS = Attacks.generateKingAttacks();
