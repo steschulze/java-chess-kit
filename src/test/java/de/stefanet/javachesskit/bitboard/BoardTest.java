@@ -281,4 +281,112 @@ class BoardTest {
 		assertThrows(IllegalMoveException.class, () -> board.parseSan("Kh1"));
 	}
 
+	@Test
+	void testSelectiveCastling() {
+		Board board = new Board("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
+
+		assertTrue(board.generateCastlingMoves(Bitboard.ALL & ~board.kings, Bitboard.ALL).isEmpty());
+
+		Set<Move> moves = board.generateCastlingMoves(Bitboard.ALL, Bitboard.ALL & ~Bitboard.Squares.H1);
+		assertEquals(1, moves.size());
+	}
+
+	@Test
+	void testCastlingRight_getsDestroyed() {
+		Board board = new Board("2r1k2r/2qbbpp1/p2pp3/1p3PP1/Pn2P3/1PN1B3/1P3QB1/1K1R3R b k - 0 22");
+		board.pushSan("Rxh1");
+		assertEquals("2r1k3/2qbbpp1/p2pp3/1p3PP1/Pn2P3/1PN1B3/1P3QB1/1K1R3r w - - 0 23", board.getFen());
+	}
+
+	@Test
+	void testInvalidCastlingRights() {
+		Board board = new Board("1r2k3/8/8/8/8/8/8/R3KR2 w KQkq - 0 1");
+		assertEquals("1r2k3/8/8/8/8/8/8/R3KR2 w Q - 0 1", board.getFen());
+
+		assertTrue(board.status().contains(Status.BAD_CASTLING_RIGHTS));
+		assertTrue(board.hasQueensideCastlingRights(Color.WHITE));
+		assertFalse(board.hasKingsideCastlingRights(Color.WHITE));
+
+		assertFalse(board.hasKingsideCastlingRights(Color.BLACK));
+		assertFalse(board.hasQueensideCastlingRights(Color.BLACK));
+	}
+
+	@Test
+	void testStatus_defaultBoard() {
+		Board board = new Board();
+		assertTrue(board.status().contains(Status.VALID));
+		assertTrue(board.isValid());
+
+		board.removePieceType(Square.H1);
+		assertTrue(board.status().contains(Status.BAD_CASTLING_RIGHTS));
+
+		board.removePieceType(Square.E8);
+		assertTrue(board.status().contains(Status.NO_BLACK_KING));
+	}
+
+	@Test
+	void testStatus_enPassant() {
+		Board board = new Board();
+		board.pushSan("e4");
+		assertEquals(Square.E3, board.epSquare);
+		assertTrue(board.isValid());
+
+		board.removePieceType(Square.E4);
+		assertTrue(board.status().contains(Status.INVALID_EP_SQUARE));
+	}
+
+	@Test
+	void testStatus_badCastlingRights() {
+		Board board = new Board("2rrk3/8/8/8/8/8/3PPPPP/2RK4 w KQkq - 0 1");
+		assertTrue(board.status().contains(Status.BAD_CASTLING_RIGHTS));
+	}
+
+	@Test
+	void testStatus_oppositeCheck() {
+		Board board = new Board("4k3/8/8/8/8/8/4Q3/4K3 w - - 0 1");
+		assertTrue(board.status().contains(Status.OPPOSITE_CHECK));
+	}
+
+	@Test
+	void testStatus_emptyBoard() {
+		Board board = new Board(null);
+		assertTrue(board.status().contains(Status.EMPTY));
+		assertTrue(board.status().contains(Status.NO_WHITE_KING));
+		assertTrue(board.status().contains(Status.NO_BLACK_KING));
+	}
+
+	@Test
+	void testStatus_tooManyKings() {
+		Board board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKKBNR w KQkq - 0 1");
+		assertTrue(board.status().contains(Status.TOO_MANY_KINGS));
+	}
+
+	@Test
+	void testStatus_tripleCheck() {
+		Board board = new Board("4k3/5P2/3N4/8/8/8/4R3/4K3 b - - 0 1");
+		assertTrue(board.status().contains(Status.IMPOSSIBLE_CHECK));
+		assertTrue(board.status().contains(Status.TOO_MANY_CHECKERS));
+	}
+
+	@Test
+	void testStatus_impossibleCheck() {
+		Board board = new Board("3R4/8/q4k2/2B5/1NK5/3b4/8/8 w - - 0 1");
+		assertTrue(board.status().contains(Status.IMPOSSIBLE_CHECK));
+
+		board = new Board("2Nq4/2K5/1b6/8/7R/3k4/7P/8 w - - 0 1");
+		assertTrue(board.status().contains(Status.IMPOSSIBLE_CHECK));
+
+		board = new Board("5R2/2P5/8/4k3/8/3rK2r/8/8 w - - 0 1");
+		assertTrue(board.status().contains(Status.IMPOSSIBLE_CHECK));
+
+		board = new Board("8/8/8/1k6/3Pp3/8/8/4KQ2 b - d3 0 1");
+		assertTrue(board.status().contains(Status.IMPOSSIBLE_CHECK));
+	}
+
+	@Test
+	void testStatus_validCheck() {
+		Board board = new Board("8/8/5k2/p1q5/PP1rp1P1/3P1N2/2RK1r2/5nN1 w - - 0 3");
+		assertTrue(board.status().contains(Status.VALID));
+	}
+
 }
