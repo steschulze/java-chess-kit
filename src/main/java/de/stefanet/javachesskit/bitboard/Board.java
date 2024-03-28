@@ -921,4 +921,139 @@ public class Board extends BaseBoard {
 
 		return match;
 	}
+
+	public EnumSet<Status> status() {
+		EnumSet<Status> errors = EnumSet.noneOf(Status.class);
+
+		if (this.occupied == 0) {
+			errors.add(Status.EMPTY);
+		}
+
+		if ((this.whitePieces & this.kings) == 0) {
+			errors.add(Status.NO_WHITE_KING);
+		}
+
+		if ((this.blackPieces & this.kings) == 0) {
+			errors.add(Status.NO_BLACK_KING);
+		}
+
+		if (Long.bitCount(this.occupied & this.kings) > 2) {
+			errors.add(Status.TOO_MANY_KINGS);
+		}
+
+		if (Long.bitCount(this.whitePieces) > 16) {
+			errors.add(Status.TOO_MANY_WHITE_PIECES);
+		}
+
+		if (Long.bitCount(this.blackPieces) > 16) {
+			errors.add(Status.TOO_MANY_BLACK_PIECES);
+		}
+
+		if (Long.bitCount(this.whitePieces & this.pawns) > 8) {
+			errors.add(Status.TOO_MANY_WHITE_PAWNS);
+		}
+
+		if (Long.bitCount(this.blackPieces & this.pawns) > 8) {
+			errors.add(Status.TOO_MANY_BLACK_PAWNS);
+		}
+
+		if ((this.pawns & BACKRANK) != 0) {
+			errors.add(Status.PAWNS_ON_BACKRANK);
+		}
+
+		if (this.castlingRights != this.cleanCastlingRights()) {
+			errors.add(Status.BAD_CASTLING_RIGHTS);
+		}
+
+		Square validEpSquare = this.validEpSquare();
+		if (this.epSquare != validEpSquare) {
+			errors.add(Status.INVALID_EP_SQUARE);
+		}
+
+		if (this.wasIntoCheck()) {
+			errors.add(Status.OPPOSITE_CHECK);
+		}
+
+		long checkers = this.checkers_mask();
+		long ourKings = this.kings & (this.turn == Color.WHITE ? this.whitePieces : this.blackPieces);
+
+		if (checkers != 0) {
+			if (Long.bitCount(checkers) > 2) {
+				errors.add(Status.TOO_MANY_CHECKERS);
+			}
+
+			if (validEpSquare != null) {
+				int pushedTo = validEpSquare.ordinal() ^ 8;
+				int pushedFrom = validEpSquare.ordinal() ^ 24;
+				long occupiedBefore = (this.occupied & ~SQUARES[pushedTo]) | SQUARES[pushedFrom];
+				if (Long.bitCount(checkers) > 1 ||
+						(BitboardUtils.msb(checkers) != pushedTo && attackedForKing(ourKings, occupiedBefore))) {
+					errors.add(Status.IMPOSSIBLE_CHECK);
+				}
+			} else {
+				if (Long.bitCount(checkers) > 2 || (Long.bitCount(checkers) == 2 &&
+						(BitboardUtils.ray(BitboardUtils.lsb(checkers), BitboardUtils.msb(checkers)) & ourKings) != 0)) {
+					errors.add(Status.IMPOSSIBLE_CHECK);
+				}
+			}
+		}
+
+		if (errors.isEmpty()) {
+			errors.add(Status.VALID);
+		}
+
+		return errors;
+	}
+
+	private long checkers_mask() {
+		Square kingSquare = getKingSquare(this.turn);
+		return kingSquare == null ? 0 : attackersMask(this.turn.other(), kingSquare);
+	}
+
+	private Square validEpSquare() {
+		if (this.epSquare == null) {
+			return null;
+		}
+
+		long epRank;
+		long pawnMask;
+		long seventhRankMask;
+		if (this.turn == Color.WHITE) {
+			epRank = 6;
+			pawnMask = BitboardUtils.shiftDown(SQUARES[this.epSquare.ordinal()]);
+			seventhRankMask = BitboardUtils.shiftUp(SQUARES[this.epSquare.ordinal()]);
+		} else {
+			epRank = 3;
+			pawnMask = BitboardUtils.shiftUp(SQUARES[this.epSquare.ordinal()]);
+			seventhRankMask = BitboardUtils.shiftDown(SQUARES[this.epSquare.ordinal()]);
+		}
+
+		if (this.epSquare.getRank() != epRank) {
+			return null;
+		}
+
+		long otherColorMask = this.turn == Color.WHITE ? this.blackPieces : this.whitePieces;
+		if ((this.pawns & pawnMask & otherColorMask) == 0) {
+			return null;
+		}
+
+		if ((this.occupied & SQUARES[this.epSquare.ordinal()]) != 0) {
+			return null;
+		}
+
+		if ((this.occupied & seventhRankMask) != 0) {
+			return null;
+		}
+
+		return this.epSquare;
+	}
+
+	private boolean wasIntoCheck() {
+		Square kingSquare = this.getKingSquare(turn.other());
+		return kingSquare != null && isAttackedBy(turn, kingSquare);
+	}
+
+	public boolean isValid() {
+		return status().contains(Status.VALID);
+	}
 }
