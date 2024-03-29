@@ -467,6 +467,7 @@ class BoardTest {
 		assertFalse(board.isCheck());
 		assertFalse(board.isCheckmate());
 		assertFalse(board.isStalemate());
+		assertFalse(board.isGameOver());
 
 		Move Qf7 = Move.fromUCI("f3f7");
 		assertTrue(board.legalMoves().contains(Qf7));
@@ -474,10 +475,47 @@ class BoardTest {
 
 		assertTrue(board.isCheck());
 		assertTrue(board.isCheckmate());
+		assertTrue(board.isGameOver());
 		assertFalse(board.isStalemate());
 
 		assertEquals("1rbqkbnr/pppp1Qpp/2n5/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQk - 0 4", board.getFen());
 
 	}
 
+	@Test
+	void testResult_defaultBoard() {
+		Board board = new Board();
+		assertEquals("*", board.result(true));
+	}
+
+	@Test
+	void testResult_checkmate() {
+		Board board = new Board("rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3");
+		assertEquals("0-1", board.result(true));
+	}
+
+	@Test
+	void testResult_stalemate() {
+		Board board = new Board("7K/7P/7k/8/6q1/8/8/8 w - - 0 1");
+		assertEquals("1/2-1/2", board.result(true));
+	}
+
+	@Test
+	void testResult_insufficientMaterial() {
+		Board board = new Board("4k3/8/8/8/8/5B2/8/4K3 w - - 0 1");
+		assertEquals("1/2-1/2", board.result(true));
+	}
+
+	@Test
+	void testResult_fiftyMoveRule() {
+		Board board = new Board("4k3/8/6r1/8/8/8/2R5/4K3 w - - 120 1");
+		assertEquals("*", board.result());
+		assertEquals("1/2-1/2", board.result(true));
+	}
+
+	@Test
+	void testResult_fiftysevenMoveRule() {
+		Board board = new Board("4k3/8/6r1/8/8/8/2R5/4K3 w - - 369 1");
+		assertEquals("1/2-1/2", board.result());
+	}
 }

@@ -1112,4 +1112,89 @@ public class Board extends BaseBoard {
 	public boolean isStalemate() {
 		return !isCheck() && generateLegalMoves().isEmpty();
 	}
+
+	public boolean isGameOver() {
+		return isGameOver(false);
+	}
+
+	public boolean isGameOver(boolean claimDraw) {
+		return outcome(claimDraw) != null;
+	}
+
+	public String result() {
+		return result(false);
+	}
+
+	public String result(boolean claimDraw) {
+		Outcome outcome = outcome(claimDraw);
+		return outcome != null ? outcome.result() : "*";
+	}
+
+	public Outcome outcome(boolean claimDraw) {
+		if (isCheckmate()) {
+			return new Outcome(Termination.CHECKMATE, turn.other());
+		}
+
+		if (isInsufficientMaterial()) {
+			return new Outcome(Termination.INSUFFICIENT_MATERIAL, null);
+		}
+
+		if (generateLegalMoves().isEmpty()) {
+			return new Outcome(Termination.STALEMATE, null);
+		}
+
+		if (isSeventyFiveMoves()) {
+			return new Outcome(Termination.SEVENTYFIVE_MOVES, null);
+		}
+
+//		if (isFivefoldRepetition()) {
+//			return new Outcome(Termination.FIVEFOLD_REPETITION, null);
+//		}
+
+		if (claimDraw) {
+			if (canClaimFiftyMoveRule()) {
+				return new Outcome(Termination.FIFTY_MOVES, null);
+			}
+//			if (canClaimThreefoldRepetition()) {
+//				return new Outcome(Termination.THREEFOLD_REPETITION, null);
+//			}
+		}
+
+		return null;
+	}
+
+	private boolean canClaimFiftyMoveRule() {
+		if (isFiftyMoves()) {
+			return true;
+		}
+
+		if (this.halfMoveClock >= 99) {
+			for (Move move : generateLegalMoves()) {
+				if (!isZeroingMove(move)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+
+	private boolean isSeventyFiveMoves() {
+		return this.isHalfmoves(150);
+	}
+
+	private boolean isFiftyMoves() {
+		return this.isHalfmoves(100);
+	}
+
+	private boolean isHalfmoves(int n) {
+		return this.halfMoveClock >= n && !generateLegalMoves().isEmpty();
+	}
+
+//	private boolean canClaimThreefoldRepetition() {
+//	}
+//
+//	private boolean isFivefoldRepetition() {
+//	}
 }
