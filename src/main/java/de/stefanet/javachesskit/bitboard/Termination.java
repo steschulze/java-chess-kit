@@ -1,0 +1,7 @@
+package de.stefanet.javachesskit.bitboard;
+
+public enum Termination {
+	CHECKMATE, STALEMATE, INSUFFICIENT_MATERIAL,
+	FIFTY_MOVES, SEVENTYFIVE_MOVES,
+	THREEFOLD_REPETITION, FIVEFOLD_REPETITION;
+}
