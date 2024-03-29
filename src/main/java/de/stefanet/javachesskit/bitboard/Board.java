@@ -1100,4 +1100,16 @@ public class Board extends BaseBoard {
 	public boolean isInsufficientMaterial() {
 		return hasInsufficientMaterial(Color.WHITE) && hasInsufficientMaterial(Color.BLACK);
 	}
+
+	public boolean isCheck() {
+		return checkers_mask() != 0;
+	}
+
+	public boolean isCheckmate() {
+		return isCheck() && generateLegalMoves().isEmpty();
+	}
+
+	public boolean isStalemate() {
+		return !isCheck() && generateLegalMoves().isEmpty();
+	}
 }

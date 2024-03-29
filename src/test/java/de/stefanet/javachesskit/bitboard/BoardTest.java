@@ -213,6 +213,7 @@ class BoardTest {
 	void testPromotion_withCheck() {
 		Board board = new Board("8/8/8/3R1P2/8/2k2K2/3p4/r7 b - - 0 82");
 		board.pushSan("d1=Q+");
+		assertTrue(board.isCheck());
 		assertEquals("8/8/8/3R1P2/8/2k2K2/8/r2q4 w - - 0 83", board.getFen());
 	}
 
@@ -434,6 +435,49 @@ class BoardTest {
 		assertEquals(white, board.hasInsufficientMaterial(Color.WHITE));
 		assertEquals(black, board.hasInsufficientMaterial(Color.BLACK));
 		assertEquals(white && black, board.isInsufficientMaterial());
+	}
+
+	@Test
+	void testScholarsMate() {
+		Board board = new Board();
+		Move e4 = Move.fromUCI("e2e4");
+		assertTrue(board.legalMoves().contains(e4));
+		board.push(e4);
+
+		Move e5 = Move.fromUCI("e7e5");
+		assertTrue(board.legalMoves().contains(e5));
+		board.push(e5);
+
+		Move Qf3 = Move.fromUCI("d1f3");
+		assertTrue(board.legalMoves().contains(Qf3));
+		board.push(Qf3);
+
+		Move Nc6 = Move.fromUCI("b8c6");
+		assertTrue(board.legalMoves().contains(Nc6));
+		board.push(Nc6);
+
+		Move Bc4 = Move.fromUCI("f1c4");
+		assertTrue(board.legalMoves().contains(Bc4));
+		board.push(Bc4);
+
+		Move Rb8 = Move.fromUCI("a8b8");
+		assertTrue(board.legalMoves().contains(Rb8));
+		board.push(Rb8);
+
+		assertFalse(board.isCheck());
+		assertFalse(board.isCheckmate());
+		assertFalse(board.isStalemate());
+
+		Move Qf7 = Move.fromUCI("f3f7");
+		assertTrue(board.legalMoves().contains(Qf7));
+		board.push(Qf7);
+
+		assertTrue(board.isCheck());
+		assertTrue(board.isCheckmate());
+		assertFalse(board.isStalemate());
+
+		assertEquals("1rbqkbnr/pppp1Qpp/2n5/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQk - 0 4", board.getFen());
+
 	}
 
 }
