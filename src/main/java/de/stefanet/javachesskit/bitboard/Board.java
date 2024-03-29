@@ -1192,6 +1192,112 @@ public class Board extends BaseBoard {
 		return this.halfMoveClock >= n && !generateLegalMoves().isEmpty();
 	}
 
+	public String san(Move move) {
+		return this.algebraicNotation(move, false);
+	}
+
+	public String lan(Move move) {
+		return this.algebraicNotation(move, true);
+	}
+
+	private String algebraicNotation(Move move, boolean longNotation) {
+		String san = algebraicNotationPush(move, longNotation);
+		this.pop();
+		return san;
+	}
+
+	private String algebraicNotationPush(Move move, boolean longNotation) {
+		String san = this.algebraicNotationWithoutSuffix(move, longNotation);
+		this.push(move);
+		boolean isCheck = this.isCheck();
+		boolean isCheckmate = isCheck && this.isCheckmate();
+
+		if (isCheckmate) {
+			return san + "#";
+		} else if (isCheck) {
+			return san + "+";
+		}
+		return san;
+	}
+
+	private String algebraicNotationWithoutSuffix(Move move, boolean longNotation) {
+		if (this.isCastling(move)) {
+			if (move.getTarget().getFileIndex() < move.getSource().getFileIndex()) {
+				return "O-O-O";
+			} else {
+				return "O-O";
+			}
+		}
+
+		PieceType pieceType = this.pieceTypeAt(move.getSource());
+		if (pieceType == null) {
+			throw new IllegalMoveException("No piece at source square");
+		}
+
+		boolean isCapture = isCapture(move);
+
+		StringBuilder san = new StringBuilder();
+		if (pieceType != PieceType.PAWN) {
+			san.append(Character.toUpperCase(pieceType.getSymbol()));
+		}
+
+		if (longNotation) {
+			san.append(move.getSource().getName());
+		} else if (pieceType != PieceType.PAWN) {
+			long others = 0;
+			long sourceMask = this.pieceMask(pieceType, this.turn);
+			sourceMask &= ~SQUARES[move.getSource().ordinal()];
+			long targetMask = SQUARES[move.getTarget().ordinal()];
+
+			for (Move candidate : generateLegalMoves(sourceMask, targetMask)) {
+				others |= SQUARES[candidate.getSource().ordinal()];
+			}
+
+			if (others != 0) {
+				boolean row = false, column = false;
+
+				if ((others & RANKS[move.getSource().getRankIndex()]) != 0) {
+					column = true;
+				}
+
+				if ((others & FILES[move.getSource().getFileIndex()]) != 0) {
+					row = true;
+				} else {
+					column = true;
+				}
+				if (column) {
+					san.append(move.getSource().getFile());
+				}
+				if (row) {
+					san.append(move.getSource().getRank());
+				}
+			}
+		} else if (isCapture) {
+			san.append(move.getSource().getFile());
+		}
+
+		if (isCapture) {
+			san.append("x");
+		} else if (longNotation) {
+			san.append("-");
+		}
+
+		san.append(move.getTarget().getName());
+
+		if (move.getPromotion() != null) {
+			san.append("=").append(Character.toUpperCase(move.getPromotion().getSymbol()));
+		}
+
+		return san.toString();
+	}
+
+	private boolean isCapture(Move move) {
+		long targetMask = SQUARES[move.getTarget().ordinal()];
+		long otherColorMask = this.turn == Color.WHITE ? this.blackPieces : this.whitePieces;
+
+		return (targetMask & otherColorMask) != 0 || this.isEnPassant(move);
+	}
+
 //	private boolean canClaimThreefoldRepetition() {
 //	}
 //
