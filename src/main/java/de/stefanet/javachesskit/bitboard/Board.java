@@ -1056,4 +1056,24 @@ public class Board extends BaseBoard {
 	public boolean isValid() {
 		return status().contains(Status.VALID);
 	}
+
+	public Move findMove(Square sourceSquare, Square targetSquare) {
+		return findMove(sourceSquare, targetSquare, null);
+	}
+
+	public Move findMove(Square sourceSquare, Square targetSquare, PieceType promotion) {
+		if (promotion == null &&
+				(this.pawns & SQUARES[sourceSquare.ordinal()]) != 0 &&
+				(SQUARES[targetSquare.ordinal()] & BACKRANK) != 0) {
+			promotion = PieceType.QUEEN;
+		}
+
+		Move move = new Move(sourceSquare, targetSquare, promotion);
+
+		if (!this.isLegal(move)) {
+			throw new IllegalMoveException("Illegal move: " + move + " in " + getFen());
+		}
+
+		return move;
+	}
 }

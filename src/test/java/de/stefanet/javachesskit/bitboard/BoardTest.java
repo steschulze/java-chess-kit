@@ -389,4 +389,26 @@ class BoardTest {
 		assertTrue(board.status().contains(Status.VALID));
 	}
 
+	@Test
+	void testFindMove_pawnMoves() {
+		Board board = new Board("4k3/1P6/8/8/8/8/3P4/4K2R w K - 0 1");
+		assertEquals(Move.fromUCI("d2d4"), board.findMove(Square.D2, Square.D4));
+		assertEquals(Move.fromUCI("b7b8q"), board.findMove(Square.B7, Square.B8));
+		assertEquals(Move.fromUCI("b7b8r"), board.findMove(Square.B7, Square.B8, PieceType.ROOK));
+
+	}
+
+	@Test
+	void testFindMove_illegalMoves() {
+		Board board = new Board("4k3/1P6/8/8/8/8/3P4/4K2R w K - 0 1");
+		assertThrows(IllegalMoveException.class, () -> board.findMove(Square.D2, Square.D8));
+		assertThrows(IllegalMoveException.class, () -> board.findMove(Square.E1, Square.A1));
+	}
+
+	@Test
+	void testFindMove_castling() {
+		Board board = new Board("4k3/1P6/8/8/8/8/3P4/4K2R w K - 0 1");
+		assertEquals(Move.fromUCI("e1g1"), board.findMove(Square.E1, Square.G1));
+	}
+
 }
