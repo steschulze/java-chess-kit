@@ -584,9 +584,9 @@ public class Board extends BaseBoard {
 				(DIAGONAL_ATTACKS.get(kingSquareIndex).get(0L) & bishopsAndQueens));
 
 		long blockers = 0;
-		long colorMask = this.turn.equals(Color.WHITE) ? this.blackPieces : this.whitePieces;
+		long colorMask = this.turn == Color.WHITE ? this.blackPieces : this.whitePieces;
 		for (int sniper : BitboardUtils.scanReversed(snipers & colorMask)) {
-			long b = BitboardUtils.between(kingSquareIndex, sniper);
+			long b = BitboardUtils.between(kingSquareIndex, sniper) & this.occupied;
 
 			if (b != 0 && SQUARES[BitboardUtils.msb(b)] == b) {
 				blockers |= b;
