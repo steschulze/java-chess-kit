@@ -1076,4 +1076,28 @@ public class Board extends BaseBoard {
 
 		return move;
 	}
+
+
+	public boolean hasInsufficientMaterial(Color color) {
+		long colorMask = color == Color.WHITE ? this.whitePieces : this.blackPieces;
+
+		if ((colorMask & (this.rooks | this.queens | this.pawns)) != 0) {
+			return false;
+		}
+
+		if ((colorMask & this.knights) != 0) {
+			return (Long.bitCount(colorMask) <= 2 && (this.occupied & ~colorMask & ~this.kings & ~this.queens) == 0);
+		}
+
+		if ((colorMask & this.bishops) != 0) {
+			boolean sameColor = (this.bishops & DARK_SQUARES) == 0 || (this.bishops & LIGHT_SQUARES) == 0;
+			return sameColor && this.pawns == 0 && this.knights == 0;
+		}
+
+		return true;
+	}
+
+	public boolean isInsufficientMaterial() {
+		return hasInsufficientMaterial(Color.WHITE) && hasInsufficientMaterial(Color.BLACK);
+	}
 }
