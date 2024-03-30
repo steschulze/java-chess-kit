@@ -23,8 +23,8 @@ public class Board extends BaseBoard {
 	protected int halfMoveClock;
 
 	protected long promoted;
-	private Deque<Move> moveStack;
-	private Deque<BoardState> stateStack;
+	protected Deque<Move> moveStack;
+	protected Deque<BoardState> stateStack;
 
 	public Board() {
 		this(STARTING_FEN);
