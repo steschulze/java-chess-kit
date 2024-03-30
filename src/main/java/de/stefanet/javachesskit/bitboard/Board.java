@@ -1357,6 +1357,21 @@ public class Board extends BaseBoard {
 		return san.toString();
 	}
 
+	public Move parseUCI(String uci) {
+		Move move = Move.fromUCI(uci);
+
+		if (!this.isLegal(move)) {
+			throw new IllegalMoveException("Illegal move: " + move + " in " + getFen());
+		}
+		return move;
+	}
+
+	public Move pushUCI(String uci) {
+		Move move = parseUCI(uci);
+		this.push(move);
+		return move;
+	}
+
 
 //	private boolean canClaimThreefoldRepetition() {
 //	}
