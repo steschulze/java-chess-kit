@@ -1,8 +1,10 @@
-package de.stefanet.javachesskit.board0x88;
+package de.stefanet.javachesskit.polyglot;
 
 import de.stefanet.javachesskit.Color;
 import de.stefanet.javachesskit.Piece;
 import de.stefanet.javachesskit.Square;
+import de.stefanet.javachesskit.board0x88.BoardUtility;
+import de.stefanet.javachesskit.board0x88.Position;
 
 public class ZobristHasher {
 	private long[] randomArray;

@@ -1,4 +1,4 @@
-package de.stefanet.javachesskit.board0x88;
+package de.stefanet.javachesskit.polyglot;
 
 /**
  * Pseudo-random number generator (PRNG) based on xorshift128* algorithm.
