@@ -1243,6 +1243,10 @@ public class Board extends BaseBoard {
 		return san;
 	}
 
+	public String sanAndPush(Move move) {
+		return algebraicNotationPush(move, false);
+	}
+
 	private String algebraicNotationWithoutSuffix(Move move, boolean longNotation) {
 		if (this.isCastling(move)) {
 			if (move.getTarget().getFileIndex() < move.getSource().getFileIndex()) {
@@ -1320,6 +1324,39 @@ public class Board extends BaseBoard {
 
 		return (targetMask & otherColorMask) != 0 || this.isEnPassant(move);
 	}
+
+	public String variationSan(Iterable<Move> variation) {
+		StringBuilder san = new StringBuilder();
+		Board board = this.copy();
+
+		for (Move move : variation) {
+			if (!board.isLegal(move)) {
+				throw new IllegalMoveException("Illegal move: " + move + " in " + getFen());
+			}
+
+			if (board.turn == Color.WHITE) {
+				san.append(board.fullMoveNumber)
+						.append(". ")
+						.append(board.sanAndPush(move))
+						.append(" ");
+			} else if (san.length() == 0) {
+				san.append(board.fullMoveNumber)
+						.append("...")
+						.append(board.sanAndPush(move))
+						.append(" ");
+			} else {
+				san.append(board.sanAndPush(move))
+						.append(" ");
+			}
+		}
+
+		if (san.length() > 0) {
+			san.deleteCharAt(san.length() - 1);
+		}
+
+		return san.toString();
+	}
+
 
 //	private boolean canClaimThreefoldRepetition() {
 //	}
