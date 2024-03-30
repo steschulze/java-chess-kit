@@ -663,4 +663,10 @@ class BoardTest {
 		String san = new Board().variationSan(board.moveStack);
 		assertEquals("1. d4 d5 2. Nf3 Bf5 3. e3 e6 4. Bd3 Bd6 5. O-O", san);
 	}
+
+	@Test
+	void testMoveCount() {
+		Board board = new Board("1N2k3/P7/8/8/3n4/8/2PP4/R3K2R w KQ - 0 1");
+		assertEquals(33, board.pseudoLegalMoves().count());
+	}
 }
