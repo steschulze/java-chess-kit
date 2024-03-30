@@ -46,6 +46,29 @@ public class Board extends BaseBoard {
 		}
 	}
 
+	public Board copy() {
+		Board board = new Board();
+		board.pawns = this.pawns;
+		board.knights = this.knights;
+		board.bishops = this.bishops;
+		board.rooks = this.rooks;
+		board.queens = this.queens;
+		board.kings = this.kings;
+
+		board.whitePieces = this.whitePieces;
+		board.blackPieces = this.blackPieces;
+		board.occupied = this.occupied;
+		board.promoted = this.promoted;
+
+		board.epSquare = this.epSquare;
+		board.castlingRights = this.castlingRights;
+		board.turn = this.turn;
+		board.fullMoveNumber = this.fullMoveNumber;
+		board.halfMoveClock = this.halfMoveClock;
+
+		return board;
+	}
+
 	public void setFen(String fen) {
 		String[] parts = fen.split(" ");
 
