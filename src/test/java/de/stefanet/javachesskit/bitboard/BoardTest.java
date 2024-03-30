@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -597,5 +599,51 @@ class BoardTest {
 		assertEquals("e5xd6#", board.lan(Move.fromUCI("e5d6")));
 		assertEquals("e5-e6+", board.lan(Move.fromUCI("e5e6")));
 		assertEquals(fen, board.getFen());
+	}
+
+	@Test
+	void testVariationSan_defaultBoard() {
+		Board board = new Board();
+		List<Move> moves = Arrays.asList(
+				Move.fromUCI("e2e4"),
+				Move.fromUCI("e7e5"),
+				Move.fromUCI("d2d4"));
+		assertEquals("1. e4 e5 2. d4", board.variationSan(moves));
+	}
+
+	@Test
+	void testVariationSan_fromPosition() {
+		String fen = "rn1qr1k1/1p2bppp/p3p3/3pP3/P2P1B2/2RB1Q1P/1P3PP1/R5K1 w - - 0 19";
+		Board board = new Board(fen);
+
+
+		List<Move> moves = Arrays.asList(
+				Move.fromUCI("d3h7"), Move.fromUCI("g8h7"),
+				Move.fromUCI("f3h5"), Move.fromUCI("h7g8"),
+				Move.fromUCI("c3g3"), Move.fromUCI("e7f8"),
+				Move.fromUCI("f4g5"), Move.fromUCI("e8e7"),
+				Move.fromUCI("g5f6"), Move.fromUCI("b8d7"));
+
+		String san = board.variationSan(moves);
+
+		assertEquals("19. Bxh7+ Kxh7 20. Qh5+ Kg8 21. Rg3 Bf8 22. Bg5 Re7 23. Bf6 Nd7", san);
+		assertEquals(fen, board.getFen());
+
+		board.push(moves.get(0));
+		san = board.variationSan(moves.subList(1, moves.size()));
+
+		assertEquals("19...Kxh7 20. Qh5+ Kg8 21. Rg3 Bf8 22. Bg5 Re7 23. Bf6 Nd7", san);
+	}
+
+	@Test
+	void testVariationSan_illegalMove() {
+		String fen = "rn1qr1k1/1p2bppp/p3p3/3pP3/P2P1B2/2RB1Q1P/1P3PP1/R5K1 w - - 0 19";
+		Board board = new Board(fen);
+
+		List<Move> moves = Arrays.asList(
+				Move.fromUCI("d3h7"), Move.fromUCI("g8h7"),
+				Move.fromUCI("f3h6"), Move.fromUCI("h7g8"));
+
+		assertThrows(IllegalMoveException.class, () -> board.variationSan(moves));
 	}
 }
