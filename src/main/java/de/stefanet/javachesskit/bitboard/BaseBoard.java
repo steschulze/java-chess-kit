@@ -476,4 +476,44 @@ public class BaseBoard {
 	public int hashCode() {
 		return Objects.hash(pawns, knights, bishops, rooks, queens, kings, promoted, whitePieces, blackPieces, occupied);
 	}
+
+	public long getPawns() {
+		return pawns;
+	}
+
+	public long getKnights() {
+		return knights;
+	}
+
+	public long getBishops() {
+		return bishops;
+	}
+
+	public long getRooks() {
+		return rooks;
+	}
+
+	public long getQueens() {
+		return queens;
+	}
+
+	public long getKings() {
+		return kings;
+	}
+
+	public long getPromoted() {
+		return promoted;
+	}
+
+	public long getWhitePieces() {
+		return whitePieces;
+	}
+
+	public long getBlackPieces() {
+		return blackPieces;
+	}
+
+	public long getOccupied() {
+		return occupied;
+	}
 }
