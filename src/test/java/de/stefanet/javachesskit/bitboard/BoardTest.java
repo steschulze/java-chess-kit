@@ -646,4 +646,21 @@ class BoardTest {
 
 		assertThrows(IllegalMoveException.class, () -> board.variationSan(moves));
 	}
+
+	@Test
+	void testMoveStackUsage() {
+		Board board = new Board();
+		board.pushUCI("d2d4");
+		board.pushUCI("d7d5");
+		board.pushUCI("g1f3");
+		board.pushUCI("c8f5");
+		board.pushUCI("e2e3");
+		board.pushUCI("e7e6");
+		board.pushUCI("f1d3");
+		board.pushUCI("f8d6");
+		board.pushUCI("e1g1");
+
+		String san = new Board().variationSan(board.moveStack);
+		assertEquals("1. d4 d5 2. Nf3 Bf5 3. e3 e6 4. Bd3 Bd6 5. O-O", san);
+	}
 }
