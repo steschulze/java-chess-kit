@@ -518,4 +518,84 @@ class BoardTest {
 		Board board = new Board("4k3/8/6r1/8/8/8/2R5/4K3 w - - 369 1");
 		assertEquals("1/2-1/2", board.result());
 	}
+
+	@Test
+	void testSan_castlingWithCheck() {
+		String fen = "rnbk1b1r/ppp2pp1/5n1p/4p1B1/2P5/2N5/PP2PPPP/R3KBNR w KQ - 0 7";
+		Board board = new Board(fen);
+
+		Move longCastleCheck = Move.fromUCI("e1c1");
+		assertEquals("O-O-O+", board.san(longCastleCheck));
+		assertEquals(fen, board.getFen());
+	}
+
+	@Test
+	void testSan_enPassantMate() {
+		String fen = "6bk/7b/8/3pP3/8/8/8/Q3K3 w - d6 0 2";
+		Board board = new Board(fen);
+		Move move = Move.fromUCI("e5d6");
+		assertEquals("exd6#", board.san(move));
+		assertEquals(fen, board.getFen());
+	}
+
+	@Test
+	void testSan_disambiguation() {
+		String fen = "N3k2N/8/8/3N4/N4N1N/2R5/1R6/4K3 w - - 0 1";
+		Board board = new Board(fen);
+
+		assertEquals("Kf1", board.san(Move.fromUCI("e1f1")));
+		assertEquals("Rcc2", board.san(Move.fromUCI("c3c2")));
+		assertEquals("Rbc2", board.san(Move.fromUCI("b2c2")));
+		assertEquals("N4b6", board.san(Move.fromUCI("a4b6")));
+		assertEquals("N8g6", board.san(Move.fromUCI("h8g6")));
+		assertEquals("Nh4g6", board.san(Move.fromUCI("h4g6")));
+
+		assertEquals(fen, board.getFen());
+	}
+
+	@Test
+	void testSan_illegalMove() {
+		String fen = "8/8/8/R2nkn2/8/8/2K5/8 b - - 0 1";
+		Board board = new Board(fen);
+
+		assertEquals("Ne3+", board.san(Move.fromUCI("f5e3")));
+		assertEquals(fen, board.getFen());
+	}
+
+	@Test
+	void testSan_promotion() {
+		String fen = "7k/1p2Npbp/8/2P5/1P1r4/3b2QP/3q1pPK/2RB4 b - - 1 29";
+		Board board = new Board(fen);
+
+		assertEquals("f1=Q", board.san(Move.fromUCI("f2f1q")));
+		assertEquals("f1=N+", board.san(Move.fromUCI("f2f1n")));
+		assertEquals(fen, board.getFen());
+	}
+
+	@Test
+	void testLan_simpleMove() {
+		String fen = "N3k2N/8/8/3N4/N4N1N/2R5/1R6/4K3 w - - 0 1";
+		Board board = new Board(fen);
+		assertEquals("Ke1-f1", board.lan(Move.fromUCI("e1f1")));
+		assertEquals("Rc3-c2", board.lan(Move.fromUCI("c3c2")));
+		assertEquals("Na4-c5", board.lan(Move.fromUCI("a4c5")));
+		assertEquals(fen, board.getFen());
+	}
+
+	@Test
+	void testLan_capture() {
+		String fen = "rnbq1rk1/ppp1bpp1/4pn1p/3p2B1/2PP4/2N1PN2/PP3PPP/R2QKB1R w KQ - 0 7";
+		Board board = new Board(fen);
+		assertEquals("Bg5xf6", board.lan(Move.fromUCI("g5f6")));
+		assertEquals(fen, board.getFen());
+	}
+
+	@Test
+	void testLan_pawnMove() {
+		String fen = "6bk/7b/8/3pP3/8/8/8/Q3K3 w - d6 0 2";
+		Board board = new Board(fen);
+		assertEquals("e5xd6#", board.lan(Move.fromUCI("e5d6")));
+		assertEquals("e5-e6+", board.lan(Move.fromUCI("e5e6")));
+		assertEquals(fen, board.getFen());
+	}
 }
