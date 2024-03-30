@@ -743,7 +743,7 @@ public class Board extends BaseBoard {
 		BoardState state = this.getBoardState();
 		this.castlingRights = cleanCastlingRights();
 		this.stateStack.push(state);
-		this.moveStack.push(move);
+		this.moveStack.addLast(move);
 
 		Square epSquare = this.epSquare;
 		this.epSquare = null;
@@ -832,14 +832,14 @@ public class Board extends BaseBoard {
 	}
 
 	public Move pop() {
-		Move move = this.moveStack.pop();
+		Move move = this.moveStack.removeLast();
 		this.stateStack.pop().restore(this);
 
 		return move;
 	}
 
 	public Move peek() {
-		return this.moveStack.peek();
+		return this.moveStack.peekLast();
 	}
 
 	private boolean isZeroingMove(Move move) {
