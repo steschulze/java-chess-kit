@@ -769,4 +769,17 @@ class BoardTest {
 
 		assertEquals(26, count);
 	}
+
+	@Test
+	void testEquality() {
+		assertEquals(new Board(), new Board());
+
+		Board a = new Board();
+		Board b = new Board();
+
+		a.pushSan("e4");
+		b.pushSan("d3");
+
+		assertNotEquals(a, b);
+	}
 }
