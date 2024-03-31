@@ -720,4 +720,53 @@ class BoardTest {
 		assertEquals("rnbqkbnr/p1pppppp/8/8/P6P/R1p5/1P1PPPP1/1NBQKBNR b Kkq - 1 4", board.getFen());
 		assertEquals(0x5c3f9b829b279560L, Polyglot.zobristHash(board));
 	}
+
+	@Test
+	void testCastlingMoveGeneration() {
+		String fen = "rnbqkbnr/2pp1ppp/8/4p3/2BPP3/P1N2N2/PB3PPP/2RQ1RK1 b kq - 1 10";
+		Board board = new Board(fen);
+		Move illegalMove = Move.fromUCI("g1g2");
+
+		assertFalse(board.legalMoves().contains(illegalMove));
+		assertFalse(board.pseudoLegalMoves().contains(illegalMove));
+
+		board.pushSan("exd4");
+
+		illegalMove = Move.fromUCI("e1c1");
+		assertFalse(board.legalMoves().contains(illegalMove));
+		assertFalse(board.pseudoLegalMoves().contains(illegalMove));
+
+		board.pop();
+
+		for (Move move1 : board.pseudoLegalMoves()) {
+			board.push(move1);
+			for (Move move2 : board.pseudoLegalMoves()) {
+				board.push(move2);
+				board.pop();
+			}
+			board.pop();
+		}
+
+		assertEquals(fen, board.getFen());
+		assertTrue((board.kings & Bitboard.Squares.G1) != 0);
+		assertTrue((board.occupied & Bitboard.Squares.G1) != 0);
+		assertTrue((board.whitePieces & Bitboard.Squares.G1) != 0);
+		assertEquals(Piece.fromTypeAndColor(PieceType.KING, Color.WHITE), board.pieceAt(Square.G1));
+		assertEquals(Piece.fromTypeAndColor(PieceType.ROOK, Color.WHITE), board.pieceAt(Square.C1));
+	}
+
+	@Test
+	void testStatefulMoveGeneration() {
+		Board board = new Board("r1b1k3/p2p1Nr1/n2b3p/3pp1pP/2BB1p2/P3P2R/Q1P3P1/R3K1N1 b Qq - 0 1");
+		int count = 0;
+
+		for (Move move : board.legalMoves()) {
+			board.push(move);
+			board.generateLegalMoves();
+			count++;
+			board.pop();
+		}
+
+		assertEquals(26, count);
+	}
 }
