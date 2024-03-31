@@ -437,16 +437,7 @@ public class Board extends BaseBoard {
 
 		long castlingRights = this.cleanCastlingRights() & backrank;
 
-		while (castlingRights != 0) {
-			long rook = castlingRights & -castlingRights;
-
-			if (rook > kingMask) {
-				return true;
-			}
-			castlingRights &= castlingRights - 1;
-		}
-
-		return false;
+		return (castlingRights & FILE_H) != 0;
 	}
 
 	public boolean hasQueensideCastlingRights(Color color) {
@@ -460,16 +451,7 @@ public class Board extends BaseBoard {
 
 		long castlingRights = this.cleanCastlingRights() & backrank;
 
-		while (castlingRights != 0) {
-			long rook = castlingRights & -castlingRights;
-
-			if (rook < kingMask) {
-				return true;
-			}
-			castlingRights &= castlingRights - 1;
-		}
-
-		return false;
+		return (castlingRights & FILE_A) != 0;
 	}
 
 	public boolean isLegal(Move move) {
