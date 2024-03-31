@@ -46,6 +46,10 @@ public class Board extends BaseBoard {
 		}
 	}
 
+	public static Board empty() {
+		return new Board(null);
+	}
+
 	public Board copy() {
 		Board board = new Board();
 		board.pawns = this.pawns;

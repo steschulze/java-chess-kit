@@ -782,4 +782,19 @@ class BoardTest {
 
 		assertNotEquals(a, b);
 	}
+
+	@Test
+	void testOneKingMoveGeneration() {
+		Board board = Board.empty();
+		board.setPiece(Square.A1, PieceType.KING, Color.WHITE);
+
+		assertFalse(board.isValid());
+		assertEquals(3, board.legalMoves().count());
+		assertEquals(3, board.pseudoLegalMoves().count());
+
+		board.pushSan("Kb1");
+
+		assertEquals(0, board.legalMoves().count());
+		assertEquals(0, board.pseudoLegalMoves().count());
+	}
 }
