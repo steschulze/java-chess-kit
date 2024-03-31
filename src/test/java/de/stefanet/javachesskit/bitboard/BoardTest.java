@@ -149,6 +149,34 @@ class BoardTest {
 	}
 
 	@Test
+	void testAttackers() {
+		Board board = new Board("r1b1k2r/pp1n1ppp/2p1p3/q5B1/1b1P4/P1n1PN2/1P1Q1PPP/2R1KB1R b Kkq - 3 10");
+		SquareSet attackers = board.attackers(Color.WHITE, Square.C3);
+
+		assertEquals(3, attackers.size());
+		assertTrue(attackers.contains(Square.C1));
+		assertTrue(attackers.contains(Square.D2));
+		assertTrue(attackers.contains(Square.B2));
+
+		assertFalse(attackers.contains(Square.E1));
+		assertFalse(attackers.contains(Square.D4));
+
+	}
+
+	@Test
+	void testEnPassantAttackers() {
+		Board board = new Board("4k3/8/8/8/4pPp1/8/8/4K3 b - f3 0 1");
+		SquareSet attackers = board.attackers(Color.BLACK, Square.F3);
+
+		assertEquals(2, attackers.size());
+		assertTrue(attackers.contains(Square.E4));
+		assertTrue(attackers.contains(Square.G4));
+
+		attackers = board.attackers(Color.BLACK, Square.F4);
+		assertTrue(attackers.isEmpty());
+	}
+
+	@Test
 	void testAttacks() {
 		Board board = new Board("5rk1/p5pp/2p3p1/1p1pR3/3P2P1/2N5/PP3n2/2KB4 w - - 1 26");
 
