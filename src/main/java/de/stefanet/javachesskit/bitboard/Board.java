@@ -1372,6 +1372,14 @@ public class Board extends BaseBoard {
 		return move;
 	}
 
+	public Color getTurn() {
+		return turn;
+	}
+
+	public Square getEpSquare() {
+		return epSquare;
+	}
+
 
 //	private boolean canClaimThreefoldRepetition() {
 //	}
