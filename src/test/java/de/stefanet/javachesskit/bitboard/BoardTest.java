@@ -1,6 +1,7 @@
 package de.stefanet.javachesskit.bitboard;
 
 import de.stefanet.javachesskit.*;
+import de.stefanet.javachesskit.polyglot.Polyglot;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -668,5 +669,55 @@ class BoardTest {
 	void testMoveCount() {
 		Board board = new Board("1N2k3/P7/8/8/3n4/8/2PP4/R3K2R w KQ - 0 1");
 		assertEquals(33, board.pseudoLegalMoves().count());
+	}
+
+	@Test
+	void testPolyglot() {
+		Board board = new Board();
+
+		assertEquals(Board.STARTING_FEN, board.getFen());
+		assertEquals(0x463b96181691fc9cL, Polyglot.zobristHash(board));
+
+		board.pushSan("e4");
+		assertEquals("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", board.getFen());
+		assertEquals(0x823c9b50fd114196L, Polyglot.zobristHash(board));
+
+		board.pushSan("d5");
+		assertEquals("rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2", board.getFen());
+		assertEquals(0x0756b94461c50fb0L, Polyglot.zobristHash(board));
+
+		board.pushSan("e5");
+		assertEquals("rnbqkbnr/ppp1pppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2", board.getFen());
+		assertEquals(0x662fafb965db29d4L, Polyglot.zobristHash(board));
+
+		board.pushSan("f5");
+		assertEquals("rnbqkbnr/ppp1p1pp/8/3pPp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 3", board.getFen());
+		assertEquals(0x22a48b5a8e47ff78L, Polyglot.zobristHash(board));
+
+		board.pushSan("Ke2");
+		assertEquals("rnbqkbnr/ppp1p1pp/8/3pPp2/8/8/PPPPKPPP/RNBQ1BNR b kq - 1 3", board.getFen());
+		assertEquals(0x652a607ca3f242c1L, Polyglot.zobristHash(board));
+
+		board.pushSan("Kf7");
+		assertEquals("rnbq1bnr/ppp1pkpp/8/3pPp2/8/8/PPPPKPPP/RNBQ1BNR w - - 2 4", board.getFen());
+		assertEquals(0x00fdd303c946bdd9L, Polyglot.zobristHash(board));
+	}
+
+	@Test
+	void testPolyglot2() {
+		Board board = new Board();
+		board.pushSan("a4");
+		board.pushSan("b5");
+		board.pushSan("h4");
+		board.pushSan("b4");
+		board.pushSan("c4");
+
+		assertEquals("rnbqkbnr/p1pppppp/8/8/PpP4P/8/1P1PPPP1/RNBQKBNR b KQkq c3 0 3", board.getFen());
+		assertEquals(0x3c8123ea7b067637L, Polyglot.zobristHash(board));
+
+		board.pushSan("bxc3");
+		board.pushSan("Ra3");
+		assertEquals("rnbqkbnr/p1pppppp/8/8/P6P/R1p5/1P1PPPP1/1NBQKBNR b Kkq - 1 4", board.getFen());
+		assertEquals(0x5c3f9b829b279560L, Polyglot.zobristHash(board));
 	}
 }
