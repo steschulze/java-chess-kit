@@ -954,4 +954,63 @@ class BoardTest {
 	void testTrivialRepetition() {
 		assertTrue(new Board().isRepetition(1));
 	}
+
+	@Test
+	void testFiftyMoves_defaultBoard() {
+		Board board = new Board();
+		assertFalse(board.isFiftyMoves());
+		assertFalse(board.canClaimFiftyMoveRule());
+	}
+
+	@Test
+	void testFiftyMoves_fromPosition1() {
+		Board board = new Board("8/5R2/8/r2KB3/6k1/8/8/8 w - - 19 79");
+		assertFalse(board.isFiftyMoves());
+		assertFalse(board.canClaimFiftyMoveRule());
+	}
+
+	@Test
+	void testFiftyMoves_fromPosition2() {
+		Board board = new Board("8/8/6r1/4B3/8/4K2k/5R2/8 b - - 68 103");
+		assertFalse(board.isFiftyMoves());
+		assertFalse(board.canClaimFiftyMoveRule());
+	}
+
+	@Test
+	void testFiftyMoves_fromPosition3() {
+		Board board = new Board("6R1/7k/8/8/1r3B2/5K2/8/8 w - - 99 119");
+		assertFalse(board.isFiftyMoves());
+		assertTrue(board.canClaimFiftyMoveRule());
+	}
+
+	@Test
+	void testFiftyMoves_fromPosition4() {
+		Board board = new Board("8/7k/8/6R1/1r3B2/5K2/8/8 b - - 100 119");
+		assertTrue(board.isFiftyMoves());
+		assertTrue(board.canClaimFiftyMoveRule());
+	}
+
+	@Test
+	void testFiftyMoves_fromPosition5() {
+		Board board = new Board("8/7k/8/1r3KR1/5B2/8/8/8 w - - 105 122");
+		assertTrue(board.isFiftyMoves());
+		assertTrue(board.canClaimFiftyMoveRule());
+	}
+
+	@Test
+	void testFiftyMoves_checkmate() {
+		Board board = new Board("k7/8/NKB5/8/8/8/8/8 b - - 105 176");
+		assertFalse(board.isFiftyMoves());
+		assertFalse(board.canClaimFiftyMoveRule());
+	}
+
+	@Test
+	void testFiftyMoves_stalemate() {
+		Board board = new Board("k7/3N4/1K6/1B6/8/8/8/8 b - - 99 1");
+		assertTrue(board.isStalemate());
+		assertTrue(board.isGameOver());
+		assertFalse(board.isFiftyMoves());
+		assertFalse(board.canClaimFiftyMoveRule());
+		assertFalse(board.canClaimDraw());
+	}
 }
