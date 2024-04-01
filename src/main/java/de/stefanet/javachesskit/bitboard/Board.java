@@ -315,6 +315,10 @@ public class Board extends BaseBoard {
 		return moveList;
 	}
 
+	private Set<Move> generatePseudoLegalEnPassant() {
+		return generatePseudoLegalEnPassant(ALL, ALL);
+	}
+
 	private Set<Move> generatePseudoLegalEnPassant(long sourceMask, long targetMask) {
 		Set<Move> moves = new HashSet<>();
 
@@ -332,6 +336,27 @@ public class Board extends BaseBoard {
 		for (int index : BitboardUtils.scanReversed(capturers)) {
 			Square source = Square.fromIndex(index);
 			moves.add(new Move(source, epSquare));
+		}
+
+		return moves;
+	}
+
+	private boolean hasLegalEnPassant() {
+		return this.epSquare != null && !generateLegalEnPassant().isEmpty();
+	}
+
+
+	private Set<Move> generateLegalEnPassant() {
+		return generateLegalEnPassant(ALL, ALL);
+	}
+
+	private Set<Move> generateLegalEnPassant(long sourceMask, long targetMask) {
+		Set<Move> moves = new HashSet<>();
+
+		for (Move move : generatePseudoLegalEnPassant(sourceMask, targetMask)) {
+			if (!isKingInCheck(move)) {
+				moves.add(move);
+			}
 		}
 
 		return moves;
