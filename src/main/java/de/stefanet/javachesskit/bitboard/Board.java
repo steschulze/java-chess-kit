@@ -1397,6 +1397,19 @@ public class Board extends BaseBoard {
 //
 //	private boolean isFivefoldRepetition() {
 //	}
+	private boolean isIrreversible(Move move) {
+		return isZeroingMove(move) || hasLegalEnPassant() || reducesCastlingRights(move);
+	}
+
+	private boolean reducesCastlingRights(Move move) {
+		long castlingRights = this.cleanCastlingRights();
+		long touched = SQUARES[move.getSource().ordinal()] ^ SQUARES[move.getTarget().ordinal()];
+
+		return (touched & castlingRights) != 0 ||
+				((castlingRights & RANK_1) != 0 && (touched & this.kings & this.whitePieces & ~this.promoted) != 0) ||
+				((castlingRights & RANK_8) != 0 && (touched & this.kings & this.blackPieces & ~this.promoted) != 0);
+
+	}
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
