@@ -825,4 +825,133 @@ class BoardTest {
 		assertEquals(0, board.legalMoves().count());
 		assertEquals(0, board.pseudoLegalMoves().count());
 	}
+
+	@Test
+	void testThreefoldRepetition() {
+		Board board = new Board();
+
+		assertFalse(board.canClaimThreefoldRepetition());
+		assertFalse(board.isRepetition());
+
+		board.pushSan("Nf3");
+
+		assertFalse(board.canClaimThreefoldRepetition());
+		assertFalse(board.isRepetition());
+
+		board.pushSan("Nf6");
+
+		assertFalse(board.canClaimThreefoldRepetition());
+		assertFalse(board.isRepetition());
+
+		board.pushSan("Ng1");
+
+		assertFalse(board.canClaimThreefoldRepetition());
+		assertFalse(board.isRepetition());
+
+		board.pushSan("Ng8"); // return to starting position
+
+		assertFalse(board.canClaimThreefoldRepetition());
+		assertFalse(board.isRepetition());
+
+		board.pushSan("Nf3");
+
+		assertFalse(board.canClaimThreefoldRepetition());
+		assertFalse(board.isRepetition());
+
+		board.pushSan("Nf6");
+
+		assertFalse(board.canClaimThreefoldRepetition());
+		assertFalse(board.isRepetition());
+
+		board.pushSan("Ng1");
+
+		// black can return to the starting position with Ng8
+		assertTrue(board.canClaimThreefoldRepetition());
+		assertFalse(board.isRepetition());
+
+		board.pushSan("Ng8");
+
+		assertTrue(board.canClaimThreefoldRepetition());
+		assertTrue(board.isRepetition());
+
+		board.pushSan("e4");
+
+		assertFalse(board.canClaimThreefoldRepetition());
+		assertFalse(board.isRepetition());
+
+		board.pop();
+
+		assertTrue(board.canClaimThreefoldRepetition());
+
+		board.pop();
+
+		assertTrue(board.canClaimThreefoldRepetition());
+
+		while (!board.moveStack.isEmpty()) {
+			board.pop();
+			assertFalse(board.canClaimThreefoldRepetition());
+		}
+	}
+
+	@Test
+	void testFivefoldRepetition() {
+		String fen = "rnbq1rk1/ppp3pp/3bpn2/3p1p2/2PP4/2NBPN2/PP3PPP/R1BQK2R w KQ - 3 7";
+		Board board = new Board(fen);
+
+		for (int i = 0; i < 3; i++) {
+			board.pushSan("Be2");
+			assertFalse(board.isFivefoldRepetition());
+			board.pushSan("Ne4");
+			assertFalse(board.isFivefoldRepetition());
+			board.pushSan("Bd3");
+			assertFalse(board.isFivefoldRepetition());
+			board.pushSan("Nf6");
+			assertFalse(board.isFivefoldRepetition());
+			assertFalse(board.isGameOver());
+		}
+
+		board.pushSan("Be2");
+		assertFalse(board.isFivefoldRepetition());
+
+		board.pushSan("Ne4");
+		assertFalse(board.isFivefoldRepetition());
+
+		board.pushSan("Bd3");
+		assertFalse(board.isFivefoldRepetition());
+
+		board.pushSan("Nf6");
+		assertTrue(board.isFivefoldRepetition());
+		assertTrue(board.isGameOver());
+
+		assertTrue(board.canClaimThreefoldRepetition());
+
+		board.pushSan("Qc2");
+		board.pushSan("Qd7");
+
+		assertFalse(board.canClaimThreefoldRepetition());
+		assertFalse(board.isFivefoldRepetition());
+
+		board.pushSan("Qd2");
+		board.pushSan("Qe7");
+
+		assertFalse(board.canClaimThreefoldRepetition());
+		assertFalse(board.isFivefoldRepetition());
+
+		board.pushSan("Qd1");
+		assertFalse(board.isFivefoldRepetition());
+		assertFalse(board.isGameOver());
+		assertTrue(board.canClaimThreefoldRepetition());
+		assertTrue(board.isGameOver(true));
+
+		board.pushSan("Qd8");
+
+		assertTrue(board.isFivefoldRepetition());
+		assertTrue(board.canClaimThreefoldRepetition());
+		assertEquals(fen.split("\\s")[0], board.getFen().split("\\s")[0]);
+	}
+
+	@Test
+	void testTrivialRepetition() {
+		assertTrue(new Board().isRepetition(1));
+	}
 }
