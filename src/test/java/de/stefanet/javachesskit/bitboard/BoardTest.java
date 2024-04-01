@@ -1013,4 +1013,36 @@ class BoardTest {
 		assertFalse(board.canClaimFiftyMoveRule());
 		assertFalse(board.canClaimDraw());
 	}
+
+	@Test
+	void testEnPassantLegality_white() {
+		Move move = Move.fromUCI("h5g6");
+		Board board = new Board("rnbqkbnr/pppppp2/7p/6pP/8/8/PPPPPPP1/RNBQKBNR w KQkq g6 0 3");
+
+		assertTrue(board.isLegal(move));
+
+		board.pushSan("Nf3");
+
+		assertFalse(board.isLegal(move));
+
+		board.pushSan("Nf6");
+
+		assertFalse(board.isLegal(move));
+	}
+
+	@Test
+	void testEnPassantLegality_black() {
+		Move move = Move.fromUCI("c4d3");
+		Board board = new Board("rnbqkbnr/pp1ppppp/8/8/2pP4/2P2N2/PP2PPPP/RNBQKB1R b KQkq d3 0 3");
+
+		assertTrue(board.isLegal(move));
+
+		board.pushSan("Qc7");
+
+		assertFalse(board.isLegal(move));
+
+		board.pushSan("Bd2");
+
+		assertFalse(board.isLegal(move));
+	}
 }
