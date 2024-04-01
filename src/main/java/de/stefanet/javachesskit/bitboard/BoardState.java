@@ -14,7 +14,7 @@ public class BoardState {
 	private long promoted;
 	private long whitePieces;
 	private long blackPieces;
-	private long occupied;
+	protected long occupied;
 
 	private Color turn;
 	private long castlingRights;

@@ -1181,17 +1181,17 @@ public class Board extends BaseBoard {
 			return new Outcome(Termination.SEVENTYFIVE_MOVES, null);
 		}
 
-//		if (isFivefoldRepetition()) {
-//			return new Outcome(Termination.FIVEFOLD_REPETITION, null);
-//		}
+		if (isFivefoldRepetition()) {
+			return new Outcome(Termination.FIVEFOLD_REPETITION, null);
+		}
 
 		if (claimDraw) {
 			if (canClaimFiftyMoveRule()) {
 				return new Outcome(Termination.FIFTY_MOVES, null);
 			}
-//			if (canClaimThreefoldRepetition()) {
-//				return new Outcome(Termination.THREEFOLD_REPETITION, null);
-//			}
+			if (canClaimThreefoldRepetition()) {
+				return new Outcome(Termination.THREEFOLD_REPETITION, null);
+			}
 		}
 
 		return null;
@@ -1392,11 +1392,47 @@ public class Board extends BaseBoard {
 	}
 
 
-//	private boolean canClaimThreefoldRepetition() {
-//	}
-//
-//	private boolean isFivefoldRepetition() {
-//	}
+	public boolean canClaimThreefoldRepetition() {
+		int transpositionKey = this.hashCode();
+		Map<Integer, Integer> transpositions = new HashMap<>();
+		transpositions.put(transpositionKey, 1);
+
+		Deque<Move> switchyard = new ArrayDeque<>();
+		while (!this.moveStack.isEmpty()) {
+			Move move = this.pop();
+			switchyard.push(move);
+
+			if (isIrreversible(move)) {
+				break;
+			}
+
+			int nextTranspositionKey = this.hashCode();
+			transpositions.put(nextTranspositionKey, transpositions.getOrDefault(nextTranspositionKey, 0) + 1);
+		}
+
+		while (!switchyard.isEmpty()) {
+			this.push(switchyard.pop());
+		}
+
+		if (transpositions.get(transpositionKey) >= 3) {
+			return true;
+		}
+
+		for (Move move : generateLegalMoves()) {
+			push(move);
+			try {
+				int nextTranspositionKey = hashCode();
+				if (transpositions.getOrDefault(nextTranspositionKey, 0) >= 2) {
+					return true;
+				}
+			} finally {
+				pop();
+			}
+		}
+
+		return false;
+	}
+
 	private boolean isIrreversible(Move move) {
 		return isZeroingMove(move) || hasLegalEnPassant() || reducesCastlingRights(move);
 	}
@@ -1410,6 +1446,65 @@ public class Board extends BaseBoard {
 				((castlingRights & RANK_8) != 0 && (touched & this.kings & this.blackPieces & ~this.promoted) != 0);
 
 	}
+
+	public boolean isFivefoldRepetition() {
+		return isRepetition(5);
+	}
+
+	public boolean isRepetition() {
+		return isRepetition(3);
+	}
+
+	public boolean isRepetition(int count) {
+		int maybeRepetitions = 1;
+
+		for (BoardState state : this.stateStack) {
+			if (state.occupied == this.occupied) {
+				maybeRepetitions++;
+
+				if (maybeRepetitions >= count) {
+					break;
+				}
+			}
+		}
+
+		if (maybeRepetitions < count) {
+			return false;
+		}
+
+		int transpositionKey = this.hashCode();
+		Deque<Move> switchyard = new ArrayDeque<>();
+
+		try {
+			while (true) {
+				if (count <= 1) {
+					return true;
+				}
+
+				if (this.moveStack.size() < count - 1) {
+					break;
+				}
+
+				Move move = this.pop();
+				switchyard.push(move);
+
+				if (isIrreversible(move)) {
+					break;
+				}
+
+				if (hashCode() == transpositionKey) {
+					count--;
+				}
+			}
+		} finally {
+			while (!switchyard.isEmpty()) {
+				this.push(switchyard.pop());
+			}
+		}
+
+		return false;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
