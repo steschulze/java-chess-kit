@@ -1391,6 +1391,9 @@ public class Board extends BaseBoard {
 		return epSquare;
 	}
 
+	public boolean canClaimDraw() {
+		return canClaimFiftyMoveRule() || canClaimThreefoldRepetition();
+	}
 
 	public boolean canClaimThreefoldRepetition() {
 		int transpositionKey = this.hashCode();
