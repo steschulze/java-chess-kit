@@ -1397,4 +1397,26 @@ public class Board extends BaseBoard {
 //
 //	private boolean isFivefoldRepetition() {
 //	}
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		Board board = (Board) o;
+		return fullMoveNumber == board.fullMoveNumber &&
+				halfMoveClock == board.halfMoveClock &&
+				hashCode() == board.hashCode();
+	}
+
+	@Override
+	public int hashCode() {
+		if (hasLegalEnPassant()) {
+			return Objects.hash(super.hashCode(), turn, cleanCastlingRights(), epSquare);
+		}
+		return Objects.hash(super.hashCode(), turn, cleanCastlingRights());
+	}
 }
