@@ -1197,7 +1197,7 @@ public class Board extends BaseBoard {
 		return null;
 	}
 
-	private boolean canClaimFiftyMoveRule() {
+	public boolean canClaimFiftyMoveRule() {
 		if (isFiftyMoves()) {
 			return true;
 		}
@@ -1218,7 +1218,7 @@ public class Board extends BaseBoard {
 		return this.isHalfmoves(150);
 	}
 
-	private boolean isFiftyMoves() {
+	public boolean isFiftyMoves() {
 		return this.isHalfmoves(100);
 	}
 
