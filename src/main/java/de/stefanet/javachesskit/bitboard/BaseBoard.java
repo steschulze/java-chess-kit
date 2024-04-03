@@ -477,6 +477,25 @@ public class BaseBoard {
 		return Objects.hash(pawns, knights, bishops, rooks, queens, kings, promoted, whitePieces, blackPieces, occupied);
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+
+		for (int rank = 8; rank >= 1; rank--) {
+			for (char file = 'a'; file <= 'h'; file++) {
+				Piece piece = pieceAt(Square.getSquare(file, rank));
+				sb.append(piece == null ? '.' : piece.getSymbol());
+				if (file < 'h') {
+					sb.append(' ');
+				}
+			}
+			if (rank > 1) {
+				sb.append('\n');
+			}
+		}
+		return sb.toString();
+	}
+
 	public long getPawns() {
 		return pawns;
 	}
