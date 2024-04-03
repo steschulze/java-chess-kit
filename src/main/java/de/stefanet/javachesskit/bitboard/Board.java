@@ -239,7 +239,7 @@ public class Board extends BaseBoard {
 		}
 
 		// castling moves
-		if ((targetMask & this.kings) != 0) {
+		if ((sourceMask & this.kings) != 0) {
 			moveList.addAll(generateCastlingMoves(sourceMask, targetMask));
 		}
 
