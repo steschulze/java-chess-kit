@@ -1103,4 +1103,12 @@ class BoardTest {
 		assertTrue(pseudoLegalMoves.contains(queenSide));
 		assertFalse(pseudoLegalMoves.contains(kingSide));
 	}
+
+	@Test
+	void testPieces() {
+		Board board = new Board();
+		SquareSet king = board.pieces(PieceType.KING, Color.WHITE);
+		assertTrue(king.contains(Square.E1));
+		assertEquals(1, king.size());
+	}
 }
