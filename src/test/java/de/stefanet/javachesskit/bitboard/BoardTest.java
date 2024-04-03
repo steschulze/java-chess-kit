@@ -1045,4 +1045,44 @@ class BoardTest {
 
 		assertFalse(board.isLegal(move));
 	}
+
+	@ParameterizedTest
+	@CsvSource({
+			Board.STARTING_FEN,
+			"rnbqkbnr/pp1ppppp/2p5/8/6P1/2P5/PP1PPP1P/RNBQKBNR b KQkq - 0 1",
+			"rnb1kbnr/ppq1pppp/2pp4/8/6P1/2P5/PP1PPPBP/RNBQK1NR w KQkq - 0 1",
+			"rn2kbnr/p1q1ppp1/1ppp3p/8/4B1b1/2P4P/PPQPPP2/RNB1K1NR w KQkq - 0 1",
+			"rnkq1bnr/p3ppp1/1ppp3p/3B4/6b1/2PQ3P/PP1PPP2/RNB1K1NR w KQ - 0 1",
+			"rn1q1bnr/3kppp1/2pp3p/pp6/1P2b3/2PQ1N1P/P2PPPB1/RNB1K2R w KQ - 0 1",
+			"rnkq1bnr/4pp2/2pQ2pp/pp6/1P5N/2P4P/P2PPP2/RNB1KB1b w Q - 0 1",
+			"rn3b1r/1kq1p3/2pQ1npp/Pp6/4b3/2PPP2P/P4P2/RNB1KB2 w Q - 0 1",
+			"r4br1/8/k1p2npp/Ppn1p3/P7/2PPP1qP/4bPQ1/RNB1KB2 w Q - 0 1",
+			"rnbqk1nr/p2p3p/1p5b/2pPppp1/8/P7/1PPQPPPP/RNB1KBNR w KQkq c6 0 1",
+			"rnb1k2r/pp1p1p1p/1q1P4/2pnpPp1/6P1/2N5/PP1BP2P/R2QKBNR w KQkq e6 0 1",
+			"1n4kr/2B4p/2nb2b1/ppp5/P1PpP3/3P4/5K2/1N1R4 b - c3 0 1",
+			"r2n3r/1bNk2pp/6P1/pP3p2/3pPqnP/1P1P1p1R/2P3B1/Q1B1bKN1 b - e3 0 1",
+	})
+	void testPseudoLegality(String fen) {
+		Board board = new Board(fen);
+
+		List<Move> moves = Arrays.asList(
+				new Move(Square.A2, Square.A4),
+				new Move(Square.C1, Square.E3),
+				new Move(Square.G8, Square.F6),
+				new Move(Square.D7, Square.D8, PieceType.QUEEN),
+				new Move(Square.E5, Square.E4)
+		);
+
+		Set<Move> pseudoLegalMoves = board.generatePseudoLegalMoves();
+
+		for (Move move : pseudoLegalMoves) {
+			assertTrue(board.isPseudoLegal(move));
+		}
+
+		for (Move move : moves) {
+			if (!pseudoLegalMoves.contains(move)) {
+				assertFalse(board.isPseudoLegal(move));
+			}
+		}
+	}
 }
