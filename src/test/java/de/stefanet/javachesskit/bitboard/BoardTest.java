@@ -1085,4 +1085,22 @@ class BoardTest {
 			}
 		}
 	}
+
+	@Test
+	void testPseudoLegalCastlingMasks() {
+		Board board = new Board("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
+		Move kingSide = Move.fromUCI("e1g1");
+		Move queenSide = Move.fromUCI("e1c1");
+
+		Set<Move> pseudoLegalMoves = board.generatePseudoLegalMoves();
+		assertTrue(pseudoLegalMoves.contains(kingSide));
+		assertTrue(pseudoLegalMoves.contains(queenSide));
+
+		pseudoLegalMoves = board.generatePseudoLegalMoves(Bitboard.Ranks.RANK_2, Bitboard.ALL);
+		assertTrue(pseudoLegalMoves.isEmpty());
+
+		pseudoLegalMoves = board.generatePseudoLegalMoves(Bitboard.ALL, Bitboard.Squares.A1);
+		assertTrue(pseudoLegalMoves.contains(queenSide));
+		assertFalse(pseudoLegalMoves.contains(kingSide));
+	}
 }
