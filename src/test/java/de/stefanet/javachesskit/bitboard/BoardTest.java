@@ -1111,4 +1111,53 @@ class BoardTest {
 		assertTrue(king.contains(Square.E1));
 		assertEquals(1, king.size());
 	}
+
+	@Test
+	void testToString() {
+		Board board = new Board("7k/1p1qn1b1/pB1p1n2/3Pp3/4Pp1p/2QN1B2/PP4PP/6K1 w - - 0 28");
+		assertEquals(". . . . . . . k\n" +
+					 ". p . q n . b .\n" +
+					 "p B . p . n . .\n" +
+					 ". . . P p . . .\n" +
+					 ". . . . P p . p\n" +
+					 ". . Q N . B . .\n" +
+					 "P P . . . . P P\n" +
+					 ". . . . . . K .", board.toString());
+	}
+
+	@Test
+	void testUnicode1() {
+		Board board = new Board("7k/1p1qn1b1/pB1p1n2/3Pp3/4Pp1p/2QN1B2/PP4PP/6K1 w - - 0 28");
+		assertEquals("· · · · · · · ♚\n" +
+					 "· ♟ · ♛ ♞ · ♝ ·\n" +
+					 "♟ ♗ · ♟ · ♞ · ·\n" +
+					 "· · · ♙ ♟ · · ·\n" +
+					 "· · · · ♙ ♟ · ♟\n" +
+					 "· · ♕ ♘ · ♗ · ·\n" +
+					 "♙ ♙ · · · · ♙ ♙\n" +
+					 "· · · · · · ♔ ·", board.unicode(false, false, '·', Color.WHITE));
+	}
+
+	@Test
+	void testUnicode2() {
+		Board board = new Board("7k/1p1qn1b1/pB1p1n2/3Pp3/4Pp1p/2QN1B2/PP4PP/6K1 w - - 0 28");
+		assertEquals(" -----------------\n" +
+					 "8 |·|·|·|·|·|·|·|♔|\n" +
+					 " -----------------\n" +
+					 "7 |·|♙|·|♕|♘|·|♗|·|\n" +
+					 " -----------------\n" +
+					 "6 |♙|♝|·|♙|·|♘|·|·|\n" +
+					 " -----------------\n" +
+					 "5 |·|·|·|♟|♙|·|·|·|\n" +
+					 " -----------------\n" +
+					 "4 |·|·|·|·|♟|♙|·|♙|\n" +
+					 " -----------------\n" +
+					 "3 |·|·|♛|♞|·|♝|·|·|\n" +
+					 " -----------------\n" +
+					 "2 |♟|♟|·|·|·|·|♟|♟|\n" +
+					 " -----------------\n" +
+					 "1 |·|·|·|·|·|·|♚|·|\n" +
+					 " -----------------\n" +
+					 "   a b c d e f g h", board.unicode(true, true, '·', Color.WHITE));
+	}
 }
