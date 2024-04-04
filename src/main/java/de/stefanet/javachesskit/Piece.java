@@ -1,6 +1,8 @@
 package de.stefanet.javachesskit;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -9,6 +11,23 @@ import java.util.Objects;
 public class Piece {
     private final PieceType type;
     private final Color color;
+
+    private static final Map<Character, Character> UNICODE_PIECE_SYMBOLS = new HashMap<>();
+
+    static {
+        UNICODE_PIECE_SYMBOLS.put('p', '♟');
+        UNICODE_PIECE_SYMBOLS.put('n', '♞');
+        UNICODE_PIECE_SYMBOLS.put('b', '♝');
+        UNICODE_PIECE_SYMBOLS.put('r', '♜');
+        UNICODE_PIECE_SYMBOLS.put('q', '♛');
+        UNICODE_PIECE_SYMBOLS.put('k', '♚');
+        UNICODE_PIECE_SYMBOLS.put('P', '♙');
+        UNICODE_PIECE_SYMBOLS.put('N', '♘');
+        UNICODE_PIECE_SYMBOLS.put('B', '♗');
+        UNICODE_PIECE_SYMBOLS.put('R', '♖');
+        UNICODE_PIECE_SYMBOLS.put('Q', '♕');
+        UNICODE_PIECE_SYMBOLS.put('K', '♔');
+    }
 
     /**
      * Constructs a Piece based on the given symbol.
@@ -93,5 +112,10 @@ public class Piece {
     @Override
     public int hashCode() {
         return Objects.hash(getType(), getColor());
+    }
+
+    public char getUnicodeSymbol(boolean invertColor) {
+        char symbol = (invertColor ^ color == Color.WHITE) ? Character.toUpperCase(type.getSymbol()) : type.getSymbol();
+        return UNICODE_PIECE_SYMBOLS.get(symbol);
     }
 }
