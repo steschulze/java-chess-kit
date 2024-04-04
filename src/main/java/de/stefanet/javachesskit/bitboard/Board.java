@@ -552,7 +552,7 @@ public class Board extends BaseBoard {
 
 	}
 
-	private long pinMask(Color color, Square square) {
+	public long pinMask(Color color, Square square) {
 		Square king = getKingSquare(color);
 		if (king == null) {
 			return Bitboard.ALL;
@@ -580,6 +580,10 @@ public class Board extends BaseBoard {
 		}
 
 		return Bitboard.ALL;
+	}
+
+	public boolean isPinned(Color color, Square square) {
+		return this.pinMask(color, square) != Bitboard.ALL;
 	}
 
 	public boolean isCastling(Move move) {
