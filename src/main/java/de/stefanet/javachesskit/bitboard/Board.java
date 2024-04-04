@@ -582,7 +582,7 @@ public class Board extends BaseBoard {
 		return Bitboard.ALL;
 	}
 
-	private boolean isCastling(Move move) {
+	public boolean isCastling(Move move) {
 		if ((this.kings & SQUARES[move.getSource().ordinal()]) != 0) {
 			int diff = move.getSource().getFileIndex() - move.getTarget().getFileIndex();
 			long colorMask = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
@@ -591,17 +591,17 @@ public class Board extends BaseBoard {
 		return false;
 	}
 
-	private boolean isKingsideCastling(Move move) {
+	public boolean isKingsideCastling(Move move) {
 		return isCastling(move) &&
 				move.getTarget().getFileIndex() > move.getSource().getFileIndex();
 	}
 
-	private boolean isQueensideCastling(Move move) {
+	public boolean isQueensideCastling(Move move) {
 		return isCastling(move) &&
 				move.getTarget().getFileIndex() < move.getSource().getFileIndex();
 	}
 
-	private boolean isEnPassant(Move move) {
+	public boolean isEnPassant(Move move) {
 		return (this.epSquare == move.getTarget() &&
 				((this.pawns & SQUARES[move.getSource().ordinal()]) != 0) &&
 				(Math.abs(move.getTarget().ordinal() - move.getSource().ordinal()) == 7 ||
@@ -1329,7 +1329,7 @@ public class Board extends BaseBoard {
 		return san.toString();
 	}
 
-	private boolean isCapture(Move move) {
+	public boolean isCapture(Move move) {
 		long targetMask = SQUARES[move.getTarget().ordinal()];
 		long otherColorMask = this.turn == Color.WHITE ? this.blackPieces : this.whitePieces;
 
