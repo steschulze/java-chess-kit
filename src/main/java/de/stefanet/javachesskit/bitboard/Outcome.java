@@ -22,4 +22,12 @@ public class Outcome {
 	public Color getWinner() {
 		return winner;
 	}
+
+	@Override
+	public String toString() {
+		return "Outcome{" +
+			   "termination=" + termination +
+			   ", winner=" + winner +
+			   '}';
+	}
 }
