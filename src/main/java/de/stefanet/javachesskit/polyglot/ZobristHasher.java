@@ -24,7 +24,7 @@ public class ZobristHasher {
 	}
 
 	public ZobristHasher() {
-		this.randomArray = BoardUtility.POLYGLOT_RANDOM;
+		this.randomArray = Polyglot.POLYGLOT_RANDOM_ARRAY;
 	}
 
 	public long hashPosition(Position position) {
