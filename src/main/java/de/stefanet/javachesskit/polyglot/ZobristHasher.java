@@ -7,8 +7,6 @@ import de.stefanet.javachesskit.bitboard.BaseBoard;
 import de.stefanet.javachesskit.bitboard.Bitboard;
 import de.stefanet.javachesskit.bitboard.BitboardUtils;
 import de.stefanet.javachesskit.bitboard.Board;
-import de.stefanet.javachesskit.board0x88.BoardUtility;
-import de.stefanet.javachesskit.board0x88.Position;
 
 public class ZobristHasher {
 	private long[] randomArray;
@@ -25,42 +23,6 @@ public class ZobristHasher {
 
 	public ZobristHasher() {
 		this.randomArray = Polyglot.POLYGLOT_RANDOM_ARRAY;
-	}
-
-	public long hashPosition(Position position) {
-		long key = 0;
-
-		for (Square square : Square.values()) {
-			Piece piece = position.get(square);
-
-			if (piece != null) {
-				int pieceIndex = "pPnNbBrRqQkK".indexOf(piece.getSymbol());
-				key ^= randomArray[64 * pieceIndex + 8 * square.getRankIndex() + square.getFileIndex()];
-			}
-		}
-
-		if (position.getCastlingRight('K')) {
-			key ^= randomArray[768];
-		}
-		if (position.getCastlingRight('Q')) {
-			key ^= randomArray[769];
-		}
-		if (position.getCastlingRight('k')) {
-			key ^= randomArray[770];
-		}
-		if (position.getCastlingRight('q')) {
-			key ^= randomArray[771];
-		}
-
-		if (position.getEpFile() != null && position.checkEnPassant(position.getEpFile())) {
-			key ^= randomArray[772 + position.getEpFile() - 'a'];
-		}
-
-		if (position.getTurn() == Color.WHITE) {
-			key ^= randomArray[780];
-		}
-
-		return key;
 	}
 
 	private long hashBoard(BaseBoard board) {
