@@ -3,6 +3,7 @@ package de.stefanet.javachesskit.bitboard;
 import de.stefanet.javachesskit.*;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1561,5 +1562,28 @@ public class Board extends BaseBoard {
 			return Objects.hash(super.hashCode(), turn, cleanCastlingRights(), epSquare);
 		}
 		return Objects.hash(super.hashCode(), turn, cleanCastlingRights());
+	}
+
+	public Board mirror() {
+		Board board = this.copy();
+		board.applyMirror();
+		return board;
+	}
+
+	@Override
+	public void applyMirror() {
+		super.applyMirror();
+		this.turn = this.turn.other();
+	}
+
+	@Override
+	public void applyTransform(Function<Long, Long> transform) {
+		super.applyTransform(transform);
+		this.clearStack();
+		if (this.epSquare != null) {
+			int index = BitboardUtils.msb(transform.apply(SQUARES[epSquare.ordinal()]));
+			this.epSquare = Square.fromIndex(index);
+		}
+		this.castlingRights = transform.apply(this.castlingRights);
 	}
 }
