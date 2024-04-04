@@ -496,6 +496,64 @@ public class BaseBoard {
 		return sb.toString();
 	}
 
+	public String unicode() {
+		return unicode(false, false, 'o', Color.WHITE);
+	}
+
+	public String unicode(boolean invertColor, boolean border, char emptySquare, Color orientation) {
+		StringBuilder sb = new StringBuilder();
+
+		int start = orientation == Color.WHITE ? 7 : 0;
+		int end = orientation == Color.WHITE ? -1 : 8;
+		int step = orientation == Color.WHITE ? -1 : 1;
+
+		for (int rankIndex = start; rankIndex != end; rankIndex += step) {
+			if (border) {
+				sb.append(" ");
+				sb.append("-----------------");
+				sb.append("\n");
+
+				sb.append(rankIndex + 1);
+				sb.append(" ");
+			}
+
+			for (int i = 0; i < 8; i++) {
+				int fileIndex = orientation == Color.WHITE ? i : 7 - i;
+
+				if (border) {
+					sb.append("|");
+				} else if (i > 0) {
+					sb.append(" ");
+				}
+
+				Piece piece = pieceAt(Square.getSquare(fileIndex, rankIndex));
+
+				if (piece == null) {
+					sb.append(emptySquare);
+				} else {
+					sb.append(piece.getUnicodeSymbol(invertColor));
+				}
+			}
+
+			if (border) {
+				sb.append("|");
+			}
+
+			if (border || (orientation == Color.WHITE ? rankIndex > 0 : rankIndex < 7)) {
+				sb.append("\n");
+			}
+		}
+
+		if (border) {
+			sb.append(" ");
+			sb.append("-----------------");
+			sb.append("\n");
+			String letters = orientation == Color.WHITE ? "a b c d e f g h" : "h g f e d c b a";
+			sb.append("   ").append(letters);
+		}
+		return sb.toString();
+	}
+
 	public long getPawns() {
 		return pawns;
 	}
