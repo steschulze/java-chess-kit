@@ -5,6 +5,7 @@ import de.stefanet.javachesskit.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 import static de.stefanet.javachesskit.bitboard.Bitboard.*;
 import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.*;
@@ -592,5 +593,26 @@ public class BaseBoard {
 
 	public long getOccupied() {
 		return occupied;
+	}
+
+	public void applyMirror() {
+		long temp = this.blackPieces;
+		this.blackPieces = this.whitePieces;
+		this.whitePieces = temp;
+		this.applyTransform(BitboardUtils::flipVertical);
+	}
+
+	public void applyTransform(Function<Long, Long> transform) {
+		this.pawns = transform.apply(this.pawns);
+		this.knights = transform.apply(this.knights);
+		this.bishops = transform.apply(this.bishops);
+		this.rooks = transform.apply(this.rooks);
+		this.queens = transform.apply(this.queens);
+		this.kings = transform.apply(this.kings);
+
+		this.whitePieces = transform.apply(this.whitePieces);
+		this.blackPieces = transform.apply(this.blackPieces);
+		this.occupied = transform.apply(this.occupied);
+		this.promoted = transform.apply(this.promoted);
 	}
 }
