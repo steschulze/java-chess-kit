@@ -1,8 +1,6 @@
 package de.stefanet.javachesskit;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 
 public class PseudoLegalMoveGenerator implements Iterable<Move> {
@@ -38,11 +36,16 @@ public class PseudoLegalMoveGenerator implements Iterable<Move> {
 
 	@Override
 	public String toString() {
-		List<String> uciMoveList = new ArrayList<>();
+		StringBuilder sb = new StringBuilder();
 		for (Move move : this) {
-			uciMoveList.add(move.getUciMove());
+			if (board.isLegal(move)) {
+				sb.append(board.san(move));
+			} else {
+				sb.append(move.getUciMove());
+			}
+			sb.append(", ");
 		}
-		return String.format("<PseudoLegalMoveGenerator (%s)>", String.join(", ", uciMoveList));
+		return String.format("<PseudoLegalMoveGenerator (%s)>", sb);
 	}
 
 	public boolean any() {
