@@ -43,7 +43,7 @@ class SquareTest {
     void testCreation() {
         assertEquals(Square.getSquare(3, 5), Square.parseSquare("d6"));
         assertEquals(Square.from0x88Index(2), Square.parseSquare("c1"));
-        assertEquals(Square.getSquare(2, 'g'), Square.parseSquare("g2"));
+        assertEquals(Square.getSquare('g', 2), Square.parseSquare("g2"));
     }
 
     @Test
@@ -115,14 +115,8 @@ class SquareTest {
 
     @Test
     void testToString() {
-        Square square = Square.getSquare(3, 'c');
-        assertEquals("Square.fromName('c3')", square.toString());
-    }
-
-    @Test
-    void testHashCode() {
-        Square square = Square.parseSquare("e4");
-        assertEquals(0x34, square.hashCode());
+        Square square = Square.getSquare('c', 3);
+        assertEquals("C3", square.toString());
     }
 
 }

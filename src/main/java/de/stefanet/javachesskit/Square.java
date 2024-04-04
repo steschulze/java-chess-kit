@@ -47,7 +47,7 @@ public enum Square {
 	}
 
 	public boolean isLight() {
-		return !isLight();
+		return !isDark();
 	}
 
 	public Square mirrorVertically() {
