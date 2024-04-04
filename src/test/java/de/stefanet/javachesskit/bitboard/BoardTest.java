@@ -1350,4 +1350,13 @@ class BoardTest {
 
 		assertTrue(board.isLegal(Move.fromUCI("e1g1")));
 	}
+
+	@Test
+	void testMirror() {
+		Board board = new Board("r1bq1r2/pp2n3/4N2k/3pPppP/1b1n2Q1/2N5/PP3PP1/R1B1K2R w KQ g6 0 15");
+		Board mirrored = new Board("r1b1k2r/pp3pp1/2n5/1B1N2q1/3PpPPp/4n2K/PP2N3/R1BQ1R2 b kq g3 0 15");
+		assertEquals(mirrored, board.mirror());
+		board.applyMirror();
+		assertEquals(mirrored, board);
+	}
 }
