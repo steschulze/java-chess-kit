@@ -1160,4 +1160,29 @@ class BoardTest {
 					 " -----------------\n" +
 					 "   a b c d e f g h", board.unicode(true, true, '·', Color.WHITE));
 	}
+
+	@Test
+	void testMoveInfo() {
+		Board board = new Board("r1bqkb1r/p3np2/2n1p2p/1p4pP/2pP4/4PQ1N/1P2BPP1/RNB1K2R w KQkq g6 0 11");
+
+		assertTrue(board.isCapture(board.parseSan("Qxf7+")));
+		assertFalse(board.isEnPassant(board.parseSan("Qxf7+")));
+		assertFalse(board.isCastling(board.parseSan("Qxf7+")));
+
+		assertTrue(board.isCapture(board.parseSan("hxg6")));
+		assertTrue(board.isEnPassant(board.parseSan("hxg6")));
+		assertFalse(board.isCastling(board.parseSan("hxg6")));
+
+		assertFalse(board.isCapture(board.parseSan("b3")));
+		assertFalse(board.isEnPassant(board.parseSan("b3")));
+		assertFalse(board.isCastling(board.parseSan("b3")));
+
+		assertFalse(board.isCapture(board.parseSan("Ra6")));
+		assertFalse(board.isEnPassant(board.parseSan("Ra6")));
+		assertFalse(board.isCastling(board.parseSan("Ra6")));
+
+		assertFalse(board.isCapture(board.parseSan("0-0")));
+		assertFalse(board.isEnPassant(board.parseSan("0-0")));
+		assertTrue(board.isCastling(board.parseSan("0-0")));
+	}
 }
