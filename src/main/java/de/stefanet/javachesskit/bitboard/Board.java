@@ -426,6 +426,34 @@ public class Board extends BaseBoard {
 		return moves;
 	}
 
+	public Set<Move> generateLegalCaptures() {
+		return generateLegalCaptures(ALL, ALL);
+	}
+
+	public Set<Move> generateLegalCaptures(long sourceMask, long targetMask) {
+		long otherColorMask = this.turn == Color.WHITE ? this.blackPieces : this.whitePieces;
+		Set<Move> moves = new HashSet<>();
+		moves.addAll(generateLegalMoves(sourceMask, targetMask & otherColorMask));
+		moves.addAll(generateLegalEnPassant(sourceMask, targetMask));
+
+		return moves;
+
+	}
+
+	public Set<Move> generatePseudoLegalCaptures() {
+		return generatePseudoLegalCaptures(ALL, ALL);
+	}
+
+	public Set<Move> generatePseudoLegalCaptures(long sourceMask, long targetMask) {
+		long otherColorMask = this.turn == Color.WHITE ? this.blackPieces : this.whitePieces;
+		Set<Move> moves = new HashSet<>();
+		moves.addAll(generatePseudoLegalMoves(sourceMask, targetMask & otherColorMask));
+		moves.addAll(generatePseudoLegalEnPassant(sourceMask, targetMask));
+
+		return moves;
+
+	}
+
 	private boolean attackedForKing(long path, long occupied) {
 		for (int index : BitboardUtils.scanReversed(path)) {
 			if (attackersMask(turn.other(), Square.fromIndex(index), occupied) != 0) return true;
