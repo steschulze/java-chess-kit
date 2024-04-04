@@ -1318,4 +1318,25 @@ class BoardTest {
 		assertTrue(board.generateLegalMoves().contains(move));
 		assertTrue(board.generateLegalEnPassant().contains(move));
 	}
+
+	@Test
+	void testCaptureGeneration() {
+		Board board = new Board("3q1rk1/ppp1p1pp/4b3/3pPp2/3P4/1K1n4/PPQ2PPP/3b1BNR w - f6 0 1");
+
+		Set<Move> legalCaptures = board.generateLegalCaptures();
+
+		assertTrue(legalCaptures.contains(board.parseSan("Qxd1")));
+		assertTrue(legalCaptures.contains(board.parseSan("exf6")));
+		assertTrue(legalCaptures.contains(board.parseSan("Bxd3")));
+		assertEquals(3, legalCaptures.size());
+
+		Set<Move> pseudoLegalCaptures = board.generatePseudoLegalCaptures();
+
+		assertTrue(pseudoLegalCaptures.contains(board.parseSan("Qxd1")));
+		assertTrue(pseudoLegalCaptures.contains(board.parseSan("exf6")));
+		assertTrue(pseudoLegalCaptures.contains(board.parseSan("Bxd3")));
+		assertTrue(pseudoLegalCaptures.contains(Move.fromUCI("c2c7")));
+		assertTrue(pseudoLegalCaptures.contains(Move.fromUCI("c2d3")));
+		assertEquals(5, pseudoLegalCaptures.size());
+	}
 }
