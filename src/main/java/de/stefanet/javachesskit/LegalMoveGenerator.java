@@ -1,26 +1,12 @@
 package de.stefanet.javachesskit;
 
 import java.util.Iterator;
-import java.util.Objects;
 
 public class LegalMoveGenerator implements Iterable<Move> {
 	private final Board board;
 
 	public LegalMoveGenerator(Board board) {
 		this.board = board;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (obj == null || getClass() != obj.getClass()) return false;
-		LegalMoveGenerator other = (LegalMoveGenerator) obj;
-		return Objects.equals(board, other.board);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(board);
 	}
 
 	@Override
