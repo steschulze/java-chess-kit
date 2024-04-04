@@ -346,6 +346,9 @@ public class Board extends BaseBoard {
 		return this.epSquare != null && !generateLegalEnPassant().isEmpty();
 	}
 
+	public boolean hasPseudoLegalEnPassant() {
+		return this.epSquare != null && !generatePseudoLegalEnPassant().isEmpty();
+	}
 
 	public Set<Move> generateLegalEnPassant() {
 		return generateLegalEnPassant(ALL, ALL);
