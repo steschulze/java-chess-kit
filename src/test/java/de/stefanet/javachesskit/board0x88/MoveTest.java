@@ -29,7 +29,7 @@ class MoveTest {
     @Test
     void testEquals() {
         Move move1 = Move.fromUCI("e2e4");
-        Move move2 = new Move(Square.getSquare(2, 'e'), Square.getSquare(4, 'e'));
+        Move move2 = new Move(Square.getSquare('e', 2), Square.getSquare('e', 4));
         assertEquals(move1, move1);
         assertEquals(move1, move2);
         assertNotEquals("e2e4", move1);
@@ -59,7 +59,7 @@ class MoveTest {
 
     @Test
     void testToString() {
-        Move move = new Move(Square.getSquare(2, 'a'), Square.getSquare(4, 'a'));
+        Move move = new Move(Square.getSquare('a', 2), Square.getSquare('a', 4));
         assertEquals("Move.fromUCI(a2a4)", move.toString());
     }
 
