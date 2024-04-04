@@ -315,11 +315,11 @@ public class Board extends BaseBoard {
 		return moveList;
 	}
 
-	private Set<Move> generatePseudoLegalEnPassant() {
+	public Set<Move> generatePseudoLegalEnPassant() {
 		return generatePseudoLegalEnPassant(ALL, ALL);
 	}
 
-	private Set<Move> generatePseudoLegalEnPassant(long sourceMask, long targetMask) {
+	public Set<Move> generatePseudoLegalEnPassant(long sourceMask, long targetMask) {
 		Set<Move> moves = new HashSet<>();
 
 		if (epSquare == null || (SQUARES[epSquare.ordinal()] & targetMask) == 0) return moves;
@@ -346,11 +346,11 @@ public class Board extends BaseBoard {
 	}
 
 
-	private Set<Move> generateLegalEnPassant() {
+	public Set<Move> generateLegalEnPassant() {
 		return generateLegalEnPassant(ALL, ALL);
 	}
 
-	private Set<Move> generateLegalEnPassant(long sourceMask, long targetMask) {
+	public Set<Move> generateLegalEnPassant(long sourceMask, long targetMask) {
 		Set<Move> moves = new HashSet<>();
 
 		for (Move move : generatePseudoLegalEnPassant(sourceMask, targetMask)) {
