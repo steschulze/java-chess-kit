@@ -1185,4 +1185,35 @@ class BoardTest {
 		assertFalse(board.isEnPassant(board.parseSan("0-0")));
 		assertTrue(board.isCastling(board.parseSan("0-0")));
 	}
+
+	@Test
+	void testPin() {
+		Board board = new Board("rnb1k1nr/2pppppp/3P4/8/1b5q/8/PPPNPBPP/RNBQKB1R w KQkq - 0 1");
+
+		assertTrue(board.isPinned(Color.WHITE, Square.F2));
+		assertTrue(board.isPinned(Color.WHITE, Square.D2));
+
+		assertFalse(board.isPinned(Color.WHITE, Square.E1));
+		assertFalse(board.isPinned(Color.BLACK, Square.H4));
+		assertFalse(board.isPinned(Color.BLACK, Square.E8));
+
+		assertEquals(Bitboard.ALL, board.pinMask(Color.WHITE, Square.B1));
+
+		long pin;
+		pin = Bitboard.Squares.E1 | Bitboard.Squares.F2 | Bitboard.Squares.G3 | Bitboard.Squares.H4;
+		assertEquals(pin, board.pinMask(Color.WHITE, Square.F2));
+
+		pin = Bitboard.Squares.E1 | Bitboard.Squares.D2 | Bitboard.Squares.C3 | Bitboard.Squares.B4 | Bitboard.Squares.A5;
+		assertEquals(pin, board.pinMask(Color.WHITE, Square.D2));
+
+		assertEquals(Bitboard.ALL, board.pinMask(Color.WHITE, Square.F7));
+	}
+
+	@Test
+	void testPinInCheck() {
+		Board board = new Board("1n1R2k1/2b1qpp1/p3p2p/1p6/1P2Q2P/4PNP1/P4PB1/6K1 b - - 0 1");
+
+		assertFalse(board.isPinned(Color.BLACK, Square.B8));
+		assertTrue(board.isPinned(Color.BLACK, Square.E8));
+	}
 }
