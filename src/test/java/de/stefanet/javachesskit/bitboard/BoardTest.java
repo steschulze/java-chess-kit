@@ -1359,4 +1359,23 @@ class BoardTest {
 		board.applyMirror();
 		assertEquals(mirrored, board);
 	}
+
+	@Test
+	void testIrreversibleMove() {
+		Board board = new Board("r3k2r/8/8/8/8/8/8/R3K2R w Qkq - 0 1");
+		assertTrue(board.isIrreversible(board.parseSan("Ra2")));
+		assertTrue(board.isIrreversible(board.parseSan("0-0-0")));
+		assertTrue(board.isIrreversible(board.parseSan("Kd1")));
+		assertTrue(board.isIrreversible(board.parseSan("Rxa8")));
+		assertTrue(board.isIrreversible(board.parseSan("Rxh8")));
+		assertFalse(board.isIrreversible(board.parseSan("Rf1")));
+
+		board.setCastlingFen("kq");
+		
+		assertFalse(board.isIrreversible(board.parseSan("Ra2")));
+		assertFalse(board.isIrreversible(board.parseSan("Kd1")));
+		assertTrue(board.isIrreversible(board.parseSan("Rxa8")));
+		assertTrue(board.isIrreversible(board.parseSan("Rxh8")));
+		assertFalse(board.isIrreversible(board.parseSan("Rf1")));
+	}
 }
