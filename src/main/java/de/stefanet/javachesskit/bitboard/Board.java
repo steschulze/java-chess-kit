@@ -106,7 +106,7 @@ public class Board extends BaseBoard {
 		clearStack();
 	}
 
-	private void setCastlingFen(String castlingFen) {
+	public void setCastlingFen(String castlingFen) {
 		if (castlingFen == null || castlingFen.equals("-")) {
 			this.castlingRights = 0;
 			return;
@@ -1469,7 +1469,7 @@ public class Board extends BaseBoard {
 		return false;
 	}
 
-	private boolean isIrreversible(Move move) {
+	public boolean isIrreversible(Move move) {
 		return isZeroingMove(move) || hasLegalEnPassant() || reducesCastlingRights(move);
 	}
 
