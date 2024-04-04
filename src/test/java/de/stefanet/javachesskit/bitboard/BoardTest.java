@@ -1371,11 +1371,34 @@ class BoardTest {
 		assertFalse(board.isIrreversible(board.parseSan("Rf1")));
 
 		board.setCastlingFen("kq");
-		
+
 		assertFalse(board.isIrreversible(board.parseSan("Ra2")));
 		assertFalse(board.isIrreversible(board.parseSan("Kd1")));
 		assertTrue(board.isIrreversible(board.parseSan("Rxa8")));
 		assertTrue(board.isIrreversible(board.parseSan("Rxh8")));
 		assertFalse(board.isIrreversible(board.parseSan("Rf1")));
+	}
+
+	@Test
+	void testKingCapturesUnmovedRook() {
+		Board board = new Board("8/8/8/B2p3Q/2qPp1P1/b7/2P2PkP/4K2R b K - 0 1");
+		Move move = board.parseUCI("g2h1");
+
+		assertFalse(board.isCastling(move));
+		assertEquals("Kxh1", board.san(move));
+
+		board.push(move);
+		assertEquals("8/8/8/B2p3Q/2qPp1P1/b7/2P2P1P/4K2k w - - 0 2", board.getFen());
+	}
+
+	@Test
+	void testImpossibleCheck_dueEnPassant() {
+		Board board = new Board("rnbqk1nr/bb3p1p/1q2r3/2pPp3/3P4/7P/1PP1NpPP/R1BQKBNR w KQkq c6 0 1");
+
+		assertTrue(board.status().contains(Status.IMPOSSIBLE_CHECK));
+		assertEquals(Square.C6, board.epSquare);
+		assertTrue(board.hasPseudoLegalEnPassant());
+		assertFalse(board.hasLegalEnPassant());
+		assertEquals(2, board.legalMoves().count());
 	}
 }
