@@ -1200,6 +1200,10 @@ public class Board extends BaseBoard {
 		return outcome != null ? outcome.result() : "*";
 	}
 
+	public Outcome outcome() {
+		return outcome(false);
+	}
+	
 	public Outcome outcome(boolean claimDraw) {
 		if (isCheckmate()) {
 			return new Outcome(Termination.CHECKMATE, turn.other());
