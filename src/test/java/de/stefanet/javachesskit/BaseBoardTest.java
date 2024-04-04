@@ -1,14 +1,10 @@
-package de.stefanet.javachesskit.bitboard;
+package de.stefanet.javachesskit;
 
-import de.stefanet.javachesskit.Color;
-import de.stefanet.javachesskit.Piece;
-import de.stefanet.javachesskit.PieceType;
-import de.stefanet.javachesskit.Square;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
-import static de.stefanet.javachesskit.bitboard.Bitboard.Squares.*;
+import static de.stefanet.javachesskit.Bitboard.Squares.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BaseBoardTest {

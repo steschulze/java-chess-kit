@@ -1,7 +1,4 @@
-package de.stefanet.javachesskit.bitboard;
-
-import de.stefanet.javachesskit.Color;
-import de.stefanet.javachesskit.Square;
+package de.stefanet.javachesskit;
 
 public class BoardState {
 	private long pawns;

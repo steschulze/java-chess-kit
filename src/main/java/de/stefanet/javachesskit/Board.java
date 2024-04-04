@@ -1,17 +1,15 @@
-package de.stefanet.javachesskit.bitboard;
-
-import de.stefanet.javachesskit.*;
+package de.stefanet.javachesskit;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static de.stefanet.javachesskit.bitboard.Bitboard.*;
-import static de.stefanet.javachesskit.bitboard.Bitboard.Files.*;
-import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_1;
-import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_8;
-import static de.stefanet.javachesskit.bitboard.Bitboard.Squares.*;
+import static de.stefanet.javachesskit.Bitboard.*;
+import static de.stefanet.javachesskit.Bitboard.Files.*;
+import static de.stefanet.javachesskit.Bitboard.Ranks.RANK_1;
+import static de.stefanet.javachesskit.Bitboard.Ranks.RANK_8;
+import static de.stefanet.javachesskit.Bitboard.Squares.*;
 
 public class Board extends BaseBoard {
 	protected final static String STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -1203,7 +1201,7 @@ public class Board extends BaseBoard {
 	public Outcome outcome() {
 		return outcome(false);
 	}
-	
+
 	public Outcome outcome(boolean claimDraw) {
 		if (isCheckmate()) {
 			return new Outcome(Termination.CHECKMATE, turn.other());

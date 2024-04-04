@@ -1,6 +1,5 @@
-package de.stefanet.javachesskit.board0x88;
+package de.stefanet.javachesskit;
 
-import de.stefanet.javachesskit.Color;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -1,8 +1,5 @@
-package de.stefanet.javachesskit.board0x88;
+package de.stefanet.javachesskit;
 
-import de.stefanet.javachesskit.Move;
-import de.stefanet.javachesskit.PieceType;
-import de.stefanet.javachesskit.Square;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

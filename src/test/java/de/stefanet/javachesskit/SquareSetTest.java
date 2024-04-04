@@ -1,6 +1,5 @@
-package de.stefanet.javachesskit.bitboard;
+package de.stefanet.javachesskit;
 
-import de.stefanet.javachesskit.Square;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;

@@ -1,4 +1,4 @@
-package de.stefanet.javachesskit.bitboard;
+package de.stefanet.javachesskit;
 
 import java.util.List;
 import java.util.Map;

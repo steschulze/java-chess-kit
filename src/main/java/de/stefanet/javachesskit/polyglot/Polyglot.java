@@ -1,6 +1,6 @@
 package de.stefanet.javachesskit.polyglot;
 
-import de.stefanet.javachesskit.bitboard.Board;
+import de.stefanet.javachesskit.Board;
 
 import java.util.function.Function;
 

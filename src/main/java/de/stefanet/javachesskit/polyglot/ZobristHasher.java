@@ -1,12 +1,6 @@
 package de.stefanet.javachesskit.polyglot;
 
-import de.stefanet.javachesskit.Color;
-import de.stefanet.javachesskit.Piece;
-import de.stefanet.javachesskit.Square;
-import de.stefanet.javachesskit.bitboard.BaseBoard;
-import de.stefanet.javachesskit.bitboard.Bitboard;
-import de.stefanet.javachesskit.bitboard.BitboardUtils;
-import de.stefanet.javachesskit.bitboard.Board;
+import de.stefanet.javachesskit.*;
 
 public class ZobristHasher {
 	private long[] randomArray;

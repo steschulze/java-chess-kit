@@ -1,15 +1,13 @@
-package de.stefanet.javachesskit.bitboard;
-
-import de.stefanet.javachesskit.*;
+package de.stefanet.javachesskit;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-import static de.stefanet.javachesskit.bitboard.Bitboard.*;
-import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.*;
-import static de.stefanet.javachesskit.bitboard.Bitboard.Squares.*;
+import static de.stefanet.javachesskit.Bitboard.*;
+import static de.stefanet.javachesskit.Bitboard.Ranks.*;
+import static de.stefanet.javachesskit.Bitboard.Squares.*;
 
 public class BaseBoard {
 	private static final String STARTING_BOARD_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";

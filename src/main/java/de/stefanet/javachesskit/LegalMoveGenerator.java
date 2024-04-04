@@ -1,16 +1,14 @@
-package de.stefanet.javachesskit.bitboard;
-
-import de.stefanet.javachesskit.Move;
+package de.stefanet.javachesskit;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-public class PseudoLegalMoveGenerator implements Iterable<Move> {
+public class LegalMoveGenerator implements Iterable<Move> {
 	private final Board board;
 
-	public PseudoLegalMoveGenerator(Board board) {
+	public LegalMoveGenerator(Board board) {
 		this.board = board;
 	}
 
@@ -18,7 +16,7 @@ public class PseudoLegalMoveGenerator implements Iterable<Move> {
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (obj == null || getClass() != obj.getClass()) return false;
-		PseudoLegalMoveGenerator other = (PseudoLegalMoveGenerator) obj;
+		LegalMoveGenerator other = (LegalMoveGenerator) obj;
 		return Objects.equals(board, other.board);
 	}
 
@@ -29,13 +27,13 @@ public class PseudoLegalMoveGenerator implements Iterable<Move> {
 
 	@Override
 	public Iterator<Move> iterator() {
-		return board.generatePseudoLegalMoves().iterator();
+		return board.generateLegalMoves().iterator();
 	}
 
 	public boolean contains(Object obj) {
 		if (!(obj instanceof Move)) return false;
 		Move move = (Move) obj;
-		return board.isPseudoLegal(move);
+		return board.isLegal(move);
 	}
 
 	@Override
@@ -44,7 +42,7 @@ public class PseudoLegalMoveGenerator implements Iterable<Move> {
 		for (Move move : this) {
 			uciMoveList.add(move.getUciMove());
 		}
-		return String.format("<PseudoLegalMoveGenerator (%s)>", String.join(", ", uciMoveList));
+		return String.format("<LegalMoveGenerator (%s)>", String.join(", ", uciMoveList));
 	}
 
 	public boolean any() {

@@ -1,6 +1,4 @@
-package de.stefanet.javachesskit.bitboard;
-
-import de.stefanet.javachesskit.Square;
+package de.stefanet.javachesskit;
 
 import java.util.*;
 

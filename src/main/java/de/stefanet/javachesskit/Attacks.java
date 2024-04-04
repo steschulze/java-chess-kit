@@ -1,13 +1,11 @@
-package de.stefanet.javachesskit.bitboard;
-
-import de.stefanet.javachesskit.Square;
+package de.stefanet.javachesskit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static de.stefanet.javachesskit.bitboard.Bitboard.*;
+import static de.stefanet.javachesskit.Bitboard.*;
 
 public class Attacks {
 	private static long slidingAttacks(Square square, long occupied, int[] deltas) {

@@ -1,4 +1,4 @@
-package de.stefanet.javachesskit.bitboard;
+package de.stefanet.javachesskit;
 
 public enum Termination {
 	CHECKMATE, STALEMATE, INSUFFICIENT_MATERIAL,

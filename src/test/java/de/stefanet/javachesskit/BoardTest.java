@@ -1,6 +1,5 @@
-package de.stefanet.javachesskit.bitboard;
+package de.stefanet.javachesskit;
 
-import de.stefanet.javachesskit.*;
 import de.stefanet.javachesskit.polyglot.Polyglot;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

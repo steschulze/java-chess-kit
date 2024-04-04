@@ -1,6 +1,4 @@
-package de.stefanet.javachesskit.bitboard;
-
-import de.stefanet.javachesskit.Color;
+package de.stefanet.javachesskit;
 
 public class Outcome {
 	private Termination termination;

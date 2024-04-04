@@ -1,11 +1,11 @@
-package de.stefanet.javachesskit.bitboard;
+package de.stefanet.javachesskit;
 
 import java.util.List;
 import java.util.Map;
 
-import static de.stefanet.javachesskit.bitboard.Bitboard.Files.*;
-import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.*;
-import static de.stefanet.javachesskit.bitboard.Bitboard.Squares.*;
+import static de.stefanet.javachesskit.Bitboard.Files.*;
+import static de.stefanet.javachesskit.Bitboard.Ranks.*;
+import static de.stefanet.javachesskit.Bitboard.Squares.*;
 
 public final class Bitboard {
 
