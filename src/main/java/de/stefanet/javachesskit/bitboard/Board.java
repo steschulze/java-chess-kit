@@ -342,7 +342,7 @@ public class Board extends BaseBoard {
 		return moves;
 	}
 
-	private boolean hasLegalEnPassant() {
+	public boolean hasLegalEnPassant() {
 		return this.epSquare != null && !generateLegalEnPassant().isEmpty();
 	}
 
