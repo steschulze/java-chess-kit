@@ -1339,4 +1339,15 @@ class BoardTest {
 		assertTrue(pseudoLegalCaptures.contains(Move.fromUCI("c2d3")));
 		assertEquals(5, pseudoLegalCaptures.size());
 	}
+
+	@Test
+	void testCastling_isLegal() {
+		Board board = new Board("rnbqkbnr/5p2/1pp3pp/p2P4/6P1/2NPpN2/PPP1Q1BP/R3K2R w Qq - 0 11");
+
+		assertFalse(board.isLegal(Move.fromUCI("e1g1")));
+
+		board.castlingRights |= Bitboard.Squares.H1;
+
+		assertTrue(board.isLegal(Move.fromUCI("e1g1")));
+	}
 }
