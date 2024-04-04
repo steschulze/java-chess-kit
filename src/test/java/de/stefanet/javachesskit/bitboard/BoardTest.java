@@ -1216,4 +1216,106 @@ class BoardTest {
 		assertFalse(board.isPinned(Color.BLACK, Square.B8));
 		assertTrue(board.isPinned(Color.BLACK, Square.E8));
 	}
+
+	@Test
+	void testImpossibleEnPassant1() {
+		Board board = new Board("1b1b4/8/b1P5/2kP4/8/2b4K/8/8 w - c6 0 1");
+
+		assertTrue(board.status().contains(Status.INVALID_EP_SQUARE));
+	}
+
+	@Test
+	void testImpossibleEnPassant2() {
+		Board board = new Board("5K2/8/2pp2Pp/2PP4/P5Pp/2pP1Ppp/P6p/7k b - g3 0 1");
+
+		assertTrue(board.status().contains(Status.INVALID_EP_SQUARE));
+	}
+
+	@Test
+	void testImpossibleEnPassant3() {
+		Board board = new Board("8/7k/8/7p/8/8/8/K7 w - h6 0 1");
+
+		assertTrue(board.status().contains(Status.INVALID_EP_SQUARE));
+	}
+
+	@Test
+	void testHorizontallySkeweredEnPassant() {
+		Board board = new Board("8/8/8/r2Pp2K/8/8/4k3/8 w - e6 0 1");
+		Move move = Move.fromUCI("d5e6");
+
+		assertTrue(board.status().contains(Status.VALID));
+		assertTrue(board.isPseudoLegal(move));
+
+		assertTrue(board.generatePseudoLegalMoves().contains(move));
+		assertTrue(board.generatePseudoLegalEnPassant().contains(move));
+
+		assertFalse(board.isLegal(move));
+		assertFalse(board.generateLegalMoves().contains(move));
+		assertFalse(board.generateLegalEnPassant().contains(move));
+	}
+
+	@Test
+	void testDiagonallySkeweredEnPassant1() {
+		Board board = new Board("2b1r2r/8/5P1k/2p1pP2/5R1P/6PK/4q3/4R3 w - e6 0 1");
+		Move move = Move.fromUCI("f5e6");
+
+		assertTrue(board.generateLegalEnPassant().contains(move));
+		assertTrue(board.generateLegalMoves().contains(move));
+	}
+
+	@Test
+	void testDiagonallySkeweredEnPassant2() {
+		Board board = new Board("8/8/8/5k2/4Pp2/8/2B5/4K3 b - e3 0 1");
+		Move move = Move.fromUCI("f4e3");
+
+		assertTrue(board.isPseudoLegal(move));
+		assertTrue(board.generatePseudoLegalEnPassant().contains(move));
+		assertTrue(board.generatePseudoLegalMoves().contains(move));
+
+		assertFalse(board.isLegal(move));
+		assertFalse(board.generateLegalEnPassant().contains(move));
+		assertFalse(board.generateLegalMoves().contains(move));
+	}
+
+	@Test
+	void testDiagonallySkeweredEnPassant3() {
+		Board board = new Board("8/8/8/7B/6Pp/8/4k2K/3r4 b - g3 0 1");
+		Move move = Move.fromUCI("h4g3");
+
+		assertTrue(board.isPseudoLegal(move));
+		assertTrue(board.generatePseudoLegalEnPassant().contains(move));
+		assertTrue(board.generatePseudoLegalMoves().contains(move));
+
+		assertFalse(board.isLegal(move));
+		assertFalse(board.generateLegalEnPassant().contains(move));
+		assertFalse(board.generateLegalMoves().contains(move));
+	}
+
+	@Test
+	void testFilePinnedEnPassant() {
+		Board board = new Board("8/5K2/8/3k4/3pP3/8/8/3R4 b - e3 0 1");
+		Move move = Move.fromUCI("d4e3");
+
+		assertTrue(board.isPseudoLegal(move));
+		assertTrue(board.generatePseudoLegalEnPassant().contains(move));
+		assertTrue(board.generatePseudoLegalMoves().contains(move));
+
+		assertFalse(board.isLegal(move));
+		assertFalse(board.generateLegalEnPassant().contains(move));
+		assertFalse(board.generateLegalMoves().contains(move));
+	}
+
+	@Test
+	void testEnPassantEvasion() {
+		Board board = new Board("8/8/8/2k5/2pP4/8/4K3/8 b - d3 0 1");
+		Move move = Move.fromUCI("c4d3");
+
+		assertTrue(board.isPseudoLegal(move));
+		assertTrue(board.generatePseudoLegalMoves().contains(move));
+		assertTrue(board.generatePseudoLegalEnPassant().contains(move));
+
+		assertTrue(board.isLegal(move));
+		assertTrue(board.generateLegalMoves().contains(move));
+		assertTrue(board.generateLegalEnPassant().contains(move));
+	}
 }
