@@ -656,7 +656,7 @@ public class Board extends BaseBoard {
 			long target = BitboardUtils.between(kingSquareIndex, checker) | checkers;
 			moves.addAll(generatePseudoLegalMoves(~this.kings & sourceMask, target & targetMask));
 
-			if (this.epSquare != null && (SQUARES[epSquare.ordinal()] & target) != 0) {
+			if (this.epSquare != null && (SQUARES[epSquare.ordinal()] & target) == 0) {
 				int lastDouble = this.epSquare.ordinal() - 8 * turn.forwardDirection();
 				if (lastDouble == checker) {
 					moves.addAll(generatePseudoLegalEnPassant(sourceMask, targetMask));
