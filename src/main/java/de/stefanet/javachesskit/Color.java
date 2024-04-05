@@ -39,11 +39,11 @@ public enum Color {
     }
 
     /**
-     * Returns the short name of the color ('w' or 'b').
-     * @return The short color name.
+     * Returns the symbol of the color ('w' or 'b').
+     * @return The symbol of the color.
      */
-    public String shortName() {
-        return name().toLowerCase().substring(0, 1);
+    public char getSymbol() {
+        return this == WHITE ? 'w' : 'b';
     }
 
     /**
