@@ -239,30 +239,6 @@ public class BaseBoard {
 		return type;
 	}
 
-	public Map<PieceType, Integer> getPieceCounts(String color) {
-		if (!color.equals("w") && !color.equals("b") && !color.equals("wb") && !color.equals("bw"))
-			throw new IllegalArgumentException("Invalid color string: " + color);
-
-		long colorMask;
-		if (color.equals("w")) {
-			colorMask = this.whitePieces;
-		} else if (color.equals("b")) {
-			colorMask = this.blackPieces;
-		} else {
-			colorMask = this.whitePieces | blackPieces;
-		}
-
-		Map<PieceType, Integer> pieceCounts = new HashMap<>();
-		pieceCounts.put(PieceType.PAWN, Long.bitCount(this.pawns & colorMask));
-		pieceCounts.put(PieceType.KNIGHT, Long.bitCount(this.knights & colorMask));
-		pieceCounts.put(PieceType.BISHOP, Long.bitCount(this.bishops & colorMask));
-		pieceCounts.put(PieceType.ROOK, Long.bitCount(this.rooks & colorMask));
-		pieceCounts.put(PieceType.KING, Long.bitCount(this.kings & colorMask));
-		pieceCounts.put(PieceType.QUEEN, Long.bitCount(this.queens & colorMask));
-
-		return pieceCounts;
-	}
-
 	public Color colorAt(Square square) {
 		long mask = SQUARES[square.ordinal()];
 		if ((this.whitePieces & mask) != 0) {
