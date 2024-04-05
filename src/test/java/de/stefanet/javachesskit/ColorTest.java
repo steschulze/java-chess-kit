@@ -26,4 +26,10 @@ class ColorTest {
         assertEquals("black", Color.fromSymbol('b').fullName());
     }
 
+    @Test
+    void testSymbol() {
+        assertEquals('w', Color.WHITE.getSymbol());
+        assertEquals('b', Color.BLACK.getSymbol());
+    }
+
 }
