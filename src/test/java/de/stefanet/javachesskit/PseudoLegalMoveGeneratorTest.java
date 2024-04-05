@@ -2,8 +2,7 @@ package de.stefanet.javachesskit;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PseudoLegalMoveGeneratorTest {
 
@@ -19,6 +18,29 @@ class PseudoLegalMoveGeneratorTest {
 
 		assertTrue(moveGenerator.toString().contains("Qxh2+"));
 		assertTrue(moveGenerator.toString().contains("e8d7"));
+	}
+
+	@Test
+	void testAny_defaultBoard() {
+		Board board = new Board();
+		PseudoLegalMoveGenerator moveGenerator = board.pseudoLegalMoves();
+		assertTrue(moveGenerator.any());
+	}
+
+	@Test
+	void testAny_emptyBoard() {
+		Board board = new Board(null);
+		PseudoLegalMoveGenerator moveGenerator = board.pseudoLegalMoves();
+		assertFalse(moveGenerator.any());
+	}
+
+	@Test
+	void testAny_fromPosition() {
+		Board board = new Board("8/8/8/8/1q6/8/2k5/K7 w - - 0 1");
+		PseudoLegalMoveGenerator moveGenerator = board.pseudoLegalMoves();
+		assertEquals(3, moveGenerator.count());
+
+		assertTrue(moveGenerator.any());
 	}
 
 }
