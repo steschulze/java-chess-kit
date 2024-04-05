@@ -1,5 +1,6 @@
 package de.stefanet.javachesskit;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class SquareSet implements Set<Square> {
@@ -54,14 +55,15 @@ public class SquareSet implements Set<Square> {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T> T[] toArray(T[] a) {
-		if (a.length < size()) {
-			return (T[]) Arrays.copyOf(toArray(), size(), a.getClass());
+		int size = size();
+		if (a.length < size) {
+			a = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
+		} else if (a.length > size) {
+			a[size] = null;
 		}
-		System.arraycopy(toArray(), 0, a, 0, size());
-		if (a.length > size()) {
-			a[size()] = null;
-		}
+		System.arraycopy(toArray(), 0, a, 0, size);
 		return a;
 	}
 
