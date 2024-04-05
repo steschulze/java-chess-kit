@@ -25,6 +25,22 @@ class SquareSetTest {
 	}
 
 	@Test
+	void testHashCode_withSameMask() {
+		SquareSet set1 = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.C3);
+		SquareSet set2 = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.C3);
+
+		assertEquals(set1.hashCode(), set2.hashCode());
+	}
+
+	@Test
+	void hashCode_withDifferentMask() {
+		SquareSet set1 = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.C3);
+		SquareSet set2 = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.H8);
+
+		assertNotEquals(set1.hashCode(), set2.hashCode());
+	}
+
+	@Test
 	void testSize() {
 		SquareSet set1 = new SquareSet(0b10000000_01000000_00100000_00010000_00001000_00000100_00000010_00000001L);
 		SquareSet set2 = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.E1 | Bitboard.Squares.H1);
