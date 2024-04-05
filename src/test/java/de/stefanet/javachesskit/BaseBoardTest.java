@@ -142,4 +142,22 @@ class BaseBoardTest {
 		assertNotEquals(board1, board2);
 	}
 
+	@Test
+	void testGetters() {
+		BaseBoard board = new BaseBoard();
+
+		assertEquals(Bitboard.CORNERS, board.getRooks());
+		assertEquals(B1 | G1 | B8 | G8, board.getKnights());
+		assertEquals(C1 | F1 | C8 | F8, board.getBishops());
+
+		assertEquals(D1 | D8, board.getQueens());
+		assertEquals(E1 | E8, board.getKings());
+
+		assertEquals(Bitboard.EMPTY, board.getPromoted());
+		assertEquals(Bitboard.Ranks.RANK_1 |
+					 Bitboard.Ranks.RANK_2 |
+					 Bitboard.Ranks.RANK_7 |
+					 Bitboard.Ranks.RANK_8, board.getOccupied());
+	}
+
 }
