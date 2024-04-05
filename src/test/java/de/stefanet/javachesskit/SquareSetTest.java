@@ -69,10 +69,45 @@ class SquareSetTest {
 
 	@Test
 	void testToArray() {
-		SquareSet set = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.C3 | Bitboard.Squares.H8);
 		Square[] expected = new Square[]{Square.A1, Square.C3, Square.H8};
 
+		SquareSet set = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.C3 | Bitboard.Squares.H8);
 		assertArrayEquals(expected, set.toArray());
+	}
+
+	@Test
+	void testToArray_withEmptyArray() {
+		SquareSet set = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.C3 | Bitboard.Squares.H8);
+		Square[] input = new Square[0];
+		Square[] expected = new Square[]{Square.A1, Square.C3, Square.H8};
+
+		assertArrayEquals(expected, set.toArray(input));
+	}
+
+	@Test
+	void testToArray_withLargerArray() {
+		SquareSet set = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.C3);
+		Square[] input = new Square[5];
+		Square[] expected = new Square[]{Square.A1, Square.C3, null, null, null};
+
+		assertArrayEquals(expected, set.toArray(input));
+	}
+
+	@Test
+	void testToArray_withExactSizeArray() {
+		SquareSet set = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.C3 | Bitboard.Squares.H8);
+		Square[] input = new Square[3];
+		Square[] expected = new Square[]{Square.A1, Square.C3, Square.H8};
+
+		assertArrayEquals(expected, set.toArray(input));
+		assertSame(input, set.toArray(input));
+	}
+
+	@Test
+	void testToArray_withNullArray() {
+		SquareSet set = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.C3 | Bitboard.Squares.H8);
+
+		assertThrows(NullPointerException.class, () -> set.toArray(null));
 	}
 
 	@Test
