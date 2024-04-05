@@ -496,7 +496,7 @@ public class BaseBoard {
 	}
 
 	public String unicode() {
-		return unicode(false, false, 'o', Color.WHITE);
+		return unicode(false, false, '·', Color.WHITE);
 	}
 
 	public String unicode(boolean invertColor, boolean border, char emptySquare, Color orientation) {

@@ -1134,7 +1134,7 @@ class BoardTest {
 					 "· · · · ♙ ♟ · ♟\n" +
 					 "· · ♕ ♘ · ♗ · ·\n" +
 					 "♙ ♙ · · · · ♙ ♙\n" +
-					 "· · · · · · ♔ ·", board.unicode(false, false, '·', Color.WHITE));
+					 "· · · · · · ♔ ·", board.unicode());
 	}
 
 	@Test
