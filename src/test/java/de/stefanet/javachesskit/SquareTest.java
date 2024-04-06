@@ -114,6 +114,18 @@ class SquareTest {
 	}
 
 	@Test
+	void testMirrorVertically() {
+		assertEquals(A1, A8.mirrorVertically());
+		assertEquals(A8, A1.mirrorVertically());
+	}
+
+	@Test
+	void testMirrorHorizontally() {
+		assertEquals(A1, H1.mirrorHorizontally());
+		assertEquals(H1, A1.mirrorHorizontally());
+	}
+
+	@Test
 	void testToString() {
 		Square square = Square.getSquare('c', 3);
 		assertEquals("C3", square.toString());
