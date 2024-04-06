@@ -29,6 +29,48 @@ class BoardTest {
 	}
 
 	@Test
+	void testInvalidFEN_notEnoughParts() {
+		Exception exception = assertThrows(InvalidFENException.class,
+				() -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"));
+		assertEquals("FEN must have 6 parts, but only has 1", exception.getMessage());
+	}
+
+	@Test
+	void testInvalidFEN_invalidTurnPart() {
+		Exception exception = assertThrows(InvalidFENException.class,
+				() -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR W KQkq - 0 1"));
+		assertEquals("Turn part of the FEN is invalid: Expected w or b, but was W", exception.getMessage());
+	}
+
+	@Test
+	void testInvalidFEN_invalidCastlingPart() {
+		Exception exception = assertThrows(InvalidFENException.class,
+				() -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQqk - 0 1"));
+		assertEquals("Castling part of the FEN is invalid", exception.getMessage());
+	}
+
+	@Test
+	void testInvalidFEN_invalidEnPassantPart() {
+		Exception exception = assertThrows(InvalidFENException.class,
+				() -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq f5 0 1"));
+		assertEquals("En-passant part of the FEN is invalid", exception.getMessage());
+	}
+
+	@Test
+	void testInvalidFEN_invalidHalfMovePart() {
+		Exception exception = assertThrows(InvalidFENException.class,
+				() -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 012 1"));
+		assertEquals("Half move part of the FEN is invalid", exception.getMessage());
+	}
+
+	@Test
+	void testInvalidFEN_invalidFullMovePart() {
+		Exception exception = assertThrows(InvalidFENException.class,
+				() -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"));
+		assertEquals("Full move part of the FEN is invalid", exception.getMessage());
+	}
+
+	@Test
 	void testGetSet() {
 		Board board = new Board();
 		assertEquals(new Piece('N'), board.pieceAt(Square.B1));
