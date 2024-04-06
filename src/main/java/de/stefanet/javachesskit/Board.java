@@ -1182,7 +1182,7 @@ public class Board extends BaseBoard {
 	}
 
 	public boolean isGameOver() {
-		return isGameOver(false);
+		return outcome() != null;
 	}
 
 	public boolean isGameOver(boolean claimDraw) {
