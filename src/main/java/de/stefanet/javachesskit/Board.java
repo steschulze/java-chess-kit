@@ -76,23 +76,23 @@ public class Board extends BaseBoard {
 		String[] parts = fen.split(" ");
 
 		if (parts.length != 6) {
-			throw new InvalidMoveException("FEN must have 6 parts, but only has " + parts.length);
+			throw new InvalidFENException("FEN must have 6 parts, but only has " + parts.length);
 		}
 
 		if (!parts[1].equals("w") && !parts[1].equals("b")) {
-			throw new InvalidMoveException("Turn part of the FEN is invalid: Expected w or b, but was " + parts[1]);
+			throw new InvalidFENException("Turn part of the FEN is invalid: Expected w or b, but was " + parts[1]);
 		}
 		if (!Pattern.matches("^(KQ?k?q?|Qk?q?|kq?|q|-)$", parts[2])) {
-			throw new InvalidMoveException("Castling part of the FEN is invalid");
+			throw new InvalidFENException("Castling part of the FEN is invalid");
 		}
 		if (!Pattern.matches("^(-|[a-h][36])$", parts[3])) {
-			throw new InvalidMoveException("En-passant part of the FEN is invalid");
+			throw new InvalidFENException("En-passant part of the FEN is invalid");
 		}
 		if (!Pattern.matches("^(0|[1-9][0-9]*)$", parts[4])) {
-			throw new InvalidMoveException("Half move part of the FEN is invalid");
+			throw new InvalidFENException("Half move part of the FEN is invalid");
 		}
 		if (!Pattern.matches("^[1-9][0-9]*$", parts[5])) {
-			throw new InvalidMoveException("Full move part of the FEN is invalid");
+			throw new InvalidFENException("Full move part of the FEN is invalid");
 		}
 
 		setBoardFen(parts[0]);
