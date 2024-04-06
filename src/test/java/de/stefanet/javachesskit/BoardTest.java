@@ -327,7 +327,11 @@ class BoardTest {
 	@Test
 	void testCastlingRight_getsDestroyed() {
 		Board board = new Board("2r1k2r/2qbbpp1/p2pp3/1p3PP1/Pn2P3/1PN1B3/1P3QB1/1K1R3R b k - 0 22");
+		assertTrue(board.hasCastlingRights(Color.BLACK));
+
 		board.pushSan("Rxh1");
+
+		assertFalse(board.hasCastlingRights(Color.BLACK));
 		assertEquals("2r1k3/2qbbpp1/p2pp3/1p3PP1/Pn2P3/1PN1B3/1P3QB1/1K1R3r w - - 0 23", board.getFen());
 	}
 
