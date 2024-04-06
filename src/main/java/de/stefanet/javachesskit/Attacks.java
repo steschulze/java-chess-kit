@@ -7,7 +7,10 @@ import java.util.Map;
 
 import static de.stefanet.javachesskit.Bitboard.*;
 
-public class Attacks {
+public final class Attacks {
+	private Attacks() {
+	}
+	
 	private static long slidingAttacks(Square square, long occupied, int[] deltas) {
 		long attacks = EMPTY;
 
