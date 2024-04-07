@@ -359,12 +359,12 @@ public class BaseBoard {
 	protected void setBoardFen(String fen) {
 		fen = fen.trim();
 		if (fen.contains(" ")) {
-			throw new IllegalArgumentException("Invalid board fen: contains space");
+			throw new InvalidFENException("Invalid board FEN: Contains space");
 		}
 
 		String[] rows = fen.split("/");
 		if (rows.length != 8) {
-			throw new IllegalArgumentException("Expected 8 rows in board fen");
+			throw new InvalidFENException("Invalid board FEN: Expected 8 rows in board fen");
 		}
 
 		for (String row : rows) {
@@ -374,7 +374,7 @@ public class BaseBoard {
 			for (char c : row.toCharArray()) {
 				if (c >= '1' && c <= '8') {
 					if (previousWasNumber) {
-						throw new InvalidMoveException("Position part of the FEN is invalid Several numbers in a row");
+						throw new InvalidFENException("Invalid board FEN:: Several numbers in a row");
 					}
 
 					rowSum += Character.getNumericValue(c);
@@ -383,12 +383,12 @@ public class BaseBoard {
 					rowSum++;
 					previousWasNumber = false;
 				} else {
-					throw new InvalidMoveException("Position part of the FEN is invalid: Invalid character " + c);
+					throw new InvalidFENException("Invalid board FEN:: Invalid character " + c);
 				}
 			}
 
 			if (rowSum != 8) {
-				throw new InvalidMoveException("Position part of the FEN is invalid: Invalid row length");
+				throw new InvalidFENException("Invalid board FEN: Invalid row length");
 			}
 		}
 
