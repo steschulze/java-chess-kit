@@ -140,6 +140,17 @@ class SquareSetTest {
 	}
 
 	@Test
+	void testAdd_withDuplicateSquare() {
+		SquareSet set = new SquareSet(Bitboard.CORNERS);
+		assertEquals(4, set.size());
+
+		boolean changed = set.add(Square.H1);
+
+		assertFalse(changed);
+		assertEquals(4, set.size());
+	}
+
+	@Test
 	void testRemove() {
 		SquareSet set = new SquareSet(Bitboard.Squares.E4 | Bitboard.Squares.D5);
 		assertEquals(2, set.size());
