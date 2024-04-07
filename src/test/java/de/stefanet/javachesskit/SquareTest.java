@@ -63,14 +63,26 @@ class SquareTest {
 	}
 
 	@Test
-	void testFromRankAndFile_wrongRank() {
-		assertThrows(IllegalArgumentException.class, () -> Square.getSquare(9, 'd'));
-		assertThrows(IllegalArgumentException.class, () -> Square.getSquare(-1, 'd'));
+	void testGetSquare_wrongRank() {
+		assertThrows(IllegalArgumentException.class, () -> Square.getSquare('d', 9));
+		assertThrows(IllegalArgumentException.class, () -> Square.getSquare('d', -1));
 	}
 
 	@Test
-	void testFromRankAndFile_wrongFile() {
-		assertThrows(IllegalArgumentException.class, () -> Square.getSquare(4, 'n'));
+	void testGetSquare_wrongFile() {
+		assertThrows(IllegalArgumentException.class, () -> Square.getSquare('n', 4));
+	}
+
+	@Test
+	void testGetSquare_wrongRankIndex() {
+		assertThrows(IllegalArgumentException.class, () -> Square.getSquare(3, 8));
+		assertThrows(IllegalArgumentException.class, () -> Square.getSquare(3, -1));
+	}
+
+	@Test
+	void testGetSquare_wrongFileIndex() {
+		assertThrows(IllegalArgumentException.class, () -> Square.getSquare(8, 4));
+		assertThrows(IllegalArgumentException.class, () -> Square.getSquare(-1, 4));
 	}
 
 	@Test
