@@ -38,6 +38,42 @@ class BaseBoardTest {
 	}
 
 	@Test
+	void testInvalidFEN_containsSpace() {
+		Exception exception = assertThrows(InvalidFENException.class,
+				() -> new BaseBoard("rnbqkbnr/pppppppp/8/8/8/8 /PPPPPPPP/RNBQKBNR"));
+		assertEquals("Invalid board FEN: Contains space", exception.getMessage());
+	}
+
+	@Test
+	void testInvalidFEN_tooManyRows() {
+		Exception exception = assertThrows(InvalidFENException.class,
+				() -> new BaseBoard("rnbqkbnr/pppppppp/8/8/8/8/8/PPPPPPPP/RNBQKBNR"));
+		assertEquals("Invalid board FEN: Expected 8 rows in board fen", exception.getMessage());
+	}
+
+	@Test
+	void testInvalidFEN_multipleNumbers() {
+		Exception exception = assertThrows(InvalidFENException.class,
+				() -> new BaseBoard("rnbqkbnr/pppppp1p/8/42p1/8/8/PPPPPPPP/RNBQKBNR"));
+		assertEquals("Invalid board FEN:: Several numbers in a row", exception.getMessage());
+	}
+
+	@Test
+	void testInvalidFEN_invalidCharacter() {
+		Exception exception = assertThrows(InvalidFENException.class,
+				() -> new BaseBoard("rnbqkbnr/pppppppa/8/8/8/8/PPPPPPPP/RNBQKBNR"));
+		assertEquals("Invalid board FEN:: Invalid character a", exception.getMessage());
+	}
+
+	@Test
+	void testInvalidFEN_invalidRowLength() {
+		Exception exception = assertThrows(InvalidFENException.class,
+				() -> new BaseBoard("rnbqkbnr/ppppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"));
+		assertEquals("Invalid board FEN: Invalid row length", exception.getMessage());
+	}
+
+
+	@Test
 	void testPieceMask_pawns() {
 		BaseBoard board = new BaseBoard();
 		assertEquals(0xFF00, board.pieceMask(PieceType.PAWN, Color.WHITE));

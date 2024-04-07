@@ -71,6 +71,15 @@ class BoardTest {
 	}
 
 	@Test
+	void testInvalidCastlingFEN() {
+		Board board = new Board();
+		Exception exception = assertThrows(IllegalArgumentException.class,
+				() -> board.setCastlingFen("KQqk"));
+
+		assertEquals("Invalid castling fen: KQqk", exception.getMessage());
+	}
+
+	@Test
 	void testGetSet() {
 		Board board = new Board();
 		assertEquals(new Piece('N'), board.pieceAt(Square.B1));
@@ -173,6 +182,15 @@ class BoardTest {
 
 		board.push(exf4);
 		board.pop();
+	}
+
+	@Test
+	void testCapture_withPromotion() {
+		Board board = new Board("2r4k/3PK3/8/8/8/8/8/8 w - - 0 1");
+		Move move = Move.fromUCI("d7c8q");
+
+		assertTrue(board.pseudoLegalMoves().contains(move));
+		assertTrue(board.legalMoves().contains(move));
 	}
 
 	@Test
@@ -1394,6 +1412,15 @@ class BoardTest {
 		board.castlingRights |= Bitboard.Squares.H1;
 
 		assertTrue(board.isLegal(Move.fromUCI("e1g1")));
+	}
+
+	@Test
+	void testLegalMove_withoutKing() {
+		Board board = new Board();
+		board.removePiece(Square.E1);
+
+		assertTrue(board.isLegal(Move.fromUCI("e2e4")));
+
 	}
 
 	@Test
