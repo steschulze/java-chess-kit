@@ -277,7 +277,9 @@ class BoardTest {
 	void testAmbiguousMove() {
 		Board board = new Board("8/8/1n6/3R1P2/1n6/2k2K2/3p4/r6r b - - 0 82");
 		assertThrows(AmbiguousMoveException.class, () -> board.parseSan("Rf1"));
+		assertNotNull(board.parseSan("Raf1"));
 		assertThrows(AmbiguousMoveException.class, () -> board.parseSan("Nd5"));
+		assertNotNull(board.parseSan("N6d5"));
 	}
 
 	@Test
@@ -285,6 +287,13 @@ class BoardTest {
 		Board board = new Board("rnbqk2r/ppppppbp/5np1/8/8/5NP1/PPPPPPBP/RNBQK2R w KQkq - 2 4");
 		assertThrows(InvalidMoveException.class, () -> board.parseSan("0-0\n"));
 		assertThrows(InvalidMoveException.class, () -> board.parseSan("Nc3\n"));
+	}
+
+	@Test
+	void testSan_illegalCastling() {
+		Board board = new Board();
+		assertThrows(IllegalMoveException.class, () -> board.parseSan("O-O"));
+		assertThrows(IllegalMoveException.class, () -> board.parseSan("O-O-O"));
 	}
 
 	@Test
@@ -433,6 +442,14 @@ class BoardTest {
 	}
 
 	@Test
+	void testStatus_illegalEpSquare() {
+		Board board = new Board("8/8/2k5/8/2K2Pp1/8/8/8 w - - 0 1");
+		board.epSquare = Square.G4;
+
+		assertTrue(board.status().contains(Status.INVALID_EP_SQUARE));
+	}
+
+	@Test
 	void testStatus_badCastlingRights() {
 		Board board = new Board("2rrk3/8/8/8/8/8/3PPPPP/2RK4 w KQkq - 0 1");
 		assertTrue(board.status().contains(Status.BAD_CASTLING_RIGHTS));
@@ -456,6 +473,24 @@ class BoardTest {
 	void testStatus_tooManyKings() {
 		Board board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKKBNR w KQkq - 0 1");
 		assertTrue(board.status().contains(Status.TOO_MANY_KINGS));
+	}
+
+
+	@Test
+	void testStatus_tooManyPieces() {
+		Board board = new Board("rnbqkbnr/pppppppp/8/4p3/4P3/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+
+		assertTrue(board.status().contains(Status.TOO_MANY_WHITE_PIECES));
+		assertTrue(board.status().contains(Status.TOO_MANY_BLACK_PIECES));
+
+		assertTrue(board.status().contains(Status.TOO_MANY_WHITE_PAWNS));
+		assertTrue(board.status().contains(Status.TOO_MANY_BLACK_PAWNS));
+	}
+
+	@Test
+	void testStatus_pawnOnBackrank() {
+		Board board = new Board("2P5/8/4k3/1K6/8/8/8/8 w - - 0 1");
+		assertTrue(board.status().contains(Status.PAWNS_ON_BACKRANK));
 	}
 
 	@Test
@@ -654,6 +689,14 @@ class BoardTest {
 
 		assertEquals("Ne3+", board.san(Move.fromUCI("f5e3")));
 		assertEquals(fen, board.getFen());
+	}
+
+	@Test
+	void testSan_emptySquare() {
+		Board board = new Board();
+		assertThrows(IllegalMoveException.class,
+				() -> board.san(Move.fromUCI("e4e5")));
+
 	}
 
 	@Test
@@ -867,11 +910,15 @@ class BoardTest {
 
 		Board a = new Board();
 		Board b = new Board();
+		Board c = a;
+
+		assertEquals(a, c);
 
 		a.pushSan("e4");
 		b.pushSan("d3");
 
 		assertNotEquals(a, b);
+		assertNotEquals(a, null);
 	}
 
 	@Test
@@ -1014,6 +1061,44 @@ class BoardTest {
 	}
 
 	@Test
+	void testFakeRepetition1() {
+		Board board = new Board();
+
+		board.pushSan("Nf3");
+		board.pushSan("Nf6");
+
+		board.pushSan("Ng5");
+		board.pushSan("Ng4");
+
+		board.pushSan("Nh3");
+		board.pushSan("Nh6");
+
+		board.pushSan("f3");
+		board.pushSan("f6");
+
+		board.pushSan("Nf2");
+		board.pushSan("Nf7");
+
+		assertFalse(board.isRepetition(2));
+	}
+
+	@Test
+	void testFakeRepetition2() {
+		Board board = new Board("1r5k/2b5/8/8/8/8/5B2/K5R1 w - - 0 1");
+
+		board.pushSan("Rf1");
+		board.pushSan("Rc8");
+
+		board.pushSan("Bg1");
+		board.pushSan("Bb8");
+
+		board.pushSan("Rf2");
+		board.pushSan("Rc7");
+
+		assertFalse(board.isRepetition(2));
+	}
+
+	@Test
 	void testTrivialRepetition() {
 		assertTrue(new Board().isRepetition(1));
 	}
@@ -1058,6 +1143,13 @@ class BoardTest {
 		Board board = new Board("8/7k/8/1r3KR1/5B2/8/8/8 w - - 105 122");
 		assertTrue(board.isFiftyMoves());
 		assertTrue(board.canClaimFiftyMoveRule());
+	}
+
+	@Test
+	void testFiftyMoves_fromPosition6() {
+		Board board = new Board("k7/3N4/1K6/1B6/7p/8/8/8 b - - 99 1");
+		assertFalse(board.isFiftyMoves());
+		assertFalse(board.canClaimFiftyMoveRule());
 	}
 
 	@Test
@@ -1147,6 +1239,20 @@ class BoardTest {
 				assertFalse(board.isPseudoLegal(move));
 			}
 		}
+	}
+
+	@Test
+	void testPseudoLegality_illegalPromotion() {
+		Board board = new Board("8/7p/4k3/8/4K3/8/P7/8 w - - 0 1");
+
+		Move move1 = new Move(Square.A2, Square.A1, PieceType.QUEEN);
+
+		assertFalse(board.isPseudoLegal(move1));
+
+		board.push(null);
+		Move move2 = new Move(Square.A7, Square.A8, PieceType.ROOK);
+
+		assertFalse(board.isPseudoLegal(move2));
 	}
 
 	@Test
@@ -1268,7 +1374,11 @@ class BoardTest {
 
 		pin = Bitboard.Squares.E1 | Bitboard.Squares.D2 | Bitboard.Squares.C3 | Bitboard.Squares.B4 | Bitboard.Squares.A5;
 		assertEquals(pin, board.pinMask(Color.WHITE, Square.D2));
+	}
 
+	@Test
+	void testPin_emptyBoard() {
+		Board board = new Board(null);
 		assertEquals(Bitboard.ALL, board.pinMask(Color.WHITE, Square.F7));
 	}
 
@@ -1472,5 +1582,27 @@ class BoardTest {
 		assertTrue(board.hasPseudoLegalEnPassant());
 		assertFalse(board.hasLegalEnPassant());
 		assertEquals(2, board.legalMoves().count());
+	}
+
+	@Test
+	void testParseUCI_withLegalMove() {
+		Board board = new Board();
+		Move move = board.parseUCI("e2e4");
+
+		assertEquals(Move.fromUCI("e2e4"), move);
+	}
+
+	@Test
+	void testParseUCI_withIllegalMove() {
+		Board board = new Board();
+		assertThrows(IllegalMoveException.class, () -> board.parseUCI("f1c4"));
+	}
+
+	@Test
+	void testPush_withEmptySquare() {
+		Board board = new Board();
+		assertThrows(InvalidMoveException.class, () -> {
+			board.push(Move.fromUCI("e4e5"));
+		});
 	}
 }
