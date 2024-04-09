@@ -196,4 +196,12 @@ class BaseBoardTest {
 					 Bitboard.Ranks.RANK_8, board.getOccupied());
 	}
 
+	@Test
+	void testSetPiece_withNull() {
+		BaseBoard board = new BaseBoard();
+		board.setPiece(Square.E1, null, Color.WHITE);
+
+		assertNull(board.get(Square.E1));
+	}
+
 }
