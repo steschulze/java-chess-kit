@@ -556,10 +556,6 @@ public class Board extends BaseBoard {
 	}
 
 	private boolean epSkewered(Square kingSquare, Square capturer) {
-		if (this.epSquare == null) {
-			throw new IllegalStateException("No ep square");
-		}
-
 		int lastDouble = this.epSquare.ordinal() + ((this.turn == Color.WHITE) ? -8 : 8);
 
 		long occupancy = (this.occupied & ~SQUARES[lastDouble] &
@@ -785,6 +781,11 @@ public class Board extends BaseBoard {
 	}
 
 	public void push(Move move) {
+		if (move == null) {
+			this.turn = this.turn.other();
+			return;
+		}
+
 		BoardState state = this.getBoardState();
 		this.castlingRights = cleanCastlingRights();
 		this.stateStack.push(state);
@@ -797,11 +798,6 @@ public class Board extends BaseBoard {
 		this.halfMoveClock++;
 		if (this.turn == Color.BLACK) {
 			this.fullMoveNumber++;
-		}
-
-		if (move == null) {
-			this.turn = this.turn.other();
-			return;
 		}
 
 		// zero the half move clock
