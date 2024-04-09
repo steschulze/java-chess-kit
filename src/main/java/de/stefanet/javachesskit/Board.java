@@ -946,12 +946,12 @@ public class Board extends BaseBoard {
 
 		String file = matcher.group(2);
 		if (file != null) {
-			sourceMask &= FILE_MASKS[file.charAt(0) - 'a'];
+			sourceMask &= FILES[file.charAt(0) - 'a'];
 		}
 
 		String rank = matcher.group(3);
 		if (rank != null) {
-			sourceMask &= RANK_MASKS[rank.charAt(0) - '1'];
+			sourceMask &= RANKS[rank.charAt(0) - '1'];
 		}
 
 		// filter piece type
