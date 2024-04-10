@@ -27,4 +27,24 @@ java {
 
 jacocoTestReport {
     dependsOn test
+
+    afterEvaluate {
+        classDirectories = (files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: ['de/stefanet/javachesskit/examples/**'])
+        }))
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            element = 'CLASS'
+            limit {
+                counter = 'METHOD'
+                minimum = 1.0
+            }
+            excludes = ['de.stefanet.javachesskit.examples.*']
+        }
+    }
 }
