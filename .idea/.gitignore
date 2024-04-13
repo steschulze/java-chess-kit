@@ -8,3 +8,6 @@
 /dataSources.local.xml
 # GitHub Copilot persisted chat sessions
 /copilot/chatSessions
+# Checkstyle-IDEA plugin
+/checkstyle-idea.xml
+/checkstyleidea-libs/
