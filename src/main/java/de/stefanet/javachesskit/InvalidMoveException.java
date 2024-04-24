@@ -5,12 +5,12 @@ package de.stefanet.javachesskit;
  */
 public class InvalidMoveException extends RuntimeException {
 
-	/**
-	 * Constructs an InvalidFENException with the specified detail message.
-	 *
-	 * @param msg The detail message.
-	 */
-	public InvalidMoveException(String msg) {
-		super(msg);
-	}
+    /**
+     * Constructs an InvalidFenException with the specified detail message.
+     *
+     * @param msg The detail message.
+     */
+    public InvalidMoveException(String msg) {
+        super(msg);
+    }
 }

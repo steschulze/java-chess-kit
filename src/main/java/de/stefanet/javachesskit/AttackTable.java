@@ -4,19 +4,19 @@ import java.util.List;
 import java.util.Map;
 
 public class AttackTable {
-	private long[] maskTable;
-	private List<Map<Long, Long>> attackTable;
+    private long[] maskTable;
+    private List<Map<Long, Long>> attackTable;
 
-	public AttackTable(long[] maskTable, List<Map<Long, Long>> attackTable) {
-		this.maskTable = maskTable;
-		this.attackTable = attackTable;
-	}
+    public AttackTable(long[] maskTable, List<Map<Long, Long>> attackTable) {
+        this.maskTable = maskTable;
+        this.attackTable = attackTable;
+    }
 
-	public long[] getMaskTable() {
-		return maskTable;
-	}
+    public long[] getMaskTable() {
+        return maskTable;
+    }
 
-	public List<Map<Long, Long>> getAttackTable() {
-		return attackTable;
-	}
+    public List<Map<Long, Long>> getAttackTable() {
+        return attackTable;
+    }
 }

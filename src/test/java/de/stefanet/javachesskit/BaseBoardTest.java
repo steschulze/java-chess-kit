@@ -1,11 +1,15 @@
 package de.stefanet.javachesskit;
 
-import org.junit.jupiter.api.Test;
-
-import java.util.Collections;
-
 import static de.stefanet.javachesskit.Bitboard.Squares.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
+import java.util.Collections;
 
 class BaseBoardTest {
 
@@ -39,36 +43,36 @@ class BaseBoardTest {
 
 	@Test
 	void testInvalidFEN_containsSpace() {
-		Exception exception = assertThrows(InvalidFENException.class,
-				() -> new BaseBoard("rnbqkbnr/pppppppp/8/8/8/8 /PPPPPPPP/RNBQKBNR"));
+        Exception exception = assertThrows(InvalidFenException.class,
+                                           () -> new BaseBoard("rnbqkbnr/pppppppp/8/8/8/8 /PPPPPPPP/RNBQKBNR"));
 		assertEquals("Invalid board FEN: Contains space", exception.getMessage());
 	}
 
 	@Test
 	void testInvalidFEN_tooManyRows() {
-		Exception exception = assertThrows(InvalidFENException.class,
-				() -> new BaseBoard("rnbqkbnr/pppppppp/8/8/8/8/8/PPPPPPPP/RNBQKBNR"));
+        Exception exception = assertThrows(InvalidFenException.class,
+                                           () -> new BaseBoard("rnbqkbnr/pppppppp/8/8/8/8/8/PPPPPPPP/RNBQKBNR"));
 		assertEquals("Invalid board FEN: Expected 8 rows in board fen", exception.getMessage());
 	}
 
 	@Test
 	void testInvalidFEN_multipleNumbers() {
-		Exception exception = assertThrows(InvalidFENException.class,
-				() -> new BaseBoard("rnbqkbnr/pppppp1p/8/42p1/8/8/PPPPPPPP/RNBQKBNR"));
+        Exception exception = assertThrows(InvalidFenException.class,
+                                           () -> new BaseBoard("rnbqkbnr/pppppp1p/8/42p1/8/8/PPPPPPPP/RNBQKBNR"));
 		assertEquals("Invalid board FEN:: Several numbers in a row", exception.getMessage());
 	}
 
 	@Test
 	void testInvalidFEN_invalidCharacter() {
-		Exception exception = assertThrows(InvalidFENException.class,
-				() -> new BaseBoard("rnbqkbnr/pppppppa/8/8/8/8/PPPPPPPP/RNBQKBNR"));
+        Exception exception = assertThrows(InvalidFenException.class,
+                                           () -> new BaseBoard("rnbqkbnr/pppppppa/8/8/8/8/PPPPPPPP/RNBQKBNR"));
 		assertEquals("Invalid board FEN:: Invalid character a", exception.getMessage());
 	}
 
 	@Test
 	void testInvalidFEN_invalidRowLength() {
-		Exception exception = assertThrows(InvalidFENException.class,
-				() -> new BaseBoard("rnbqkbnr/ppppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"));
+        Exception exception = assertThrows(InvalidFenException.class,
+                                           () -> new BaseBoard("rnbqkbnr/ppppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"));
 		assertEquals("Invalid board FEN: Invalid row length", exception.getMessage());
 	}
 

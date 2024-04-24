@@ -54,10 +54,12 @@ public class Move {
      * @throws IllegalArgumentException If the move string is not in the correct format.
      * @see <a href="https://www.chessprogramming.org/UCI">UCI</a>
      */
-    public static Move fromUCI(String move) {
-        Pattern uci_regex = Pattern.compile("^([a-h][1-8])([a-h][1-8])([rnbq]?)$");
-        Matcher matcher = uci_regex.matcher(move);
-        if (!matcher.matches()) throw new IllegalArgumentException("No uci format: " + move);
+    public static Move fromUci(String move) {
+        Pattern regex = Pattern.compile("^([a-h][1-8])([a-h][1-8])([rnbq]?)$");
+        Matcher matcher = regex.matcher(move);
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException("No uci format: " + move);
+        }
 
         Square source = Square.parseSquare(matcher.group(1));
         Square target = Square.parseSquare(matcher.group(2));
@@ -119,8 +121,12 @@ public class Move {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Move other = (Move) o;
         return this.getUciMove().equals(other.getUciMove());
     }

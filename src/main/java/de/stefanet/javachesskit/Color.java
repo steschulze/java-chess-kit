@@ -14,9 +14,13 @@ public enum Color {
      * @throws IllegalArgumentException If the symbol is neither 'w' nor 'b'.
      */
     public static Color fromSymbol(char symbol) {
-        if (symbol == 'w') return WHITE;
-        else if (symbol == 'b') return BLACK;
-        else throw new IllegalArgumentException("No Color for symbol " + symbol);
+        if (symbol == 'w') {
+            return WHITE;
+        } else if (symbol == 'b') {
+            return BLACK;
+        } else {
+            throw new IllegalArgumentException("No Color for symbol " + symbol);
+        }
     }
 
     /**
@@ -34,8 +38,11 @@ public enum Color {
      * @return WHITE if the color is BLACK, otherwise BLACK
      */
     public Color other() {
-        if (this == WHITE) return BLACK;
-        else return WHITE;
+        if (this == WHITE) {
+            return BLACK;
+        } else {
+            return WHITE;
+        }
     }
 
     /**
@@ -59,7 +66,10 @@ public enum Color {
      * @return 1 for WHITE, -1 for BLACK.
      */
     public int forwardDirection() {
-        if (this == WHITE) return 1;
-        else return -1;
+        if (this == WHITE) {
+            return 1;
+        } else {
+            return -1;
+        }
     }
 }

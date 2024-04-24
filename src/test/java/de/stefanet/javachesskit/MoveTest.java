@@ -1,8 +1,11 @@
 package de.stefanet.javachesskit;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 class MoveTest {
 
@@ -25,7 +28,7 @@ class MoveTest {
 
     @Test
     void testEquals() {
-        Move move1 = Move.fromUCI("e2e4");
+        Move move1 = Move.fromUci("e2e4");
         Move move2 = new Move(Square.getSquare('e', 2), Square.getSquare('e', 4));
         assertEquals(move1, move1);
         assertEquals(move1, move2);
@@ -34,24 +37,24 @@ class MoveTest {
     }
 
     @Test
-    void testFromUCI_bigPawnMove() {
-        Move move = Move.fromUCI("e2e4");
+    void testFromUci_bigPawnMove() {
+        Move move = Move.fromUci("e2e4");
         assertEquals("e2", move.getSource().getName());
         assertEquals("e4", move.getTarget().getName());
         assertNull(move.getPromotion());
     }
 
     @Test
-    void testFromUCI_promotion() {
-        Move move = Move.fromUCI("d7d8q");
+    void testFromUci_promotion() {
+        Move move = Move.fromUci("d7d8q");
         assertEquals("d7", move.getSource().getName());
         assertEquals("d8", move.getTarget().getName());
         assertEquals(PieceType.QUEEN, move.getPromotion());
     }
 
     @Test
-    void testFromUCI_wrongFormat() {
-        assertThrows(IllegalArgumentException.class, () -> Move.fromUCI("d7d8Q"));
+    void testFromUci_wrongFormat() {
+        assertThrows(IllegalArgumentException.class, () -> Move.fromUci("d7d8Q"));
     }
 
     @Test
@@ -63,8 +66,8 @@ class MoveTest {
     @Test
     void testHashCode() {
         Move move1 = new Move(Square.parseSquare("e7"), Square.parseSquare("e8"));
-        Move move2 = Move.fromUCI("e7e8");
-        Move move3 = Move.fromUCI("e7e8r");
+        Move move2 = Move.fromUci("e7e8");
+        Move move3 = Move.fromUci("e7e8r");
 
         assertEquals(move1.hashCode(), move2.hashCode());
         assertNotEquals(move1.hashCode(), move3.hashCode());

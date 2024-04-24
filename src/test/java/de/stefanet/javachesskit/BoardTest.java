@@ -1,16 +1,21 @@
 package de.stefanet.javachesskit;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.stefanet.javachesskit.polyglot.Polyglot;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
 
@@ -30,43 +35,43 @@ class BoardTest {
 
 	@Test
 	void testInvalidFEN_notEnoughParts() {
-		Exception exception = assertThrows(InvalidFENException.class,
-				() -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"));
+        Exception exception = assertThrows(InvalidFenException.class,
+                                           () -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"));
 		assertEquals("FEN must have 6 parts, but only has 1", exception.getMessage());
 	}
 
 	@Test
 	void testInvalidFEN_invalidTurnPart() {
-		Exception exception = assertThrows(InvalidFENException.class,
-				() -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR W KQkq - 0 1"));
+        Exception exception = assertThrows(InvalidFenException.class,
+                                           () -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR W KQkq - 0 1"));
 		assertEquals("Turn part of the FEN is invalid: Expected w or b, but was W", exception.getMessage());
 	}
 
 	@Test
 	void testInvalidFEN_invalidCastlingPart() {
-		Exception exception = assertThrows(InvalidFENException.class,
-				() -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQqk - 0 1"));
+        Exception exception = assertThrows(InvalidFenException.class,
+                                           () -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQqk - 0 1"));
 		assertEquals("Castling part of the FEN is invalid", exception.getMessage());
 	}
 
 	@Test
 	void testInvalidFEN_invalidEnPassantPart() {
-		Exception exception = assertThrows(InvalidFENException.class,
-				() -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq f5 0 1"));
+        Exception exception = assertThrows(InvalidFenException.class,
+                                           () -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq f5 0 1"));
 		assertEquals("En-passant part of the FEN is invalid", exception.getMessage());
 	}
 
 	@Test
 	void testInvalidFEN_invalidHalfMovePart() {
-		Exception exception = assertThrows(InvalidFENException.class,
-				() -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 012 1"));
+        Exception exception = assertThrows(InvalidFenException.class,
+                                           () -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 012 1"));
 		assertEquals("Half move part of the FEN is invalid", exception.getMessage());
 	}
 
 	@Test
 	void testInvalidFEN_invalidFullMovePart() {
-		Exception exception = assertThrows(InvalidFENException.class,
-				() -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"));
+        Exception exception = assertThrows(InvalidFenException.class,
+                                           () -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"));
 		assertEquals("Full move part of the FEN is invalid", exception.getMessage());
 	}
 
@@ -121,13 +126,13 @@ class BoardTest {
 		for (char file = 'a'; file <= 'h'; file++) {
 			String singlePawnMove = file + "2" + file + "3";
 			String doublePawnMove = file + "2" + file + "4";
-			expectedMoves.add(Move.fromUCI(singlePawnMove));
-			expectedMoves.add(Move.fromUCI(doublePawnMove));
+            expectedMoves.add(Move.fromUci(singlePawnMove));
+            expectedMoves.add(Move.fromUci(doublePawnMove));
 		}
-		expectedMoves.add(Move.fromUCI("b1a3"));
-		expectedMoves.add(Move.fromUCI("b1c3"));
-		expectedMoves.add(Move.fromUCI("g1f3"));
-		expectedMoves.add(Move.fromUCI("g1h3"));
+        expectedMoves.add(Move.fromUci("b1a3"));
+        expectedMoves.add(Move.fromUci("b1c3"));
+        expectedMoves.add(Move.fromUci("g1f3"));
+        expectedMoves.add(Move.fromUci("g1h3"));
 
 		assertEquals(expectedMoves, moves);
 	}
@@ -142,7 +147,7 @@ class BoardTest {
 	@Test
 	void testMoveMaking() {
 		Board board = new Board();
-		Move move = Move.fromUCI("e2e4");
+        Move move = Move.fromUci("e2e4");
 		board.push(move);
 		assertEquals(move, board.peek());
 	}
@@ -156,14 +161,14 @@ class BoardTest {
 		board.setFen(fen);
 		assertEquals(fen, board.getFen());
 
-		board.push(Move.fromUCI("f3d2"));
+        board.push(Move.fromUci("f3d2"));
 		assertEquals("6k1/pb3pp1/1p2p2p/1Bn1P3/8/8/PP1N1PPP/6K1 b - - 0 24", board.getFen());
 	}
 
 	@Test
 	void testFen_EnPassant() {
 		Board board = new Board();
-		board.push(Move.fromUCI("e2e4"));
+        board.push(Move.fromUci("e2e4"));
 		assertEquals("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", board.getFen());
 	}
 
@@ -172,11 +177,11 @@ class BoardTest {
 		Board board = new Board();
 
 		// king's gambit
-		board.push(Move.fromUCI("e2e4"));
-		board.push(Move.fromUCI("e7e5"));
-		board.push(Move.fromUCI("f2f4"));
+        board.push(Move.fromUci("e2e4"));
+        board.push(Move.fromUci("e7e5"));
+        board.push(Move.fromUci("f2f4"));
 
-		Move exf4 = Move.fromUCI("e5f4");
+        Move exf4 = Move.fromUci("e5f4");
 		assertTrue(board.pseudoLegalMoves().contains(exf4));
 		assertTrue(board.legalMoves().contains(exf4));
 
@@ -187,7 +192,7 @@ class BoardTest {
 	@Test
 	void testCapture_withPromotion() {
 		Board board = new Board("2r4k/3PK3/8/8/8/8/8/8 w - - 0 1");
-		Move move = Move.fromUCI("d7c8q");
+        Move move = Move.fromUci("d7c8q");
 
 		assertTrue(board.pseudoLegalMoves().contains(move));
 		assertTrue(board.legalMoves().contains(move));
@@ -196,7 +201,7 @@ class BoardTest {
 	@Test
 	void testSingleStepPawnMove() {
 		Board board = new Board();
-		Move move = Move.fromUCI("e2e3");
+        Move move = Move.fromUci("e2e3");
 
 		assertTrue(board.pseudoLegalMoves().contains(move));
 		assertTrue(board.legalMoves().contains(move));
@@ -356,14 +361,14 @@ class BoardTest {
 		Board board = new Board("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 1 1");
 		Move move = board.parseSan("O-O");
 
-		assertEquals(Move.fromUCI("e1g1"), move);
+        assertEquals(Move.fromUci("e1g1"), move);
 		assertTrue(board.legalMoves().contains(move));
 
 		board.push(move);
 
 		move = board.parseSan("O-O-O");
 
-		assertEquals(Move.fromUCI("e8c8"), move);
+        assertEquals(Move.fromUci("e8c8"), move);
 		assertTrue(board.legalMoves().contains(move));
 
 		board.push(move);
@@ -378,7 +383,7 @@ class BoardTest {
 	@Test
 	void testCastlingSan() {
 		Board board = new Board("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 1 1");
-		assertEquals(Move.fromUCI("e1g1"), board.parseSan("O-O"));
+        assertEquals(Move.fromUci("e1g1"), board.parseSan("O-O"));
 		assertThrows(IllegalMoveException.class, () -> board.parseSan("Kg1"));
 		assertThrows(IllegalMoveException.class, () -> board.parseSan("Kh1"));
 	}
@@ -524,9 +529,9 @@ class BoardTest {
 	@Test
 	void testFindMove_pawnMoves() {
 		Board board = new Board("4k3/1P6/8/8/8/8/3P4/4K2R w K - 0 1");
-		assertEquals(Move.fromUCI("d2d4"), board.findMove(Square.D2, Square.D4));
-		assertEquals(Move.fromUCI("b7b8q"), board.findMove(Square.B7, Square.B8));
-		assertEquals(Move.fromUCI("b7b8r"), board.findMove(Square.B7, Square.B8, PieceType.ROOK));
+        assertEquals(Move.fromUci("d2d4"), board.findMove(Square.D2, Square.D4));
+        assertEquals(Move.fromUci("b7b8q"), board.findMove(Square.B7, Square.B8));
+        assertEquals(Move.fromUci("b7b8r"), board.findMove(Square.B7, Square.B8, PieceType.ROOK));
 
 	}
 
@@ -540,7 +545,7 @@ class BoardTest {
 	@Test
 	void testFindMove_castling() {
 		Board board = new Board("4k3/1P6/8/8/8/8/3P4/4K2R w K - 0 1");
-		assertEquals(Move.fromUCI("e1g1"), board.findMove(Square.E1, Square.G1));
+        assertEquals(Move.fromUci("e1g1"), board.findMove(Square.E1, Square.G1));
 	}
 
 	@ParameterizedTest
@@ -569,27 +574,27 @@ class BoardTest {
 	@Test
 	void testScholarsMate() {
 		Board board = new Board();
-		Move e4 = Move.fromUCI("e2e4");
+        Move e4 = Move.fromUci("e2e4");
 		assertTrue(board.legalMoves().contains(e4));
 		board.push(e4);
 
-		Move e5 = Move.fromUCI("e7e5");
+        Move e5 = Move.fromUci("e7e5");
 		assertTrue(board.legalMoves().contains(e5));
 		board.push(e5);
 
-		Move Qf3 = Move.fromUCI("d1f3");
+        Move Qf3 = Move.fromUci("d1f3");
 		assertTrue(board.legalMoves().contains(Qf3));
 		board.push(Qf3);
 
-		Move Nc6 = Move.fromUCI("b8c6");
+        Move Nc6 = Move.fromUci("b8c6");
 		assertTrue(board.legalMoves().contains(Nc6));
 		board.push(Nc6);
 
-		Move Bc4 = Move.fromUCI("f1c4");
+        Move Bc4 = Move.fromUci("f1c4");
 		assertTrue(board.legalMoves().contains(Bc4));
 		board.push(Bc4);
 
-		Move Rb8 = Move.fromUCI("a8b8");
+        Move Rb8 = Move.fromUci("a8b8");
 		assertTrue(board.legalMoves().contains(Rb8));
 		board.push(Rb8);
 
@@ -598,7 +603,7 @@ class BoardTest {
 		assertFalse(board.isStalemate());
 		assertFalse(board.isGameOver());
 
-		Move Qf7 = Move.fromUCI("f3f7");
+        Move Qf7 = Move.fromUci("f3f7");
 		assertTrue(board.legalMoves().contains(Qf7));
 		board.push(Qf7);
 
@@ -653,7 +658,7 @@ class BoardTest {
 		String fen = "rnbk1b1r/ppp2pp1/5n1p/4p1B1/2P5/2N5/PP2PPPP/R3KBNR w KQ - 0 7";
 		Board board = new Board(fen);
 
-		Move longCastleCheck = Move.fromUCI("e1c1");
+        Move longCastleCheck = Move.fromUci("e1c1");
 		assertEquals("O-O-O+", board.san(longCastleCheck));
 		assertEquals(fen, board.getFen());
 	}
@@ -662,7 +667,7 @@ class BoardTest {
 	void testSan_enPassantMate() {
 		String fen = "6bk/7b/8/3pP3/8/8/8/Q3K3 w - d6 0 2";
 		Board board = new Board(fen);
-		Move move = Move.fromUCI("e5d6");
+        Move move = Move.fromUci("e5d6");
 		assertEquals("exd6#", board.san(move));
 		assertEquals(fen, board.getFen());
 	}
@@ -672,12 +677,12 @@ class BoardTest {
 		String fen = "N3k2N/8/8/3N4/N4N1N/2R5/1R6/4K3 w - - 0 1";
 		Board board = new Board(fen);
 
-		assertEquals("Kf1", board.san(Move.fromUCI("e1f1")));
-		assertEquals("Rcc2", board.san(Move.fromUCI("c3c2")));
-		assertEquals("Rbc2", board.san(Move.fromUCI("b2c2")));
-		assertEquals("N4b6", board.san(Move.fromUCI("a4b6")));
-		assertEquals("N8g6", board.san(Move.fromUCI("h8g6")));
-		assertEquals("Nh4g6", board.san(Move.fromUCI("h4g6")));
+        assertEquals("Kf1", board.san(Move.fromUci("e1f1")));
+        assertEquals("Rcc2", board.san(Move.fromUci("c3c2")));
+        assertEquals("Rbc2", board.san(Move.fromUci("b2c2")));
+        assertEquals("N4b6", board.san(Move.fromUci("a4b6")));
+        assertEquals("N8g6", board.san(Move.fromUci("h8g6")));
+        assertEquals("Nh4g6", board.san(Move.fromUci("h4g6")));
 
 		assertEquals(fen, board.getFen());
 	}
@@ -687,7 +692,7 @@ class BoardTest {
 		String fen = "8/8/8/R2nkn2/8/8/2K5/8 b - - 0 1";
 		Board board = new Board(fen);
 
-		assertEquals("Ne3+", board.san(Move.fromUCI("f5e3")));
+        assertEquals("Ne3+", board.san(Move.fromUci("f5e3")));
 		assertEquals(fen, board.getFen());
 	}
 
@@ -695,7 +700,7 @@ class BoardTest {
 	void testSan_emptySquare() {
 		Board board = new Board();
 		assertThrows(IllegalMoveException.class,
-				() -> board.san(Move.fromUCI("e4e5")));
+                     () -> board.san(Move.fromUci("e4e5")));
 
 	}
 
@@ -704,8 +709,8 @@ class BoardTest {
 		String fen = "7k/1p2Npbp/8/2P5/1P1r4/3b2QP/3q1pPK/2RB4 b - - 1 29";
 		Board board = new Board(fen);
 
-		assertEquals("f1=Q", board.san(Move.fromUCI("f2f1q")));
-		assertEquals("f1=N+", board.san(Move.fromUCI("f2f1n")));
+        assertEquals("f1=Q", board.san(Move.fromUci("f2f1q")));
+        assertEquals("f1=N+", board.san(Move.fromUci("f2f1n")));
 		assertEquals(fen, board.getFen());
 	}
 
@@ -713,9 +718,9 @@ class BoardTest {
 	void testLan_simpleMove() {
 		String fen = "N3k2N/8/8/3N4/N4N1N/2R5/1R6/4K3 w - - 0 1";
 		Board board = new Board(fen);
-		assertEquals("Ke1-f1", board.lan(Move.fromUCI("e1f1")));
-		assertEquals("Rc3-c2", board.lan(Move.fromUCI("c3c2")));
-		assertEquals("Na4-c5", board.lan(Move.fromUCI("a4c5")));
+        assertEquals("Ke1-f1", board.lan(Move.fromUci("e1f1")));
+        assertEquals("Rc3-c2", board.lan(Move.fromUci("c3c2")));
+        assertEquals("Na4-c5", board.lan(Move.fromUci("a4c5")));
 		assertEquals(fen, board.getFen());
 	}
 
@@ -723,7 +728,7 @@ class BoardTest {
 	void testLan_capture() {
 		String fen = "rnbq1rk1/ppp1bpp1/4pn1p/3p2B1/2PP4/2N1PN2/PP3PPP/R2QKB1R w KQ - 0 7";
 		Board board = new Board(fen);
-		assertEquals("Bg5xf6", board.lan(Move.fromUCI("g5f6")));
+        assertEquals("Bg5xf6", board.lan(Move.fromUci("g5f6")));
 		assertEquals(fen, board.getFen());
 	}
 
@@ -731,8 +736,8 @@ class BoardTest {
 	void testLan_pawnMove() {
 		String fen = "6bk/7b/8/3pP3/8/8/8/Q3K3 w - d6 0 2";
 		Board board = new Board(fen);
-		assertEquals("e5xd6#", board.lan(Move.fromUCI("e5d6")));
-		assertEquals("e5-e6+", board.lan(Move.fromUCI("e5e6")));
+        assertEquals("e5xd6#", board.lan(Move.fromUci("e5d6")));
+        assertEquals("e5-e6+", board.lan(Move.fromUci("e5e6")));
 		assertEquals(fen, board.getFen());
 	}
 
@@ -740,9 +745,9 @@ class BoardTest {
 	void testVariationSan_defaultBoard() {
 		Board board = new Board();
 		List<Move> moves = Arrays.asList(
-				Move.fromUCI("e2e4"),
-				Move.fromUCI("e7e5"),
-				Move.fromUCI("d2d4"));
+                Move.fromUci("e2e4"),
+                Move.fromUci("e7e5"),
+                Move.fromUci("d2d4"));
 		assertEquals("1. e4 e5 2. d4", board.variationSan(moves));
 	}
 
@@ -753,11 +758,11 @@ class BoardTest {
 
 
 		List<Move> moves = Arrays.asList(
-				Move.fromUCI("d3h7"), Move.fromUCI("g8h7"),
-				Move.fromUCI("f3h5"), Move.fromUCI("h7g8"),
-				Move.fromUCI("c3g3"), Move.fromUCI("e7f8"),
-				Move.fromUCI("f4g5"), Move.fromUCI("e8e7"),
-				Move.fromUCI("g5f6"), Move.fromUCI("b8d7"));
+                Move.fromUci("d3h7"), Move.fromUci("g8h7"),
+                Move.fromUci("f3h5"), Move.fromUci("h7g8"),
+                Move.fromUci("c3g3"), Move.fromUci("e7f8"),
+                Move.fromUci("f4g5"), Move.fromUci("e8e7"),
+                Move.fromUci("g5f6"), Move.fromUci("b8d7"));
 
 		String san = board.variationSan(moves);
 
@@ -776,8 +781,8 @@ class BoardTest {
 		Board board = new Board(fen);
 
 		List<Move> moves = Arrays.asList(
-				Move.fromUCI("d3h7"), Move.fromUCI("g8h7"),
-				Move.fromUCI("f3h6"), Move.fromUCI("h7g8"));
+                Move.fromUci("d3h7"), Move.fromUci("g8h7"),
+                Move.fromUci("f3h6"), Move.fromUci("h7g8"));
 
 		assertThrows(IllegalMoveException.class, () -> board.variationSan(moves));
 	}
@@ -785,15 +790,15 @@ class BoardTest {
 	@Test
 	void testMoveStackUsage() {
 		Board board = new Board();
-		board.pushUCI("d2d4");
-		board.pushUCI("d7d5");
-		board.pushUCI("g1f3");
-		board.pushUCI("c8f5");
-		board.pushUCI("e2e3");
-		board.pushUCI("e7e6");
-		board.pushUCI("f1d3");
-		board.pushUCI("f8d6");
-		board.pushUCI("e1g1");
+        board.pushUci("d2d4");
+        board.pushUci("d7d5");
+        board.pushUci("g1f3");
+        board.pushUci("c8f5");
+        board.pushUci("e2e3");
+        board.pushUci("e7e6");
+        board.pushUci("f1d3");
+        board.pushUci("f8d6");
+        board.pushUci("e1g1");
 
 		String san = new Board().variationSan(board.moveStack);
 		assertEquals("1. d4 d5 2. Nf3 Bf5 3. e3 e6 4. Bd3 Bd6 5. O-O", san);
@@ -859,14 +864,14 @@ class BoardTest {
 	void testCastlingMoveGeneration() {
 		String fen = "rnbqkbnr/2pp1ppp/8/4p3/2BPP3/P1N2N2/PB3PPP/2RQ1RK1 b kq - 1 10";
 		Board board = new Board(fen);
-		Move illegalMove = Move.fromUCI("g1g2");
+        Move illegalMove = Move.fromUci("g1g2");
 
 		assertFalse(board.legalMoves().contains(illegalMove));
 		assertFalse(board.pseudoLegalMoves().contains(illegalMove));
 
 		board.pushSan("exd4");
 
-		illegalMove = Move.fromUCI("e1c1");
+        illegalMove = Move.fromUci("e1c1");
 		assertFalse(board.legalMoves().contains(illegalMove));
 		assertFalse(board.pseudoLegalMoves().contains(illegalMove));
 
@@ -1171,7 +1176,7 @@ class BoardTest {
 
 	@Test
 	void testEnPassantLegality_white() {
-		Move move = Move.fromUCI("h5g6");
+        Move move = Move.fromUci("h5g6");
 		Board board = new Board("rnbqkbnr/pppppp2/7p/6pP/8/8/PPPPPPP1/RNBQKBNR w KQkq g6 0 3");
 
 		assertTrue(board.isLegal(move));
@@ -1187,7 +1192,7 @@ class BoardTest {
 
 	@Test
 	void testEnPassantLegality_black() {
-		Move move = Move.fromUCI("c4d3");
+        Move move = Move.fromUci("c4d3");
 		Board board = new Board("rnbqkbnr/pp1ppppp/8/8/2pP4/2P2N2/PP2PPPP/RNBQKB1R b KQkq d3 0 3");
 
 		assertTrue(board.isLegal(move));
@@ -1258,8 +1263,8 @@ class BoardTest {
 	@Test
 	void testPseudoLegalCastlingMasks() {
 		Board board = new Board("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
-		Move kingSide = Move.fromUCI("e1g1");
-		Move queenSide = Move.fromUCI("e1c1");
+        Move kingSide = Move.fromUci("e1g1");
+        Move queenSide = Move.fromUci("e1c1");
 
 		Set<Move> pseudoLegalMoves = board.generatePseudoLegalMoves();
 		assertTrue(pseudoLegalMoves.contains(kingSide));
@@ -1414,7 +1419,7 @@ class BoardTest {
 	@Test
 	void testHorizontallySkeweredEnPassant() {
 		Board board = new Board("8/8/8/r2Pp2K/8/8/4k3/8 w - e6 0 1");
-		Move move = Move.fromUCI("d5e6");
+        Move move = Move.fromUci("d5e6");
 
 		assertTrue(board.status().contains(Status.VALID));
 		assertTrue(board.isPseudoLegal(move));
@@ -1430,7 +1435,7 @@ class BoardTest {
 	@Test
 	void testDiagonallySkeweredEnPassant1() {
 		Board board = new Board("2b1r2r/8/5P1k/2p1pP2/5R1P/6PK/4q3/4R3 w - e6 0 1");
-		Move move = Move.fromUCI("f5e6");
+        Move move = Move.fromUci("f5e6");
 
 		assertTrue(board.generateLegalEnPassant().contains(move));
 		assertTrue(board.generateLegalMoves().contains(move));
@@ -1439,7 +1444,7 @@ class BoardTest {
 	@Test
 	void testDiagonallySkeweredEnPassant2() {
 		Board board = new Board("8/8/8/5k2/4Pp2/8/2B5/4K3 b - e3 0 1");
-		Move move = Move.fromUCI("f4e3");
+        Move move = Move.fromUci("f4e3");
 
 		assertTrue(board.isPseudoLegal(move));
 		assertTrue(board.generatePseudoLegalEnPassant().contains(move));
@@ -1453,7 +1458,7 @@ class BoardTest {
 	@Test
 	void testDiagonallySkeweredEnPassant3() {
 		Board board = new Board("8/8/8/7B/6Pp/8/4k2K/3r4 b - g3 0 1");
-		Move move = Move.fromUCI("h4g3");
+        Move move = Move.fromUci("h4g3");
 
 		assertTrue(board.isPseudoLegal(move));
 		assertTrue(board.generatePseudoLegalEnPassant().contains(move));
@@ -1467,7 +1472,7 @@ class BoardTest {
 	@Test
 	void testFilePinnedEnPassant() {
 		Board board = new Board("8/5K2/8/3k4/3pP3/8/8/3R4 b - e3 0 1");
-		Move move = Move.fromUCI("d4e3");
+        Move move = Move.fromUci("d4e3");
 
 		assertTrue(board.isPseudoLegal(move));
 		assertTrue(board.generatePseudoLegalEnPassant().contains(move));
@@ -1481,7 +1486,7 @@ class BoardTest {
 	@Test
 	void testEnPassantEvasion() {
 		Board board = new Board("8/8/8/2k5/2pP4/8/4K3/8 b - d3 0 1");
-		Move move = Move.fromUCI("c4d3");
+        Move move = Move.fromUci("c4d3");
 
 		assertTrue(board.isPseudoLegal(move));
 		assertTrue(board.generatePseudoLegalMoves().contains(move));
@@ -1508,8 +1513,8 @@ class BoardTest {
 		assertTrue(pseudoLegalCaptures.contains(board.parseSan("Qxd1")));
 		assertTrue(pseudoLegalCaptures.contains(board.parseSan("exf6")));
 		assertTrue(pseudoLegalCaptures.contains(board.parseSan("Bxd3")));
-		assertTrue(pseudoLegalCaptures.contains(Move.fromUCI("c2c7")));
-		assertTrue(pseudoLegalCaptures.contains(Move.fromUCI("c2d3")));
+        assertTrue(pseudoLegalCaptures.contains(Move.fromUci("c2c7")));
+        assertTrue(pseudoLegalCaptures.contains(Move.fromUci("c2d3")));
 		assertEquals(5, pseudoLegalCaptures.size());
 	}
 
@@ -1517,11 +1522,11 @@ class BoardTest {
 	void testCastling_isLegal() {
 		Board board = new Board("rnbqkbnr/5p2/1pp3pp/p2P4/6P1/2NPpN2/PPP1Q1BP/R3K2R w Qq - 0 11");
 
-		assertFalse(board.isLegal(Move.fromUCI("e1g1")));
+        assertFalse(board.isLegal(Move.fromUci("e1g1")));
 
 		board.castlingRights |= Bitboard.Squares.H1;
 
-		assertTrue(board.isLegal(Move.fromUCI("e1g1")));
+        assertTrue(board.isLegal(Move.fromUci("e1g1")));
 	}
 
 	@Test
@@ -1529,7 +1534,7 @@ class BoardTest {
 		Board board = new Board();
 		board.removePiece(Square.E1);
 
-		assertTrue(board.isLegal(Move.fromUCI("e2e4")));
+        assertTrue(board.isLegal(Move.fromUci("e2e4")));
 
 	}
 
@@ -1564,7 +1569,7 @@ class BoardTest {
 	@Test
 	void testKingCapturesUnmovedRook() {
 		Board board = new Board("8/8/8/B2p3Q/2qPp1P1/b7/2P2PkP/4K2R b K - 0 1");
-		Move move = board.parseUCI("g2h1");
+        Move move = board.parseUci("g2h1");
 
 		assertFalse(board.isCastling(move));
 		assertEquals("Kxh1", board.san(move));
@@ -1585,24 +1590,24 @@ class BoardTest {
 	}
 
 	@Test
-	void testParseUCI_withLegalMove() {
+    void testParseUci_withLegalMove() {
 		Board board = new Board();
-		Move move = board.parseUCI("e2e4");
+        Move move = board.parseUci("e2e4");
 
-		assertEquals(Move.fromUCI("e2e4"), move);
+        assertEquals(Move.fromUci("e2e4"), move);
 	}
 
 	@Test
-	void testParseUCI_withIllegalMove() {
+    void testParseUci_withIllegalMove() {
 		Board board = new Board();
-		assertThrows(IllegalMoveException.class, () -> board.parseUCI("f1c4"));
+        assertThrows(IllegalMoveException.class, () -> board.parseUci("f1c4"));
 	}
 
 	@Test
 	void testPush_withEmptySquare() {
 		Board board = new Board();
 		assertThrows(InvalidMoveException.class, () -> {
-			board.push(Move.fromUCI("e4e5"));
+            board.push(Move.fromUci("e4e5"));
 		});
 	}
 }
