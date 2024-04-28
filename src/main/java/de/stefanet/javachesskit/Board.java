@@ -150,6 +150,7 @@ public class Board extends BaseBoard {
     }
 
     private void reset() {
+    public void reset() {
         this.turn = Color.WHITE;
         this.castlingRights = A1 | H1 | A8 | H8;
         this.epSquare = null;
