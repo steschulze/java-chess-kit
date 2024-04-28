@@ -269,20 +269,24 @@ public class BaseBoard {
         } else if ((mask & this.kings) != 0) {
             return KING_ATTACKS[square.ordinal()];
         } else {
-            long attacks = 0;
-            if ((mask & this.bishops) != 0 || (mask & this.queens) != 0) {
-                Map<Long, Long> attackMap = DIAGONAL_ATTACKS.get(square.ordinal());
-                attacks = attackMap.get(DIAGONAL_MASKS[square.ordinal()] & this.occupied);
-            }
-            if ((mask & this.rooks) != 0 || (mask & this.queens) != 0) {
-                Map<Long, Long> rankAttackMap = RANK_ATTACKS.get(square.ordinal());
-                Map<Long, Long> fileAttackMap = FILE_ATTACKS.get(square.ordinal());
-
-                attacks |= rankAttackMap.get(RANK_MASKS[square.ordinal()] & this.occupied)
-                           | fileAttackMap.get(FILE_MASKS[square.ordinal()] & this.occupied);
-            }
-            return attacks;
+            return longRangeAttacks(square, mask);
         }
+    }
+
+    private long longRangeAttacks(Square square, long mask) {
+        long attacks = 0;
+        if ((mask & this.bishops) != 0 || (mask & this.queens) != 0) {
+            Map<Long, Long> attackMap = DIAGONAL_ATTACKS.get(square.ordinal());
+            attacks = attackMap.get(DIAGONAL_MASKS[square.ordinal()] & this.occupied);
+        }
+        if ((mask & this.rooks) != 0 || (mask & this.queens) != 0) {
+            Map<Long, Long> rankAttackMap = RANK_ATTACKS.get(square.ordinal());
+            Map<Long, Long> fileAttackMap = FILE_ATTACKS.get(square.ordinal());
+
+            attacks |= rankAttackMap.get(RANK_MASKS[square.ordinal()] & this.occupied)
+                       | fileAttackMap.get(FILE_MASKS[square.ordinal()] & this.occupied);
+        }
+        return attacks;
     }
 
     public SquareSet attacks(Square square) {
