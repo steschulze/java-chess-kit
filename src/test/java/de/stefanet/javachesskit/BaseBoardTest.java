@@ -17,10 +17,10 @@ class BaseBoardTest {
 	void testDefaultBoard() {
 		BaseBoard board = new BaseBoard();
 
-		assertEquals(new Piece('R'), board.get(Square.A1));
-		assertEquals(new Piece('Q'), board.get(Square.D1));
-		assertEquals(new Piece('p'), board.get(Square.E7));
-		assertEquals(new Piece('n'), board.get(Square.G8));
+		assertEquals(new Piece('R'), board.pieceAt(Square.A1));
+		assertEquals(new Piece('Q'), board.pieceAt(Square.D1));
+		assertEquals(new Piece('p'), board.pieceAt(Square.E7));
+		assertEquals(new Piece('n'), board.pieceAt(Square.G8));
 	}
 
 	@Test
@@ -141,7 +141,7 @@ class BaseBoardTest {
 	@Test
 	void testGet_emptySquare() {
 		BaseBoard board = new BaseBoard();
-		assertNull(board.get(Square.E4));
+		assertNull(board.pieceAt(Square.E4));
 	}
 
 	@Test
@@ -205,7 +205,7 @@ class BaseBoardTest {
 		BaseBoard board = new BaseBoard();
 		board.setPiece(Square.E1, null, Color.WHITE);
 
-		assertNull(board.get(Square.E1));
+		assertNull(board.pieceAt(Square.E1));
 	}
 
 }

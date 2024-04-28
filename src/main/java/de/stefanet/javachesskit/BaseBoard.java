@@ -120,18 +120,6 @@ public class BaseBoard {
         return board;
     }
 
-
-    public Piece get(Square square) {
-        long mask = SQUARES[square.ordinal()];
-        PieceType type = pieceTypeAt(square);
-
-        if (type != null) {
-            Color color = (this.whitePieces & mask) == 0 ? Color.BLACK : Color.WHITE;
-            return Piece.fromTypeAndColor(type, color);
-        }
-        return null;
-    }
-
     public Piece pieceAt(Square square) {
         long mask = SQUARES[square.ordinal()];
         PieceType type = pieceTypeAt(square);
