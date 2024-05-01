@@ -211,7 +211,7 @@ public class Board extends BaseBoard {
             long checkers = attackersMask(turn.other(), Square.fromIndex(king));
 
             if (checkers != 0) {
-                for (Move move : generateEvations(king, checkers, fromMask, toMask)) {
+                for (Move move : generateEvasions(king, checkers, fromMask, toMask)) {
                     if (isSafe(Square.fromIndex(king), blockers, move)) {
                         legalMoves.add(move);
                     }
@@ -550,7 +550,7 @@ public class Board extends BaseBoard {
         }
 
         long checkers = attackersMask(turn.other(), kingSquare);
-        if (checkers != 0 && !generateEvations(kingSquare.ordinal(), checkers,
+        if (checkers != 0 && !generateEvasions(kingSquare.ordinal(), checkers,
                                                SQUARES[move.getSource().ordinal()],
                                                SQUARES[move.getTarget().ordinal()]).contains(move)) {
             return true;
@@ -685,7 +685,7 @@ public class Board extends BaseBoard {
         return blockers & (this.occupied & ~colorMask);
     }
 
-    private Set<Move> generateEvations(int kingSquareIndex, long checkers, long sourceMask, long targetMask) {
+    private Set<Move> generateEvasions(int kingSquareIndex, long checkers, long sourceMask, long targetMask) {
         Set<Move> moves = new HashSet<>();
 
         long sliders = checkers & (this.bishops | this.rooks | this.queens);
