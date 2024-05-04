@@ -54,3 +54,7 @@ checkstyle {
     toolVersion = "9.3"
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 }
+
+javadoc {
+    options.encoding = 'UTF-8'
+}
