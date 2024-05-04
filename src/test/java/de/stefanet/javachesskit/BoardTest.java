@@ -290,8 +290,8 @@ class BoardTest {
 	@Test
 	void testSan_newline() {
 		Board board = new Board("rnbqk2r/ppppppbp/5np1/8/8/5NP1/PPPPPPBP/RNBQK2R w KQkq - 2 4");
-		assertThrows(InvalidMoveException.class, () -> board.parseSan("0-0\n"));
-		assertThrows(InvalidMoveException.class, () -> board.parseSan("Nc3\n"));
+		assertThrows(InvalidSanException.class, () -> board.parseSan("0-0\n"));
+		assertThrows(InvalidSanException.class, () -> board.parseSan("Nc3\n"));
 	}
 
 	@Test
@@ -1606,7 +1606,7 @@ class BoardTest {
 	@Test
 	void testPush_withEmptySquare() {
 		Board board = new Board();
-		assertThrows(InvalidMoveException.class, () -> {
+		assertThrows(IllegalMoveException.class, () -> {
             board.push(Move.fromUci("e4e5"));
 		});
 	}

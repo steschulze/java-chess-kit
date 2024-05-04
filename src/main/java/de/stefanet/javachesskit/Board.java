@@ -842,7 +842,7 @@ public class Board extends BaseBoard {
         PieceType type = removePieceType(move.getSource());
 
         if (type == null) {
-            throw new InvalidMoveException("No piece at source square");
+            throw new IllegalMoveException("No piece at source square");
         }
 
         Square captureSquare = move.getTarget();
@@ -950,7 +950,7 @@ public class Board extends BaseBoard {
         Matcher matcher = Pattern.compile(regex).matcher(san);
 
         if (!matcher.matches()) {
-            throw new InvalidMoveException("Invalid san: " + san + " in " + getFen());
+            throw new InvalidSanException("Invalid san: " + san + " in " + getFen());
         }
 
         // filter promotion type
