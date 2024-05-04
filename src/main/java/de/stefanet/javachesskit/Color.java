@@ -1,10 +1,19 @@
 package de.stefanet.javachesskit;
 
 /**
- * Enum representing the color of chess pieces. This can be either WHITE or BLACK.
+ * Enum representing the color of chess pieces.
+ *
+ * <p>In standard chess there are two colors: WHITE and BLACK.
  */
 public enum Color {
-    WHITE, BLACK;
+    /**
+     * The white color.
+     */
+    WHITE,
+    /**
+     * The black color.
+     */
+    BLACK;
 
     /**
      * Gets the color from the symbol.
@@ -34,7 +43,8 @@ public enum Color {
     }
 
     /**
-     * Returns the opposite color
+     * Returns the opposite color.
+     *
      * @return WHITE if the color is BLACK, otherwise BLACK
      */
     public Color other() {
@@ -46,7 +56,8 @@ public enum Color {
     }
 
     /**
-     * Returns the symbol of the color ('w' or 'b').
+     * Returns a lowercase symbol of the color ('w' or 'b').
+     *
      * @return The symbol of the color.
      */
     public char getSymbol() {
@@ -55,6 +66,7 @@ public enum Color {
 
     /**
      * Returns the full name of the color in lowercase ('white' or 'black').
+     *
      * @return The full color name.
      */
     public String fullName() {
@@ -63,6 +75,7 @@ public enum Color {
 
     /**
      * Returns an integer indicating the moving direction of the pawns.
+     *
      * @return 1 for WHITE, -1 for BLACK.
      */
     public int forwardDirection() {

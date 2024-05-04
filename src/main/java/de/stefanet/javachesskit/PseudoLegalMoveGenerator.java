@@ -2,6 +2,20 @@ package de.stefanet.javachesskit;
 
 import java.util.Iterator;
 
+/**
+ * A generator for pseudo-legal moves.
+ *
+ * <p>This class is iterable and can be used in a for-each loop.
+ * Example:
+ * <pre>
+ * {@code
+ * PseudoLegalMoveGenerator generator = new PseudoLegalMoveGenerator(board);
+ * for (Move move : generator) {
+ *     System.out.println(move);
+ * }
+ * }
+ * </pre>
+ */
 public class PseudoLegalMoveGenerator implements Iterable<Move> {
     private final Board board;
 
@@ -14,6 +28,12 @@ public class PseudoLegalMoveGenerator implements Iterable<Move> {
         return board.generatePseudoLegalMoves().iterator();
     }
 
+    /**
+     * Check if the given object is a pseudo-legal move.
+     *
+     * @param obj The object to check.
+     * @return True if the object is a pseudo-legal move, false otherwise.
+     */
     public boolean contains(Object obj) {
         if (!(obj instanceof Move)) {
             return false;
@@ -40,6 +60,11 @@ public class PseudoLegalMoveGenerator implements Iterable<Move> {
         return iterator().hasNext();
     }
 
+    /**
+     * Count the number of pseudo-legal moves.
+     *
+     * @return The number of pseudo-legal moves.
+     */
     public int count() {
         int count = 0;
         for (Move move : this) {

@@ -1,5 +1,8 @@
 package de.stefanet.javachesskit;
 
+/**
+ * BoardState is a snapshot of the board state.
+ */
 public class BoardState {
     private long pawns;
     private long knights;
@@ -21,6 +24,11 @@ public class BoardState {
     private int fullMoveNumber;
     private int halfMoveClock;
 
+    /**
+     * Create a snapshot of the board state.
+     *
+     * @param board the board to snapshot
+     */
     public BoardState(Board board) {
         this.pawns = board.pawns;
         this.knights = board.knights;
@@ -42,6 +50,11 @@ public class BoardState {
         this.fullMoveNumber = board.fullMoveNumber;
     }
 
+    /**
+     * Restore the board state.
+     *
+     * @param board the board to restore
+     */
     public void restore(Board board) {
         board.pawns = this.pawns;
         board.knights = this.knights;

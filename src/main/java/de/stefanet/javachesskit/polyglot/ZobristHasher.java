@@ -8,10 +8,18 @@ import de.stefanet.javachesskit.Color;
 import de.stefanet.javachesskit.Piece;
 import de.stefanet.javachesskit.Square;
 
+/**
+ * Class for hashing chess positions using the Zobrist hashing algorithm.
+ */
 public class ZobristHasher {
     private long[] randomArray;
     private static int SIZE = 781;
 
+    /**
+     * Creates a new ZobristHasher with a given seed.
+     *
+     * @param seed The seed to use for generating random numbers.
+     */
     public ZobristHasher(int seed) {
         PseudoRandomNumberGenerator prng = new PseudoRandomNumberGenerator(seed);
         this.randomArray = new long[SIZE];

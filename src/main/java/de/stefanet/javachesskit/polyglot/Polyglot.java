@@ -3,6 +3,9 @@ package de.stefanet.javachesskit.polyglot;
 import de.stefanet.javachesskit.Board;
 import java.util.function.Function;
 
+/**
+ * Polyglot opening book support.
+ */
 public final class Polyglot {
     public static final long[] POLYGLOT_RANDOM_ARRAY = {
             0x9D39247E33776D41L, 0x2AF7398005AAA5C7L, 0x44DB015024623547L, 0x9C15F73E62A76AE2L,

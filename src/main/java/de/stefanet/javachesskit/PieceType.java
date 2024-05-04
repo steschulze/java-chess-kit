@@ -5,8 +5,8 @@ import java.util.List;
 
 /**
  * Enum representing the type of chess pieces.
- * <p>
- * There are 6 different types: Pawn, Knight, Bishop, Rook, Queen and King
+ *
+ * <p>There are 6 different types: Pawn, Knight, Bishop, Rook, Queen and King.
  */
 public enum PieceType {
     PAWN('p'), KNIGHT('n'), BISHOP('b'), ROOK('r'), QUEEN('q'), KING('k');
@@ -51,8 +51,8 @@ public enum PieceType {
 
     /**
      * Returns a list of piece types available for promotion of pawns.
-     * <p>
-     * There are 4 different promotion types:
+     *
+     * <p>There are 4 different promotion types:
      * <ul>
      *     <li>Rook</li>
      *     <li>Knight</li>

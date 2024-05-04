@@ -1,5 +1,8 @@
 package de.stefanet.javachesskit;
 
+/**
+ * Enum representing the possible states of a chess position.
+ */
 public enum Status {
     VALID,
     NO_WHITE_KING,

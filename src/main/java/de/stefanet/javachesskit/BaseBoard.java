@@ -12,6 +12,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+/**
+ * Board representing the position of chess pieces.
+ *
+ * <p>The board is initialized with the standard chess starting position,
+ * unless otherwise specified in the board fen.
+ * If the board fen is null, an empty board is created.
+ *
+ * @see Board
+ */
 public class BaseBoard {
     private static final String STARTING_BOARD_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
     protected long pawns;
@@ -26,10 +35,18 @@ public class BaseBoard {
     protected long blackPieces;
     protected long occupied;
 
+    /**
+     * Create a new board with the standard starting position.
+     */
     public BaseBoard() {
         this(STARTING_BOARD_FEN);
     }
 
+    /**
+     * Create a new board with the given board fen.
+     *
+     * @param fen The board fen.
+     */
     public BaseBoard(String fen) {
         if (fen == null) {
             this.clearBitboards();
@@ -40,10 +57,16 @@ public class BaseBoard {
         }
     }
 
+    /**
+     * Clears the board.
+     */
     protected void clearBoard() {
         clearBitboards();
     }
 
+    /**
+     * Clears all bitboards.
+     */
     protected void clearBitboards() {
         this.pawns = 0;
         this.knights = 0;
@@ -59,6 +82,9 @@ public class BaseBoard {
         this.occupied = 0;
     }
 
+    /**
+     * Resets the board to the standard starting position.
+     */
     protected void resetBoard() {
         this.pawns = RANK_2 | RANK_7;
         this.knights = B1 | G1 | B8 | G8;
@@ -74,6 +100,13 @@ public class BaseBoard {
         this.occupied = RANK_1 | RANK_2 | RANK_7 | RANK_8;
     }
 
+    /**
+     * Gets the bitboard of the given piece type and color.
+     *
+     * @param type  The piece type.
+     * @param color The piece color.
+     * @return The bitboard of the given piece type and color.
+     */
     public long pieceMask(PieceType type, Color color) {
         long pieceMask = 0L;
 
@@ -103,6 +136,11 @@ public class BaseBoard {
         return pieceMask;
     }
 
+    /**
+     * Returns a copy of the actual board.
+     *
+     * @return A copy of the actual board.
+     */
     public BaseBoard copy() {
         BaseBoard board = new BaseBoard();
         board.pawns = this.pawns;
@@ -120,6 +158,12 @@ public class BaseBoard {
         return board;
     }
 
+    /**
+     * Returns the piece at the given square.
+     *
+     * @param square The given square
+     * @return The piece at the given square. If there is no piece at the square, it returns null.
+     */
     public Piece pieceAt(Square square) {
         long mask = SQUARES[square.ordinal()];
         PieceType type = pieceTypeAt(square);
@@ -130,6 +174,12 @@ public class BaseBoard {
         return null;
     }
 
+    /**
+     * Returns the piece type at the given square.
+     *
+     * @param square The given square
+     * @return The piece type at the given square. If there is no piece at the square, it returns null.
+     */
     public PieceType pieceTypeAt(Square square) {
         long mask = SQUARES[square.ordinal()];
         if ((this.occupied & mask) == 0) {
@@ -149,6 +199,12 @@ public class BaseBoard {
         }
     }
 
+    /**
+     * Sets the piece at the given square.
+     *
+     * @param square The given square
+     * @param piece  The piece to set
+     */
     public void set(Square square, Piece piece) {
         if (piece == null) {
             removePiece(square);
@@ -157,10 +213,25 @@ public class BaseBoard {
         }
     }
 
+    /**
+     * Sets the piece with a given color and type at the given square.
+     *
+     * @param square The given square
+     * @param type   The piece type
+     * @param color  The piece color
+     */
     protected void setPiece(Square square, PieceType type, Color color) {
         setPiece(square, type, color, false);
     }
 
+    /**
+     * Sets the piece with a given color, type and promotion status at the given square.
+     *
+     * @param square   The given square
+     * @param type     The piece type
+     * @param color    The piece color
+     * @param promoted The promotion status
+     */
     protected void setPiece(Square square, PieceType type, Color color, boolean promoted) {
         long mask = SQUARES[square.ordinal()];
         removePiece(square);
@@ -193,6 +264,12 @@ public class BaseBoard {
         }
     }
 
+    /**
+     * Removes the piece at the given square.
+     *
+     * @param square The given square
+     * @return The removed piece. If there is no piece at the square, it returns null.
+     */
     public Piece removePiece(Square square) {
         Color color = Color.fromBoolean((this.whitePieces & SQUARES[square.ordinal()]) != 0);
         PieceType pieceType = removePieceType(square);
@@ -204,6 +281,12 @@ public class BaseBoard {
         return null;
     }
 
+    /**
+     * Removes the piece at the given square.
+     *
+     * @param square The given square
+     * @return The removed piece type. If there is no piece at the square, it returns null.
+     */
     protected PieceType removePieceType(Square square) {
         long mask = SQUARES[square.ordinal()];
         PieceType type = pieceTypeAt(square);
@@ -232,6 +315,12 @@ public class BaseBoard {
         return type;
     }
 
+    /**
+     * Returns the color of the piece at the given square.
+     *
+     * @param square The given square
+     * @return The color of the piece at the given square. If there is no piece at the square, it returns null.
+     */
     public Color colorAt(Square square) {
         long mask = SQUARES[square.ordinal()];
         if ((this.whitePieces & mask) != 0) {
@@ -243,6 +332,12 @@ public class BaseBoard {
         }
     }
 
+    /**
+     * Returns the square of the king of the given color.
+     *
+     * @param color The given color
+     * @return The square of the king of the given color. If there is no king of the given color, it returns null.
+     */
     public Square getKingSquare(Color color) {
         long colorMask = (color == Color.WHITE) ? this.whitePieces : this.blackPieces;
         long kingMask = this.kings & colorMask & ~this.promoted;
@@ -254,10 +349,24 @@ public class BaseBoard {
         return null;
     }
 
+    /**
+     * Returns a set of squares with the given piece type and color.
+     *
+     * @param type  The given piece type
+     * @param color The given piece color
+     * @return A set of squares with the given piece type and color.
+     * @see SquareSet
+     */
     public SquareSet pieces(PieceType type, Color color) {
         return new SquareSet(pieceMask(type, color));
     }
 
+    /**
+     * Returns a bitboard with the squares attacked by the piece at the given square.
+     *
+     * @param square The given square
+     * @return A bitboard with the squares attacked by the piece at the given square.
+     */
     public long attackMask(Square square) {
         long mask = SQUARES[square.ordinal()];
 
@@ -273,6 +382,14 @@ public class BaseBoard {
         }
     }
 
+    /**
+     * Returns a bitboard with the squares attacked
+     * by the long range piece at the given square.
+     *
+     * @param square The given square
+     * @param mask   The mask of the given square
+     * @return A bitboard with the squares attacked by the long range piece at the given square.
+     */
     private long longRangeAttacks(Square square, long mask) {
         long attacks = 0;
         if ((mask & this.bishops) != 0 || (mask & this.queens) != 0) {
@@ -289,10 +406,25 @@ public class BaseBoard {
         return attacks;
     }
 
+    /**
+     * Returns a set of squares attacked by the piece at the given square.
+     *
+     * @param square The given square
+     * @return A set of squares attacked by the piece at the given square.
+     * @see SquareSet
+     */
     public SquareSet attacks(Square square) {
         return new SquareSet(attackMask(square));
     }
 
+    /**
+     * Returns a bitboard with all attackers from the given color that are attacking the given square.
+     *
+     * @param color    The given color
+     * @param square   The given square
+     * @param occupied The occupied squares
+     * @return A bitboard with all attackers from the given color that are attacking the given square.
+     */
     protected long attackersMask(Color color, Square square, long occupied) {
         long rankPieces = RANK_MASKS[square.ordinal()] & occupied;
         long filePieces = FILE_MASKS[square.ordinal()] & occupied;
@@ -310,18 +442,48 @@ public class BaseBoard {
         return attackers & (color == Color.WHITE ? this.whitePieces : this.blackPieces);
     }
 
+    /**
+     * Returns a bitboard with all attackers from the given color that are attacking the given square.
+     *
+     * @param color  The given color
+     * @param square The given square
+     * @return A bitboard with all attackers from the given color that are attacking the given square.
+     */
     public long attackersMask(Color color, Square square) {
         return attackersMask(color, square, this.occupied);
     }
 
+    /**
+     * Checks if the given square is attacked by the given color.
+     *
+     * @param color  The given color
+     * @param square The given square
+     * @return True if the given square is attacked by the given color, false otherwise.
+     */
     public boolean isAttackedBy(Color color, Square square) {
         return attackersMask(color, square) != 0;
     }
 
+    /**
+     * Returns a set of squares with all attackers from the given color that are attacking the given square.
+     *
+     * @param color  The given color
+     * @param square The given square
+     * @return A set of squares with all attackers from the given color that are attacking the given square.
+     * @see SquareSet
+     */
     public SquareSet attackers(Color color, Square square) {
         return new SquareSet(attackersMask(color, square));
     }
 
+    /**
+     * Gets the board fen.
+     *
+     * <p>The board fen is a string representing the position of the pieces on the board,
+     * e.g. "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR".
+     *
+     * @return The board fen.
+     */
     public String getBoardFen() {
         StringBuilder sb = new StringBuilder();
         int empty = 0;
@@ -353,6 +515,14 @@ public class BaseBoard {
         return sb.toString();
     }
 
+    /**
+     * Sets the board fen.
+     *
+     * <p>The board fen is a string representing the position of the pieces on the board,
+     * e.g. "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR".
+     *
+     * @param fen The board fen.
+     */
     protected void setBoardFen(String fen) {
         fen = fen.trim();
         if (fen.contains(" ")) {
@@ -405,6 +575,12 @@ public class BaseBoard {
 
     }
 
+    /**
+     * Gets a map of squares (key) and pieces (value) from the given mask.
+     *
+     * @param mask The given mask
+     * @return A map of squares (key) and pieces (value) from the given mask.
+     */
     public Map<Square, Piece> getPieceMap(long mask) {
         Map<Square, Piece> result = new HashMap<>();
 
@@ -416,10 +592,20 @@ public class BaseBoard {
         return result;
     }
 
+    /**
+     * Gets a map of squares (key) and pieces (value) for all squares.
+     *
+     * @return A map of squares (key) and pieces (value) for all squares.
+     */
     public Map<Square, Piece> getPieceMap() {
         return getPieceMap(Bitboard.ALL);
     }
 
+    /**
+     * Sets up the board from the given piece map.
+     *
+     * @param pieceMap The given piece map.
+     */
     public void setPieceMap(Map<Square, Piece> pieceMap) {
         clearBitboards();
         for (Map.Entry<Square, Piece> entry : pieceMap.entrySet()) {
@@ -473,10 +659,25 @@ public class BaseBoard {
         return sb.toString();
     }
 
+    /**
+     * Returns a unicode representation of the board.
+     *
+     * @return A unicode representation of the board.
+     */
     public String unicode() {
         return unicode(false, false, '·', Color.WHITE);
     }
 
+    /**
+     * Returns a unicode representation of the board with the option to invert colors,
+     * display a border and set the empty square character.
+     *
+     * @param invertColor If true, the board is displayed with inverted colors.
+     * @param border      If true, the board is displayed with a border.
+     * @param emptySquare The character used for an empty square.
+     * @param orientation The orientation of the board. The starting color is at the bottom.
+     * @return A unicode representation of the board.
+     */
     public String unicode(boolean invertColor, boolean border, char emptySquare, Color orientation) {
         StringBuilder sb = new StringBuilder();
 
@@ -571,6 +772,11 @@ public class BaseBoard {
         return occupied;
     }
 
+    /**
+     * Mirrors the board.
+     *
+     * <p>The board is mirrored along the vertical axis, e.g. A1 is mirrored to A8 and H1 to H8.
+     */
     public void applyMirror() {
         long temp = this.blackPieces;
         this.blackPieces = this.whitePieces;
@@ -578,6 +784,17 @@ public class BaseBoard {
         this.applyTransform(BitboardUtils::flipVertical);
     }
 
+    /**
+     * Applies a transformation to the board.
+     *
+     * <p>Available transforms:
+     * {@link BitboardUtils#flipVertical}, {@link BitboardUtils#flipHorizontal},
+     * {@link BitboardUtils#flipDiagonal}, {@link BitboardUtils#flipAntiDiagonal},
+     * {@link BitboardUtils#shiftUp}, {@link BitboardUtils#shiftDown},
+     * {@link BitboardUtils#shiftLeft}, {@link BitboardUtils#shiftRight}
+     *
+     * @param transform The transform function.
+     */
     public void applyTransform(Function<Long, Long> transform) {
         this.pawns = transform.apply(this.pawns);
         this.knights = transform.apply(this.knights);

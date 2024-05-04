@@ -3,9 +3,16 @@ package de.stefanet.javachesskit.examples;
 import de.stefanet.javachesskit.Board;
 import de.stefanet.javachesskit.Move;
 
-
+/**
+ * Example of the Scholar's Mate.
+ */
 public class ScholarsMate {
 
+    /**
+     * Setup Scholar's Mate and print outcome.
+     *
+     * @param args the command line arguments
+     */
     public static void main(String[] args) {
         Board board = new Board();
         board.push(Move.fromUci("e2e4"));

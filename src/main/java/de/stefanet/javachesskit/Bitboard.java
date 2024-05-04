@@ -19,6 +19,9 @@ import static de.stefanet.javachesskit.Bitboard.Squares.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class containing bitboard constants for squares, rank and files.
+ */
 public final class Bitboard {
 
     private Bitboard() {
@@ -61,6 +64,9 @@ public final class Bitboard {
     public static final List<Map<Long, Long>> RANK_ATTACKS = Attacks.attackTable(-1, 1).getAttackTable();
     public static final long[][] RAYS = Attacks.rays();
 
+    /**
+     * Class containing bitboard constants for files.
+     */
     public static final class Files {
         private Files() {
         }
@@ -75,6 +81,9 @@ public final class Bitboard {
         public static final long FILE_H = FILE_G << 1;
     }
 
+    /**
+     * Class containing bitboard constants for ranks.
+     */
     public static final class Ranks {
         private Ranks() {
         }
@@ -89,6 +98,9 @@ public final class Bitboard {
         public static final long RANK_8 = RANK_7 << 8;
     }
 
+    /**
+     * Class containing bitboard constants for squares.
+     */
     public static final class Squares {
         private Squares() {
         }

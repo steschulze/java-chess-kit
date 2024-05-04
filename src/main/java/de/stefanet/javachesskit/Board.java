@@ -16,19 +16,18 @@ import static de.stefanet.javachesskit.Bitboard.Squares.E8;
 import static de.stefanet.javachesskit.Bitboard.Squares.H1;
 import static de.stefanet.javachesskit.Bitboard.Squares.H8;
 
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * A class representing a chess board with additional information
+ * like castling rights, en-passant square, half move clock and full move number.
+ *
+ * <p>The class provides move generation, move validation, move parsing, game end detection
+ * and the ability to make and unmake moves.
+ */
 public class Board extends BaseBoard {
     protected static final String STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     protected Color turn;
@@ -43,10 +42,18 @@ public class Board extends BaseBoard {
     protected Deque<Move> moveStack;
     protected Deque<BoardState> stateStack;
 
+    /**
+     * Create a new board with the starting position.
+     */
     public Board() {
         this(STARTING_FEN);
     }
 
+    /**
+     * Create a new board with the given FEN string.
+     *
+     * @param fen The FEN string.
+     */
     public Board(String fen) {
         super(null);
 
@@ -63,10 +70,20 @@ public class Board extends BaseBoard {
         }
     }
 
+    /**
+     * Create an empty board.
+     *
+     * @return An empty board.
+     */
     public static Board empty() {
         return new Board(null);
     }
 
+    /**
+     * Creates a copy of the board.
+     *
+     * @return A copy of the board.
+     */
     public Board copy() {
         Board board = new Board();
         board.pawns = this.pawns;
@@ -90,6 +107,12 @@ public class Board extends BaseBoard {
         return board;
     }
 
+    /**
+     * Parses the FEN string and sets the board to the position described in the FEN string.
+     *
+     * @param fen The FEN string.
+     * @throws InvalidFenException If the FEN string is invalid.
+     */
     public void setFen(String fen) {
         String[] parts = fen.split(" ");
 
@@ -122,6 +145,12 @@ public class Board extends BaseBoard {
         clearStack();
     }
 
+    /**
+     * Sets the castling rights from the castling part in FEN string like "KQkq".
+     *
+     * @param castlingFen The castling part of the FEN string.
+     * @throws IllegalArgumentException If the castling part is invalid.
+     */
     public void setCastlingFen(String castlingFen) {
         if (castlingFen == null || castlingFen.equals("-")) {
             this.castlingRights = 0;
@@ -149,7 +178,9 @@ public class Board extends BaseBoard {
 
     }
 
-    private void reset() {
+    /**
+     * Restores the starting position.
+     */
     public void reset() {
         this.turn = Color.WHITE;
         this.castlingRights = A1 | H1 | A8 | H8;
@@ -165,6 +196,12 @@ public class Board extends BaseBoard {
         clearStack();
     }
 
+    /**
+     * Clears the board.
+     *
+     * <p>This also resets the move counters, removes the castling rights
+     * and set WHITE to move.
+     */
     void clear() {
         this.turn = Color.WHITE;
         this.castlingRights = 0;
@@ -176,29 +213,61 @@ public class Board extends BaseBoard {
     }
 
 
+    /**
+     * Clears the board, the move stack and the board state stack.
+     */
     @Override
     protected void clearBoard() {
         super.clearBoard();
         clearStack();
     }
 
+    /**
+     * Clears the move stack and the board state stack.
+     */
     protected void clearStack() {
         this.moveStack.clear();
         this.stateStack.clear();
     }
 
+    /**
+     * Returns the number of half-moves since start of the game.
+     *
+     * @return The number of half-moves since start of the game.
+     */
     public int ply() {
         return 2 * (this.fullMoveNumber - 1) + this.turn.ordinal();
     }
 
+    /**
+     * Returns a LegalMoveGenerator for the current position.
+     *
+     * @return A LegalMoveGenerator for the current position.
+     * @see LegalMoveGenerator
+     */
     public LegalMoveGenerator legalMoves() {
         return new LegalMoveGenerator(this);
     }
 
+    /**
+     * Returns a PseudoLegalMoveGenerator for the current position.
+     *
+     * @return A PseudoLegalMoveGenerator for the current position.
+     */
     public PseudoLegalMoveGenerator pseudoLegalMoves() {
         return new PseudoLegalMoveGenerator(this);
     }
 
+    /**
+     * Returns a set of legal moves with the given bitboard masks.
+     *
+     * <p>If the masks are set to {@link Bitboard#ALL},
+     * the method will generate all legal moves.
+     *
+     * @param fromMask The mask of the source squares.
+     * @param toMask   The mask of the target squares.
+     * @return A set of legal moves.
+     */
     public Set<Move> generateLegalMoves(long fromMask, long toMask) {
         Set<Move> legalMoves = new HashSet<>();
 
@@ -230,14 +299,31 @@ public class Board extends BaseBoard {
         return legalMoves;
     }
 
+    /**
+     * Returns a set of all legal moves in the current position.
+     *
+     * @return A set of all legal moves.
+     */
     public Set<Move> generateLegalMoves() {
         return generateLegalMoves(ALL, ALL);
     }
 
+    /**
+     * Returns a set of all pseudo-legal moves in the current position.
+     *
+     * @return A set of all pseudo-legal moves.
+     */
     public Set<Move> generatePseudoLegalMoves() {
         return generatePseudoLegalMoves(Bitboard.ALL, Bitboard.ALL);
     }
 
+    /**
+     * Returns a set of pseudo-legal moves with the given bitboard masks.
+     *
+     * @param sourceMask The mask of the source squares.
+     * @param targetMask The mask of the target squares.
+     * @return A set of pseudo-legal moves.
+     */
     public Set<Move> generatePseudoLegalMoves(long sourceMask, long targetMask) {
         Set<Move> moveList = new HashSet<>();
         long ownPieces = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
@@ -332,10 +418,27 @@ public class Board extends BaseBoard {
         return moveList;
     }
 
+    /**
+     * Returns a set of pseudo-legal En passant moves in the current position.
+     *
+     * @return A set of pseudo-legal En passant moves.
+     */
     public Set<Move> generatePseudoLegalEnPassant() {
         return generatePseudoLegalEnPassant(ALL, ALL);
     }
 
+    /**
+     * Returns a set of pseudo-legal En passant moves with the given bitboard masks.
+     *
+     * <p>This allows En Passant moves that put the king in check.
+     * The method returns an empty set when the En Passant square is null,
+     * the target mask does not contain the En Passant square
+     * or the En Passant square is already occupied.
+     *
+     * @param sourceMask The mask of the source squares.
+     * @param targetMask The mask of the target squares.
+     * @return A set of pseudo-legal En passant moves.
+     */
     public Set<Move> generatePseudoLegalEnPassant(long sourceMask, long targetMask) {
         Set<Move> moves = new HashSet<>();
 
@@ -362,18 +465,40 @@ public class Board extends BaseBoard {
         return moves;
     }
 
+    /**
+     * Checks if there is a legal En Passant move in the current position.
+     *
+     * @return True if there is a legal En Passant move, false otherwise.
+     */
     public boolean hasLegalEnPassant() {
         return this.epSquare != null && !generateLegalEnPassant().isEmpty();
     }
 
+    /**
+     * Checks if there is a pseudo-legal En Passant move in the current position.
+     *
+     * @return True if there is a pseudo-legal En Passant move, false otherwise.
+     */
     public boolean hasPseudoLegalEnPassant() {
         return this.epSquare != null && !generatePseudoLegalEnPassant().isEmpty();
     }
 
+    /**
+     * Returns a set of legal En passant moves in the current position.
+     *
+     * @return A set of legal En passant moves.
+     */
     public Set<Move> generateLegalEnPassant() {
         return generateLegalEnPassant(ALL, ALL);
     }
 
+    /**
+     * Returns a set of legal En passant moves with the given bitboard masks.
+     *
+     * @param sourceMask The mask of the source squares.
+     * @param targetMask The mask of the target squares.
+     * @return A set of legal En passant moves.
+     */
     public Set<Move> generateLegalEnPassant(long sourceMask, long targetMask) {
         Set<Move> moves = new HashSet<>();
 
@@ -386,10 +511,22 @@ public class Board extends BaseBoard {
         return moves;
     }
 
+    /**
+     * Returns a set of legal castling moves.
+     *
+     * @return A set of legal castling moves.
+     */
     public Set<Move> generateCastlingMoves() {
         return generateCastlingMoves(ALL, ALL);
     }
 
+    /**
+     * Returns a set of legal castling moves with the given bitboard masks.
+     *
+     * @param sourceMask The mask of the source squares.
+     * @param targetMask The mask of the target squares.
+     * @return A set of legal castling moves.
+     */
     public Set<Move> generateCastlingMoves(long sourceMask, long targetMask) {
         Set<Move> moves = new HashSet<>();
 
@@ -451,10 +588,22 @@ public class Board extends BaseBoard {
         return moves;
     }
 
+    /**
+     * Returns a set of all legal captures in the current position.
+     *
+     * @return A set of legal captures.
+     */
     public Set<Move> generateLegalCaptures() {
         return generateLegalCaptures(ALL, ALL);
     }
 
+    /**
+     * Returns a set of legal captures with the given bitboard masks.
+     *
+     * @param sourceMask The mask of the source squares.
+     * @param targetMask The mask of the target squares.
+     * @return A set of legal captures.
+     */
     public Set<Move> generateLegalCaptures(long sourceMask, long targetMask) {
         long otherColorMask = this.turn == Color.WHITE ? this.blackPieces : this.whitePieces;
         Set<Move> moves = new HashSet<>();
@@ -465,10 +614,22 @@ public class Board extends BaseBoard {
 
     }
 
+    /**
+     * Returns a set of all pseudo-legal captures in the current position.
+     *
+     * @return A set of pseudo-legal captures.
+     */
     public Set<Move> generatePseudoLegalCaptures() {
         return generatePseudoLegalCaptures(ALL, ALL);
     }
 
+    /**
+     * Returns a set of pseudo-legal captures with the given bitboard masks.
+     *
+     * @param sourceMask The mask of the source squares.
+     * @param targetMask The mask of the target squares.
+     * @return A set of pseudo-legal captures.
+     */
     public Set<Move> generatePseudoLegalCaptures(long sourceMask, long targetMask) {
         long otherColorMask = this.turn == Color.WHITE ? this.blackPieces : this.whitePieces;
         Set<Move> moves = new HashSet<>();
@@ -479,6 +640,13 @@ public class Board extends BaseBoard {
 
     }
 
+    /**
+     * Checks if the given path of squares is attacked by the other color.
+     *
+     * @param path     The path of squares.
+     * @param occupied The occupied squares.
+     * @return True if the path is attacked, false otherwise.
+     */
     private boolean attackedForKing(long path, long occupied) {
         for (int index : BitboardUtils.scanReversed(path)) {
             if (attackersMask(turn.other(), Square.fromIndex(index), occupied) != 0) {
@@ -488,6 +656,19 @@ public class Board extends BaseBoard {
         return false;
     }
 
+    /**
+     * Returns a bitboard with the valid castling rights.
+     *
+     * <p>The returned bitboard can have the following bits set:
+     * <ul>
+     *     <li>{@link Bitboard.Squares#A1} for white queenside castling</li>
+     *     <li>{@link Bitboard.Squares#H1} for white kingside castling</li>
+     *     <li>{@link Bitboard.Squares#A8} for black queenside castling</li>
+     *     <li>{@link Bitboard.Squares#H8} for black kingside castling</li>
+     * </ul>
+     *
+     * @return A bitboard with the valid castling rights.
+     */
     protected long cleanCastlingRights() {
         long castling = this.castlingRights & this.rooks;
         long whiteCastling = castling & RANK_1 & this.whitePieces;
@@ -505,11 +686,23 @@ public class Board extends BaseBoard {
         return whiteCastling | blackCastling;
     }
 
+    /**
+     * Checks if the given color has castling rights.
+     *
+     * @param color The color.
+     * @return True if the color has castling rights, false otherwise.
+     */
     public boolean hasCastlingRights(Color color) {
         long backrank = color == Color.WHITE ? RANK_1 : RANK_8;
         return (this.castlingRights & backrank) != 0;
     }
 
+    /**
+     * Checks if the given color has kingside castling rights.
+     *
+     * @param color The color.
+     * @return True if the color has kingside castling rights, false otherwise.
+     */
     public boolean hasKingsideCastlingRights(Color color) {
         long backrank = color == Color.WHITE ? RANK_1 : RANK_8;
         long colorMask = color == Color.WHITE ? this.whitePieces : this.blackPieces;
@@ -524,6 +717,12 @@ public class Board extends BaseBoard {
         return (castlingRights & FILE_H) != 0;
     }
 
+    /**
+     * Checks if the given color has queenside castling rights.
+     *
+     * @param color The color.
+     * @return True if the color has queenside castling rights, false otherwise.
+     */
     public boolean hasQueensideCastlingRights(Color color) {
         long backrank = color == Color.WHITE ? RANK_1 : RANK_8;
         long colorMask = color == Color.WHITE ? this.whitePieces : this.blackPieces;
@@ -538,10 +737,22 @@ public class Board extends BaseBoard {
         return (castlingRights & FILE_A) != 0;
     }
 
+    /**
+     * Checks if the given move is legal.
+     *
+     * @param move The move.
+     * @return True if the move is legal, false otherwise.
+     */
     public boolean isLegal(Move move) {
         return isPseudoLegal(move) && !isKingInCheck(move);
     }
 
+    /**
+     * Checks if the given move puts or leaves the king in check.
+     *
+     * @param move The move.
+     * @return True if the move puts or leaves the king in check, false otherwise.
+     */
     private boolean isKingInCheck(Move move) {
         Square kingSquare = this.getKingSquare(this.turn);
 
@@ -559,6 +770,15 @@ public class Board extends BaseBoard {
         return !isSafe(kingSquare, this.sliderBlockers(kingSquare.ordinal()), move);
     }
 
+    /**
+     * Checks if the given square is safe after making a move.
+     *
+     * @param kingSquare The given square. In most cases this will be the king square.
+     * @param blockers   A bitboard containing the squares of all pieces
+     *                   that block an attack from a sliding piece.
+     * @param move       The move which has to be checked.
+     * @return True if the given square is safe after making the move, false otherwise.
+     */
     private boolean isSafe(Square kingSquare, long blockers, Move move) {
         if (move.getSource() == kingSquare) {
             if (isCastling(move)) {
@@ -577,6 +797,13 @@ public class Board extends BaseBoard {
         }
     }
 
+    /**
+     * Checks if the king would be in check after an En Passant move.
+     *
+     * @param kingSquare The square of the king.
+     * @param capturer   The square of the capturer.
+     * @return True if the king is in check after En Passant, false otherwise.
+     */
     private boolean epSkewered(Square kingSquare, Square capturer) {
         int lastDouble = this.epSquare.ordinal() + ((this.turn == Color.WHITE) ? -8 : 8);
 
@@ -603,6 +830,13 @@ public class Board extends BaseBoard {
 
     }
 
+    /**
+     * Detects an absolute pin of the given square to the king of the given color.
+     *
+     * @param color  The color of the king.
+     * @param square The pinned square.
+     * @return The mask of the pin, either a rank, file or diagonal. Returns {@link Bitboard#ALL} if there is no pin.
+     */
     public long pinMask(Color color, Square square) {
         Square king = getKingSquare(color);
         if (king == null) {
@@ -634,10 +868,23 @@ public class Board extends BaseBoard {
         return Bitboard.ALL;
     }
 
+    /**
+     * Detects if the given square is pinned to the king of the given color.
+     *
+     * @param color  The color of the king.
+     * @param square The possibly pinned square.
+     * @return True if the square is pinned to the king of the color, false otherwise.
+     */
     public boolean isPinned(Color color, Square square) {
         return this.pinMask(color, square) != Bitboard.ALL;
     }
 
+    /**
+     * Checks if the given move is a castling move.
+     *
+     * @param move The move.
+     * @return True if the given move is a castling move, false otherwise.
+     */
     public boolean isCastling(Move move) {
         if ((this.kings & SQUARES[move.getSource().ordinal()]) != 0) {
             int diff = move.getSource().getFileIndex() - move.getTarget().getFileIndex();
@@ -647,14 +894,32 @@ public class Board extends BaseBoard {
         return false;
     }
 
+    /**
+     * Checks if the given move is a kingside castling move.
+     *
+     * @param move The move.
+     * @return True if the given move is kingside castling, false otherwise.
+     */
     public boolean isKingsideCastling(Move move) {
         return isCastling(move) && move.getTarget().getFileIndex() > move.getSource().getFileIndex();
     }
 
+    /**
+     * Checks if the given move is a queenside castling move.
+     *
+     * @param move The move.
+     * @return True if the given move is queenside castling, false otherwise.
+     */
     public boolean isQueensideCastling(Move move) {
         return isCastling(move) && move.getTarget().getFileIndex() < move.getSource().getFileIndex();
     }
 
+    /**
+     * Checks if the given move is En Passant.
+     *
+     * @param move The move.
+     * @return True if the given move is En Passant, false otherwise.
+     */
     public boolean isEnPassant(Move move) {
         return this.epSquare == move.getTarget() && ((this.pawns & SQUARES[move.getSource().ordinal()]) != 0)
                && (
@@ -663,6 +928,14 @@ public class Board extends BaseBoard {
                && ((this.occupied & SQUARES[move.getTarget().ordinal()]) == 0);
     }
 
+    /**
+     * Detects the squares of all pieces that block an attack from a sliding piece.
+     *
+     * <p>It only considers exactly one piece in-between.
+     *
+     * @param kingSquareIndex The index of the king square.
+     * @return Mask containing the squares of all pieces that block an attack from a sliding piece.
+     */
     private long sliderBlockers(int kingSquareIndex) {
         long rooksAndQueens = this.rooks | this.queens;
         long bishopsAndQueens = this.bishops | this.queens;
@@ -685,6 +958,15 @@ public class Board extends BaseBoard {
         return blockers & (this.occupied & ~colorMask);
     }
 
+    /**
+     * Generates a set of moves to get out of check.
+     *
+     * @param kingSquareIndex The index of the king square.
+     * @param checkers        Mask that contains the squares of all pieces which are giving check.
+     * @param sourceMask      The mask of the source squares.
+     * @param targetMask      The mask of the target squares.
+     * @return Set of moves to get out of check.
+     */
     private Set<Move> generateEvasions(int kingSquareIndex, long checkers, long sourceMask, long targetMask) {
         Set<Move> moves = new HashSet<>();
 
@@ -719,6 +1001,12 @@ public class Board extends BaseBoard {
         return moves;
     }
 
+    /**
+     * Checks if the given move is pseudo-legal.
+     *
+     * @param move The move.
+     * @return True if the move is pseudo-legal, false otherwise.
+     */
     public boolean isPseudoLegal(Move move) {
         PieceType type = pieceTypeAt(move.getSource());
         if (type == null) {
@@ -763,6 +1051,15 @@ public class Board extends BaseBoard {
         return (attackMask(move.getSource()) & targetMask) != 0;
     }
 
+    /**
+     * Gets the FEN representation of the current position.
+     *
+     * <p>A FEN like 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+     * consists of a board part, a turn part, a castling part, an En Passant square,
+     * half move clock and full move number.
+     *
+     * @return The FEN representation.
+     */
     public String getFen() {
         StringBuilder fen = new StringBuilder();
         fen.append(getBoardFen()).append(" ");
@@ -780,6 +1077,14 @@ public class Board extends BaseBoard {
         return fen.toString();
     }
 
+    /**
+     * Gets the castling part of the FEN.
+     *
+     * <p>The string represents the individual castling rights for king- and queenside castling for both sides.
+     *
+     * @return The castling part of the FEN. Returns "KQkq" if both sides can castle king- and queenside.
+     *         If neither side can castle "-" is returned.
+     */
     private String getCastlingFen() {
         StringBuilder castlingFen = new StringBuilder();
 
@@ -809,6 +1114,11 @@ public class Board extends BaseBoard {
         return castlingFen.toString();
     }
 
+    /**
+     * Updates the position with the given move and puts it onto the move stack.
+     *
+     * @param move The move. A null move just switches the turn.
+     */
     public void push(Move move) {
         if (move == null) {
             this.turn = this.turn.other();
@@ -901,6 +1211,12 @@ public class Board extends BaseBoard {
         this.turn = turn.other();
     }
 
+    /**
+     * Restores the previous position and returns the last move from the move stack.
+     *
+     * @return The last move of the move stack.
+     * @throws NoSuchElementException if the move stack is empty.
+     */
     public Move pop() {
         Move move = this.moveStack.removeLast();
         this.stateStack.pop().restore(this);
@@ -908,10 +1224,23 @@ public class Board extends BaseBoard {
         return move;
     }
 
+    /**
+     * Gets the last move from the move stack.
+     *
+     * @return The last move or <code>null</code> if the move stack is empty.
+     */
     public Move peek() {
         return this.moveStack.peekLast();
     }
 
+    /**
+     * Checks if the given move is a capture or pawn move.
+     *
+     * <p>Such a move resets the halfmove counter to 0.
+     *
+     * @param move The move to be checked.
+     * @return True if the given move is a capture or a pawn move, false otherwise.
+     */
     private boolean isZeroingMove(Move move) {
         long moveMask = SQUARES[move.getSource().ordinal()] ^ SQUARES[move.getTarget().ordinal()];
         long otherColorMask = this.turn.equals(Color.WHITE) ? this.blackPieces : this.whitePieces;
@@ -919,16 +1248,36 @@ public class Board extends BaseBoard {
         return (moveMask & this.pawns) != 0 || (moveMask & otherColorMask) != 0;
     }
 
+    /**
+     * Returns a new board state of the current position.
+     *
+     * @return The board state of the current position.
+     * @see BoardState
+     */
     private BoardState getBoardState() {
         return new BoardState(this);
     }
 
+    /**
+     * Parses the given string into a move, makes the move and puts it onto the move stack.
+     *
+     * @param san A string in standard algebraic notation (SAN).
+     * @return The parsed move.
+     */
     public Move pushSan(String san) {
         Move move = this.parseSan(san);
         this.push(move);
         return move;
     }
 
+    /**
+     * Parses the given string into a move and returns it.
+     *
+     * @param san A string in standard algebraic notation (SAN).
+     * @return The parsed move.
+     * @throws AmbiguousMoveException if the SAN is ambiguous.
+     * @throws IllegalMoveException   if the SAN is illegal.
+     */
     public Move parseSan(String san) {
         try {
             if (Arrays.asList("O-O", "O-O+", "O-O#", "0-0", "0-0+", "0-0#").contains(san)) {
@@ -1015,6 +1364,12 @@ public class Board extends BaseBoard {
         return match;
     }
 
+    /**
+     * Returns a set of possible problems in the position.
+     *
+     * @return A set of states indicating different problems.
+     * @see Status
+     */
     public EnumSet<Status> status() {
         EnumSet<Status> errors = EnumSet.noneOf(Status.class);
 
@@ -1101,11 +1456,21 @@ public class Board extends BaseBoard {
         return errors;
     }
 
+    /**
+     * Returns a mask indicating all pieces that are giving check.
+     *
+     * @return A mask of all pieces that are giving check.
+     */
     private long checkers_mask() {
         Square kingSquare = getKingSquare(this.turn);
         return kingSquare == null ? 0 : attackersMask(this.turn.other(), kingSquare);
     }
 
+    /**
+     * Checks if the En Passant square is valid.
+     *
+     * @return The En Passant square if it is valid, otherwise null.
+     */
     private Square validEpSquare() {
         if (this.epSquare == null) {
             return null;
@@ -1144,19 +1509,51 @@ public class Board extends BaseBoard {
         return this.epSquare;
     }
 
+    /**
+     * Checks if the current color to move is attacking the others color king.
+     *
+     * @return True if the current color to move is attacking the others color king, false otherwise.
+     */
     private boolean wasIntoCheck() {
         Square kingSquare = this.getKingSquare(turn.other());
         return kingSquare != null && isAttackedBy(turn, kingSquare);
     }
 
+    /**
+     * Checks if the status of the position is valid.
+     *
+     * <p>This means there are no problems in the position.
+     *
+     * @return True if the position is valid, false otherwise.
+     */
     public boolean isValid() {
         return status().contains(Status.VALID);
     }
 
+    /**
+     * Finds a matching legal move for the given source and target square.
+     *
+     * <p>Pawns are promoted to {@link PieceType#QUEEN}.
+     *
+     * @param sourceSquare The source square.
+     * @param targetSquare The target square.
+     * @return The matching legal move.
+     */
     public Move findMove(Square sourceSquare, Square targetSquare) {
         return findMove(sourceSquare, targetSquare, null);
     }
 
+    /**
+     * Finds a matching legal move for the given source and target square
+     * and an optional promotion piece type.
+     *
+     * <p>Pawns are promoted to {@link PieceType#QUEEN} by default, unless otherwise specified.
+     *
+     * @param sourceSquare The source square.
+     * @param targetSquare The target square.
+     * @param promotion    The promotion piece type. If null, a pawn is promoted to a queen.
+     * @return The matching legal move.
+     */
     public Move findMove(Square sourceSquare, Square targetSquare, PieceType promotion) {
         if (promotion == null && (this.pawns & SQUARES[sourceSquare.ordinal()]) != 0
             && (SQUARES[targetSquare.ordinal()] & BACKRANK) != 0) {
@@ -1173,6 +1570,12 @@ public class Board extends BaseBoard {
     }
 
 
+    /**
+     * Checks if the given color has insufficient material to checkmate the opponent.
+     *
+     * @param color The color to check.
+     * @return True if the given color has insufficient material to checkmate the opponent, false otherwise.
+     */
     public boolean hasInsufficientMaterial(Color color) {
         long colorMask = color == Color.WHITE ? this.whitePieces : this.blackPieces;
 
@@ -1192,43 +1595,112 @@ public class Board extends BaseBoard {
         return true;
     }
 
+    /**
+     * Checks if both colors have insufficient material to checkmate each other.
+     *
+     * @return True if both colors have insufficient material to checkmate each other, false otherwise.
+     */
     public boolean isInsufficientMaterial() {
         return hasInsufficientMaterial(Color.WHITE) && hasInsufficientMaterial(Color.BLACK);
     }
 
+    /**
+     * Checks if the current side to move is in check.
+     *
+     * @return True if the current side to move is in check, false otherwise.
+     */
     public boolean isCheck() {
         return checkers_mask() != 0;
     }
 
+    /**
+     * Checks if the current side to move is in checkmate.
+     *
+     * @return True if the current side to move is in checkmate, false otherwise.
+     */
     public boolean isCheckmate() {
         return isCheck() && generateLegalMoves().isEmpty();
     }
 
+    /**
+     * Checks if the current side to move is in stalemate.
+     *
+     * @return True if the current side to move is in stalemate, false otherwise.
+     */
     public boolean isStalemate() {
         return !isCheck() && generateLegalMoves().isEmpty();
     }
 
+    /**
+     * Detects the end of the game.
+     *
+     * <p>The game can be over by:
+     * <ul>
+     *     <li>Checkmate</li>
+     *     <li>Stalemate</li>
+     *     <li>Insufficient material</li>
+     *     <li>Claim Fifty moves rule</li>
+     *     <li>Claim Threefold repetition</li>
+     *     <li>Fivefold repetition</li>
+     *     <li>Seventy-five moves rule</li>
+     * </ul>
+     *
+     * @return True if the game is over, false otherwise.
+     */
     public boolean isGameOver() {
         return outcome() != null;
     }
 
+    /**
+     * Detects the end of the game with the option to claim draw.
+     *
+     * @param claimDraw If true, the game can end by claiming a draw. This includes the Fifty moves rule
+     *                  and the Threefold repetition.
+     * @return True if the game is over, false otherwise.
+     */
     public boolean isGameOver(boolean claimDraw) {
         return outcome(claimDraw) != null;
     }
 
+    /**
+     * Gets the result of the game.
+     *
+     * @return The result of the game, e.g. "1-0", "0-1" or "1/2-1/2". "*" if the game is not over.
+     */
     public String result() {
         return result(false);
     }
 
+    /**
+     * Gets the result of the game with the option to claim draw.
+     *
+     * @param claimDraw If true, the game can end by claiming a draw.
+     *                  This includes the Fifty moves rule and the Threefold repetition.
+     * @return The result of the game, e.g. "1-0", "0-1" or "1/2-1/2". "*" if the game is not over.
+     */
     public String result(boolean claimDraw) {
         Outcome outcome = outcome(claimDraw);
         return outcome != null ? outcome.result() : "*";
     }
 
+    /**
+     * Gets the outcome of the game.
+     *
+     * @return The outcome of the game or null if the game is not over.
+     * @see Outcome
+     */
     public Outcome outcome() {
         return outcome(false);
     }
 
+    /**
+     * Gets the outcome of the game with the option to claim draw.
+     *
+     * @param claimDraw If true, the game can end by claiming a draw.
+     *                  This includes the Fifty moves rule and the Threefold repetition.
+     * @return The outcome of the game or null if the game is not over.
+     * @see Outcome
+     */
     public Outcome outcome(boolean claimDraw) {
         if (isCheckmate()) {
             return new Outcome(Termination.CHECKMATE, turn.other());
@@ -1262,6 +1734,13 @@ public class Board extends BaseBoard {
         return null;
     }
 
+    /**
+     * Checks if the player to move can claim a draw by the Fifty moves rule.
+     *
+     * <p>This also checks if there is a legal move that achieves the Fifty moves rule.
+     *
+     * @return True if the player to move can claim a draw by the Fifty moves rule, false otherwise.
+     */
     public boolean canClaimFiftyMoveRule() {
         if (isFiftyMoves()) {
             return true;
@@ -1278,33 +1757,76 @@ public class Board extends BaseBoard {
         return false;
     }
 
-
+    /**
+     * Checks if the game is a draw by the Seventyfive move rule.
+     *
+     * @return True if the game is a draw by the Seventyfive move rule, false otherwise.
+     */
     private boolean isSeventyFiveMoves() {
         return this.isHalfmoves(150);
     }
 
+    /**
+     * Checks if the halfmove clock is greater or equal to 100.
+     *
+     * <p>The halfmove clock counts the number of halfmoves since the last capture or pawn move.
+     *
+     * @return True if the halfmove clock is greater or equal to 100, false otherwise.
+     */
     public boolean isFiftyMoves() {
         return this.isHalfmoves(100);
     }
 
+    /**
+     * Checks if the halfmove clock is greater or equal to the given n.
+     *
+     * @param n The number of halfmoves.
+     * @return True if the halfmove clock is greater or equal to the given n, false otherwise.
+     */
     private boolean isHalfmoves(int n) {
         return this.halfMoveClock >= n && !generateLegalMoves().isEmpty();
     }
 
+    /**
+     * Gets the standard algebraic notation (SAN) of the given move in the context of the current position.
+     *
+     * @param move The move.
+     * @return The SAN of the move.
+     */
     public String san(Move move) {
         return this.algebraicNotation(move, false);
     }
 
+    /**
+     * Gets the long algebraic notation (LAN) of the given move in the context of the current position.
+     *
+     * @param move The move.
+     * @return The LAN of the move.
+     */
     public String lan(Move move) {
         return this.algebraicNotation(move, true);
     }
 
+    /**
+     * Gets the short or long algebraic notation of the given move in the context of the current position.
+     *
+     * @param move         The move.
+     * @param longNotation If true, the long algebraic notation is used, otherwise the short algebraic notation.
+     * @return The algebraic notation of the move.
+     */
     private String algebraicNotation(Move move, boolean longNotation) {
         String san = algebraicNotationPush(move, longNotation);
         this.pop();
         return san;
     }
 
+    /**
+     * Make the given move and return the algebraic notation of the move.
+     *
+     * @param move         The move.
+     * @param longNotation If true, the long algebraic notation is used, otherwise the short algebraic notation.
+     * @return The algebraic notation of the move.
+     */
     private String algebraicNotationPush(Move move, boolean longNotation) {
         String san = this.algebraicNotationWithoutSuffix(move, longNotation);
         this.push(move);
@@ -1319,10 +1841,25 @@ public class Board extends BaseBoard {
         return san;
     }
 
+    /**
+     * Make the given move and return the standard algebraic notation (SAN) of the move.
+     *
+     * @param move The move.
+     * @return The SAN of the move.
+     */
     public String sanAndPush(Move move) {
         return algebraicNotationPush(move, false);
     }
 
+    /**
+     * Gets the algebraic notation of the given move without suffix in the context of the current position.
+     *
+     * <p>Suffixes like '+' for check and '#' for checkmate are not considered.
+     *
+     * @param move         The move.
+     * @param longNotation If true, the long algebraic notation is used, otherwise the short algebraic notation.
+     * @return The algebraic notation of the move without suffix.
+     */
     private String algebraicNotationWithoutSuffix(Move move, boolean longNotation) {
         if (this.isCastling(move)) {
             if (move.getTarget().getFileIndex() < move.getSource().getFileIndex()) {
@@ -1395,6 +1932,12 @@ public class Board extends BaseBoard {
         return san.toString();
     }
 
+    /**
+     * Checks if the given move is a capture.
+     *
+     * @param move The move.
+     * @return True if the given move is a capture, false otherwise.
+     */
     public boolean isCapture(Move move) {
         long targetMask = SQUARES[move.getTarget().ordinal()];
         long otherColorMask = this.turn == Color.WHITE ? this.blackPieces : this.whitePieces;
@@ -1402,6 +1945,15 @@ public class Board extends BaseBoard {
         return (targetMask & otherColorMask) != 0 || this.isEnPassant(move);
     }
 
+    /**
+     * Gets a string representing the given sequence of moves in standard algebraic notation (SAN).
+     *
+     * <p>The string also contains the full move numbers, e.g. "1. e4 e5 2. Nf3 Nc6".
+     * This operation doesn't modify the board.
+     *
+     * @param variation The sequence of moves as an Iterable.
+     * @return The SAN of the given sequence of moves.
+     */
     public String variationSan(Iterable<Move> variation) {
         StringBuilder san = new StringBuilder();
         Board board = this.copy();
@@ -1434,6 +1986,13 @@ public class Board extends BaseBoard {
         return san.toString();
     }
 
+    /**
+     * Parses the given string in UCI notation into a move.
+     *
+     * @param uci The string in UCI notation.
+     * @return The parsed move.
+     * @throws IllegalMoveException if the move is illegal.
+     */
     public Move parseUci(String uci) {
         Move move = Move.fromUci(uci);
 
@@ -1443,24 +2002,55 @@ public class Board extends BaseBoard {
         return move;
     }
 
+    /**
+     * Parses the given string in UCI notation into a move, makes the move and puts it onto the move stack.
+     *
+     * @param uci The string in UCI notation.
+     * @return The parsed move.
+     * @throws IllegalMoveException if the move is illegal.
+     */
     public Move pushUci(String uci) {
         Move move = parseUci(uci);
         this.push(move);
         return move;
     }
 
+    /**
+     * Gets the current color to move.
+     *
+     * @return The current color to move.
+     */
     public Color getTurn() {
         return turn;
     }
 
+    /**
+     * Gets the En Passant square.
+     *
+     * @return The En Passant square or null if there is no En Passant square.
+     */
     public Square getEpSquare() {
         return epSquare;
     }
 
+    /**
+     * Checks if the player to move can claim a draw by Fifty moves rule or by treefold repetition.
+     *
+     * @return True if the player to move can claim a draw by Fifty moves rule or by treefold repetition,
+     *         false otherwise.
+     */
     public boolean canClaimDraw() {
         return canClaimFiftyMoveRule() || canClaimThreefoldRepetition();
     }
 
+    /**
+     * Checks if the player to move can claim a draw by treefold repetition.
+     *
+     * <p>If the position occurred the third time or if there is a legal move to reach such a repetition
+     * a draw can be claimed.
+     *
+     * @return True if the player to move can claim a draw by treefold repetition, false otherwise.
+     */
     public boolean canClaimThreefoldRepetition() {
         int transpositionKey = this.hashCode();
         Map<Integer, Integer> transpositions = new HashMap<>();
@@ -1502,10 +2092,26 @@ public class Board extends BaseBoard {
         return false;
     }
 
+    /**
+     * Checks if the given move is irreversible.
+     *
+     * <p>A move is irreversible if it is a capture, pawn move, reduces the castling rights or rejects En Passant.
+     *
+     * @param move The move to be checked.
+     * @return True if the given move is irreversible, false otherwise.
+     */
     public boolean isIrreversible(Move move) {
         return isZeroingMove(move) || hasLegalEnPassant() || reducesCastlingRights(move);
     }
 
+    /**
+     * Checks if the given move reduces the castling rights.
+     *
+     * <p>King and rook moves from their initial square are reducing the castling rights.
+     *
+     * @param move The move to be checked.
+     * @return True if the given move reduces the castling rights, false otherwise.
+     */
     private boolean reducesCastlingRights(Move move) {
         long castlingRights = this.cleanCastlingRights();
         long touched = SQUARES[move.getSource().ordinal()] ^ SQUARES[move.getTarget().ordinal()];
@@ -1515,14 +2121,30 @@ public class Board extends BaseBoard {
                || ((castlingRights & RANK_8) != 0 && (touched & this.kings & this.blackPieces & ~this.promoted) != 0);
     }
 
+    /**
+     * Checks if the current position has repeated 5 times.
+     *
+     * @return True if the current position has repeated 5 times, false otherwise.
+     */
     public boolean isFivefoldRepetition() {
         return isRepetition(5);
     }
 
+    /**
+     * Checks if the current position has repeated 3 times.
+     *
+     * @return True if the current position has repeated 3 times, false otherwise.
+     */
     public boolean isRepetition() {
         return isRepetition(3);
     }
 
+    /**
+     * Checks if the current position has repeated the given count of times.
+     *
+     * @param count The count of repetitions.
+     * @return True if the current position has repeated the given count of times, false otherwise.
+     */
     public boolean isRepetition(int count) {
         int maybeRepetitions = 1;
 
@@ -1596,18 +2218,35 @@ public class Board extends BaseBoard {
         return Objects.hash(super.hashCode(), turn, cleanCastlingRights());
     }
 
+    /**
+     * Returns a mirrored copy of the board.
+     *
+     * <p>The board is mirrored vertically. This also swaps the En Passant square, the castling rights and turn.
+     *
+     * @return The mirrored copy of the board.
+     */
     public Board mirror() {
         Board board = this.copy();
         board.applyMirror();
         return board;
     }
 
+    /**
+     * Mirrors the board and swaps the turn.
+     *
+     * <p>The board is mirrored vertically. This operation swaps the white and black pieces.
+     */
     @Override
     public void applyMirror() {
         super.applyMirror();
         this.turn = this.turn.other();
     }
 
+    /**
+     * Applies a transform function to the board.
+     *
+     * @param transform The transform function.
+     */
     @Override
     public void applyTransform(Function<Long, Long> transform) {
         super.applyTransform(transform);

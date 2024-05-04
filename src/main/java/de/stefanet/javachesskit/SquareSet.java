@@ -7,6 +7,9 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * A class representing a set of squares on a chessboard.
+ */
 public class SquareSet implements Set<Square> {
 
     private long mask;
