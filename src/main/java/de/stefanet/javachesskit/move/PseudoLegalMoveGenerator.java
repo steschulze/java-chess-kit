@@ -1,5 +1,6 @@
-package de.stefanet.javachesskit;
+package de.stefanet.javachesskit.move;
 
+import de.stefanet.javachesskit.Board;
 import java.util.Iterator;
 
 /**

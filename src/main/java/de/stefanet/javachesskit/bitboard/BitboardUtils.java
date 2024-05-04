@@ -1,7 +1,7 @@
-package de.stefanet.javachesskit;
+package de.stefanet.javachesskit.bitboard;
 
-import static de.stefanet.javachesskit.Bitboard.ALL;
-import static de.stefanet.javachesskit.Bitboard.RAYS;
+import static de.stefanet.javachesskit.bitboard.Bitboard.ALL;
+import static de.stefanet.javachesskit.bitboard.Bitboard.RAYS;
 
 /**
  * Utility class for bitboards.

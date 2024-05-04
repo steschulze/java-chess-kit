@@ -1,11 +1,12 @@
-package de.stefanet.javachesskit;
+package de.stefanet.javachesskit.bitboard;
 
-import static de.stefanet.javachesskit.Bitboard.DIAGONAL_ATTACKS;
-import static de.stefanet.javachesskit.Bitboard.EMPTY;
-import static de.stefanet.javachesskit.Bitboard.FILE_ATTACKS;
-import static de.stefanet.javachesskit.Bitboard.RANK_ATTACKS;
-import static de.stefanet.javachesskit.Bitboard.SQUARES;
+import static de.stefanet.javachesskit.bitboard.Bitboard.DIAGONAL_ATTACKS;
+import static de.stefanet.javachesskit.bitboard.Bitboard.EMPTY;
+import static de.stefanet.javachesskit.bitboard.Bitboard.FILE_ATTACKS;
+import static de.stefanet.javachesskit.bitboard.Bitboard.RANK_ATTACKS;
+import static de.stefanet.javachesskit.bitboard.Bitboard.SQUARES;
 
+import de.stefanet.javachesskit.core.Square;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

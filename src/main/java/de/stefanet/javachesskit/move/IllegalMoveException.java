@@ -1,4 +1,4 @@
-package de.stefanet.javachesskit;
+package de.stefanet.javachesskit.move;
 
 /**
  * Thrown when an illegal move is attempted in the current position.

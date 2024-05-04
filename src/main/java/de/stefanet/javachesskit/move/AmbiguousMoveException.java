@@ -1,4 +1,4 @@
-package de.stefanet.javachesskit;
+package de.stefanet.javachesskit.move;
 
 /**
  * Thrown when the attempted move is ambiguous in the current position.

@@ -1,4 +1,4 @@
-package de.stefanet.javachesskit;
+package de.stefanet.javachesskit.core;
 
 /**
  * Enum representing the squares on a chessboard.

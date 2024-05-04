@@ -1,5 +1,7 @@
-package de.stefanet.javachesskit;
+package de.stefanet.javachesskit.move;
 
+import de.stefanet.javachesskit.core.PieceType;
+import de.stefanet.javachesskit.core.Square;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

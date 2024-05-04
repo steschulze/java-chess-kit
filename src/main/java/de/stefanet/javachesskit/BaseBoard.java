@@ -1,12 +1,19 @@
 package de.stefanet.javachesskit;
 
-import static de.stefanet.javachesskit.Bitboard.*;
-import static de.stefanet.javachesskit.Bitboard.Ranks.RANK_1;
-import static de.stefanet.javachesskit.Bitboard.Ranks.RANK_2;
-import static de.stefanet.javachesskit.Bitboard.Ranks.RANK_7;
-import static de.stefanet.javachesskit.Bitboard.Ranks.RANK_8;
-import static de.stefanet.javachesskit.Bitboard.Squares.*;
+import static de.stefanet.javachesskit.bitboard.Bitboard.*;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_1;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_2;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_7;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_8;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Squares.*;
 
+import de.stefanet.javachesskit.bitboard.Bitboard;
+import de.stefanet.javachesskit.bitboard.BitboardUtils;
+import de.stefanet.javachesskit.core.Color;
+import de.stefanet.javachesskit.core.Piece;
+import de.stefanet.javachesskit.core.PieceType;
+import de.stefanet.javachesskit.core.Square;
+import de.stefanet.javachesskit.core.SquareSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;

@@ -1,5 +1,7 @@
-package de.stefanet.javachesskit;
+package de.stefanet.javachesskit.core;
 
+import de.stefanet.javachesskit.bitboard.Bitboard;
+import de.stefanet.javachesskit.bitboard.BitboardUtils;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;

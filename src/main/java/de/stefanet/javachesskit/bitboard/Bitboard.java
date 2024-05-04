@@ -1,20 +1,20 @@
-package de.stefanet.javachesskit;
+package de.stefanet.javachesskit.bitboard;
 
-import static de.stefanet.javachesskit.Bitboard.Files.FILE_A;
-import static de.stefanet.javachesskit.Bitboard.Files.FILE_C;
-import static de.stefanet.javachesskit.Bitboard.Files.FILE_E;
-import static de.stefanet.javachesskit.Bitboard.Files.FILE_F;
-import static de.stefanet.javachesskit.Bitboard.Files.FILE_G;
-import static de.stefanet.javachesskit.Bitboard.Files.FILE_H;
-import static de.stefanet.javachesskit.Bitboard.Ranks.RANK_1;
-import static de.stefanet.javachesskit.Bitboard.Ranks.RANK_2;
-import static de.stefanet.javachesskit.Bitboard.Ranks.RANK_3;
-import static de.stefanet.javachesskit.Bitboard.Ranks.RANK_4;
-import static de.stefanet.javachesskit.Bitboard.Ranks.RANK_5;
-import static de.stefanet.javachesskit.Bitboard.Ranks.RANK_6;
-import static de.stefanet.javachesskit.Bitboard.Ranks.RANK_7;
-import static de.stefanet.javachesskit.Bitboard.Ranks.RANK_8;
-import static de.stefanet.javachesskit.Bitboard.Squares.*;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Files.FILE_A;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Files.FILE_C;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Files.FILE_E;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Files.FILE_F;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Files.FILE_G;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Files.FILE_H;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_1;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_2;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_3;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_4;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_5;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_6;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_7;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Ranks.RANK_8;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Squares.*;
 
 import java.util.List;
 import java.util.Map;

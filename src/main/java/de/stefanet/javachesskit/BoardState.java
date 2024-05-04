@@ -1,5 +1,8 @@
 package de.stefanet.javachesskit;
 
+import de.stefanet.javachesskit.core.Color;
+import de.stefanet.javachesskit.core.Square;
+
 /**
  * BoardState is a snapshot of the board state.
  */

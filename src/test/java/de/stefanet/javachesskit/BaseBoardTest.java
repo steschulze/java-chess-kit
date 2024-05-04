@@ -1,6 +1,6 @@
 package de.stefanet.javachesskit;
 
-import static de.stefanet.javachesskit.Bitboard.Squares.*;
+import static de.stefanet.javachesskit.bitboard.Bitboard.Squares.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -8,6 +8,11 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import de.stefanet.javachesskit.bitboard.Bitboard;
+import de.stefanet.javachesskit.core.Color;
+import de.stefanet.javachesskit.core.Piece;
+import de.stefanet.javachesskit.core.PieceType;
+import de.stefanet.javachesskit.core.Square;
 import org.junit.jupiter.api.Test;
 import java.util.Collections;
 

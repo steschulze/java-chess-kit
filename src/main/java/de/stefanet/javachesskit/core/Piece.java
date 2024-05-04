@@ -1,4 +1,4 @@
-package de.stefanet.javachesskit;
+package de.stefanet.javachesskit.core;
 
 
 import java.util.HashMap;

@@ -1,9 +1,10 @@
 package de.stefanet.javachesskit;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+
+import de.stefanet.javachesskit.core.Color;
+import org.junit.jupiter.api.Test;
 
 class OutcomeTest {
 

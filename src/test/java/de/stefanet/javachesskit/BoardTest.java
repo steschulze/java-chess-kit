@@ -8,6 +8,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import de.stefanet.javachesskit.bitboard.Bitboard;
+import de.stefanet.javachesskit.core.Color;
+import de.stefanet.javachesskit.core.Piece;
+import de.stefanet.javachesskit.core.PieceType;
+import de.stefanet.javachesskit.core.Square;
+import de.stefanet.javachesskit.core.SquareSet;
+import de.stefanet.javachesskit.move.AmbiguousMoveException;
+import de.stefanet.javachesskit.move.IllegalMoveException;
+import de.stefanet.javachesskit.move.Move;
 import de.stefanet.javachesskit.polyglot.Polyglot;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

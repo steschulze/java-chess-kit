@@ -1,9 +1,10 @@
-package de.stefanet.javachesskit;
-
-import org.junit.jupiter.api.Test;
+package de.stefanet.javachesskit.bitboard;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import de.stefanet.javachesskit.core.Square;
+import org.junit.jupiter.api.Test;
 
 class BitboardUtilsTest {
 

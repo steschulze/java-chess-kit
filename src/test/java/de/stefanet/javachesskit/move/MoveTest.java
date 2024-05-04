@@ -1,10 +1,12 @@
-package de.stefanet.javachesskit;
+package de.stefanet.javachesskit.move;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import de.stefanet.javachesskit.core.PieceType;
+import de.stefanet.javachesskit.core.Square;
 import org.junit.jupiter.api.Test;
 
 class MoveTest {

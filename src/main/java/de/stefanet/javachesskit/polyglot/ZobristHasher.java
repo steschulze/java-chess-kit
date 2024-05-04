@@ -1,12 +1,12 @@
 package de.stefanet.javachesskit.polyglot;
 
 import de.stefanet.javachesskit.BaseBoard;
-import de.stefanet.javachesskit.Bitboard;
-import de.stefanet.javachesskit.BitboardUtils;
 import de.stefanet.javachesskit.Board;
-import de.stefanet.javachesskit.Color;
-import de.stefanet.javachesskit.Piece;
-import de.stefanet.javachesskit.Square;
+import de.stefanet.javachesskit.bitboard.Bitboard;
+import de.stefanet.javachesskit.bitboard.BitboardUtils;
+import de.stefanet.javachesskit.core.Color;
+import de.stefanet.javachesskit.core.Piece;
+import de.stefanet.javachesskit.core.Square;
 
 /**
  * Class for hashing chess positions using the Zobrist hashing algorithm.

@@ -1,9 +1,9 @@
-package de.stefanet.javachesskit;
-
-import org.junit.jupiter.api.Test;
+package de.stefanet.javachesskit.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 class ColorTest {
 

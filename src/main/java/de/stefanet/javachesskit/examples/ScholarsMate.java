@@ -1,7 +1,7 @@
 package de.stefanet.javachesskit.examples;
 
 import de.stefanet.javachesskit.Board;
-import de.stefanet.javachesskit.Move;
+import de.stefanet.javachesskit.move.Move;
 
 /**
  * Example of the Scholar's Mate.

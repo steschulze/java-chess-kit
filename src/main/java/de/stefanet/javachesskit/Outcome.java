@@ -1,5 +1,7 @@
 package de.stefanet.javachesskit;
 
+import de.stefanet.javachesskit.core.Color;
+
 /**
  * Outcome of a game with termination reason and winning color.
  */
