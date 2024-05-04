@@ -1,0 +1,26 @@
+name: Checkstyle
+
+on: [ push, pull_request ]
+
+jobs:
+  checkstyle:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+
+      - name: Run Checkstyle with Gradle
+        run: ./gradlew checkstyleMain
+
+      - name: Upload Checkstyle report
+        uses: actions/upload-artifact@v3
+        with:
+          name: checkstyle-report
+          path: build/reports/checkstyle
