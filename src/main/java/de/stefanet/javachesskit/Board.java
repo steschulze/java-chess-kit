@@ -822,13 +822,9 @@ public class Board extends BaseBoard {
         }
 
         long diagonalAttackers = this.occupiedColor[turn.other().ordinal()] & (this.bishops | this.queens);
-        if ((
-                    DIAGONAL_ATTACKS.get(kingSquare.ordinal())
-                            .get((DIAGONAL_MASKS[kingSquare.ordinal()] & occupancy)) & diagonalAttackers) != 0) {
-            return true;
-        }
-
-        return false;
+        return (
+                       DIAGONAL_ATTACKS.get(kingSquare.ordinal())
+                               .get((DIAGONAL_MASKS[kingSquare.ordinal()] & occupancy)) & diagonalAttackers) != 0;
 
     }
 
@@ -1889,16 +1885,10 @@ public class Board extends BaseBoard {
             }
 
             if (others != 0) {
-                boolean row = false;
-                boolean column = false;
+                boolean row = (others & FILES[move.getSource().getFileIndex()]) != 0;
+                boolean column = (others & RANKS[move.getSource().getRankIndex()]) != 0;
 
-                if ((others & RANKS[move.getSource().getRankIndex()]) != 0) {
-                    column = true;
-                }
-
-                if ((others & FILES[move.getSource().getFileIndex()]) != 0) {
-                    row = true;
-                } else {
+                if ((others & FILES[move.getSource().getFileIndex()]) == 0) {
                     column = true;
                 }
                 if (column) {
