@@ -130,8 +130,7 @@ public class SquareSet implements Set<Square> {
     @Override
     public boolean retainAll(Collection<?> c) {
         boolean modified = false;
-        for (Iterator<Square> iterator = iterator(); iterator.hasNext(); ) {
-            Square square = iterator.next();
+        for (Square square : this) {
             if (!c.contains(square)) {
                 remove(square);
                 modified = true;
