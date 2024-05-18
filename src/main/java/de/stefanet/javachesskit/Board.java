@@ -360,8 +360,7 @@ public class Board extends BaseBoard {
         }
 
         // pawn captures
-        long captures = pawns;
-        for (int captureIndex : BitboardUtils.scanReversed(captures)) {
+        for (int captureIndex : BitboardUtils.scanReversed(pawns)) {
             Square source = Square.fromIndex(captureIndex);
 
             long targets = Bitboard.PAWN_ATTACKS[turn.ordinal()][captureIndex]
