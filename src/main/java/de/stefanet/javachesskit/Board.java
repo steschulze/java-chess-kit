@@ -512,7 +512,7 @@ public class Board extends BaseBoard {
         Set<Move> moves = new HashSet<>();
 
         for (Move move : generatePseudoLegalEnPassant(sourceMask, targetMask)) {
-            if (!isKingInCheck(move)) {
+            if (isKingSafe(move)) {
                 moves.add(move);
             }
         }
@@ -747,30 +747,30 @@ public class Board extends BaseBoard {
      * @return True if the move is legal, false otherwise.
      */
     public boolean isLegal(Move move) {
-        return isPseudoLegal(move) && !isKingInCheck(move);
+        return isPseudoLegal(move) && isKingSafe(move);
     }
 
     /**
-     * Checks if the given move puts or leaves the king in check.
+     * Checks if the given move is safe, i.e. it does not put the king in check.
      *
      * @param move The move.
-     * @return True if the move puts or leaves the king in check, false otherwise.
+     * @return False if the move puts or leaves the king in check, true otherwise.
      */
-    private boolean isKingInCheck(Move move) {
+    private boolean isKingSafe(Move move) {
         Square kingSquare = this.getKingSquare(this.turn);
 
         if (kingSquare == null) {
-            return false;
+            return true;
         }
 
         long checkers = attackersMask(turn.other(), kingSquare);
         if (checkers != 0 && !generateEvasions(kingSquare.ordinal(), checkers,
                                                SQUARES[move.getSource().ordinal()],
                                                SQUARES[move.getTarget().ordinal()]).contains(move)) {
-            return true;
+            return false;
         }
 
-        return !isSafe(kingSquare, this.sliderBlockers(kingSquare.ordinal()), move);
+        return isSafe(kingSquare, this.sliderBlockers(kingSquare.ordinal()), move);
     }
 
     /**
