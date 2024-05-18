@@ -49,8 +49,8 @@ public class Board extends BaseBoard {
     protected int halfMoveClock;
 
     protected long promoted;
-    protected Deque<Move> moveStack;
-    protected Deque<BoardState> stateStack;
+    protected final Deque<Move> moveStack;
+    protected final Deque<BoardState> stateStack;
 
     /**
      * Create a new board with the starting position.

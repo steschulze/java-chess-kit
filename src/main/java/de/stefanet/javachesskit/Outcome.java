@@ -6,8 +6,8 @@ import de.stefanet.javachesskit.core.Color;
  * Outcome of a game with termination reason and winning color.
  */
 public class Outcome {
-    private Termination termination;
-    private Color winner;
+    private final Termination termination;
+    private final Color winner;
 
     /**
      * Constructs a new Outcome with the specified termination and winner.

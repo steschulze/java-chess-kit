@@ -8,24 +8,24 @@ import java.util.Arrays;
  * BoardState is a snapshot of the board state.
  */
 public class BoardState {
-    private long pawns;
-    private long knights;
-    private long bishops;
-    private long rooks;
-    private long queens;
-    private long kings;
+    private final long pawns;
+    private final long knights;
+    private final long bishops;
+    private final long rooks;
+    private final long queens;
+    private final long kings;
 
-    private long promoted;
-    private long[] occupiedColor;
-    protected long occupied;
+    private final long promoted;
+    private final long[] occupiedColor;
+    protected final long occupied;
 
-    private Color turn;
-    private long castlingRights;
+    private final Color turn;
+    private final long castlingRights;
 
-    private Square epSquare;
+    private final Square epSquare;
 
-    private int fullMoveNumber;
-    private int halfMoveClock;
+    private final int fullMoveNumber;
+    private final int halfMoveClock;
 
     /**
      * Create a snapshot of the board state.

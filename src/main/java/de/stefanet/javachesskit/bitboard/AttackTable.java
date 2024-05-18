@@ -10,8 +10,8 @@ import java.util.Map;
  * It is used to speed up move generation by avoiding the need to calculate attacks on the fly.
  */
 public class AttackTable {
-    private long[] maskTable;
-    private List<Map<Long, Long>> attackTable;
+    private final long[] maskTable;
+    private final List<Map<Long, Long>> attackTable;
 
     /**
      * Constructs a new AttackTable with the specified mask table and attack table.
