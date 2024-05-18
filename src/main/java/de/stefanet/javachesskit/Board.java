@@ -103,8 +103,9 @@ public class Board extends BaseBoard {
         board.queens = this.queens;
         board.kings = this.kings;
 
-        board.whitePieces = this.whitePieces;
-        board.blackPieces = this.blackPieces;
+        board.occupiedColor[0] = this.occupiedColor[0];
+        board.occupiedColor[1] = this.occupiedColor[1];
+
         board.occupied = this.occupied;
         board.promoted = this.promoted;
 
@@ -281,8 +282,7 @@ public class Board extends BaseBoard {
     public Set<Move> generateLegalMoves(long fromMask, long toMask) {
         Set<Move> legalMoves = new HashSet<>();
 
-        long colorMask = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
-        long kingMask = this.kings & colorMask;
+        long kingMask = this.kings & occupiedColor[this.turn.ordinal()];
 
         if (kingMask != 0) {
             int king = BitboardUtils.msb(kingMask);
@@ -336,7 +336,7 @@ public class Board extends BaseBoard {
      */
     public Set<Move> generatePseudoLegalMoves(long sourceMask, long targetMask) {
         Set<Move> moveList = new HashSet<>();
-        long ownPieces = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
+        long ownPieces = this.occupiedColor[this.turn.ordinal()];
 
         // non pawn moves
         long nonPawns = ownPieces & ~this.pawns & sourceMask;
@@ -365,7 +365,7 @@ public class Board extends BaseBoard {
             Square source = Square.fromIndex(captureIndex);
 
             long targets = Bitboard.PAWN_ATTACKS[turn.ordinal()][captureIndex]
-                           & targetMask & (turn.equals(Color.WHITE) ? this.blackPieces : this.whitePieces);
+                           & targetMask & this.occupiedColor[turn.other().ordinal()];
 
             for (int targetIndex : BitboardUtils.scanReversed(targets)) {
                 Square target = Square.fromIndex(targetIndex);
@@ -461,11 +461,10 @@ public class Board extends BaseBoard {
             return moves;
         }
 
-        long colorMask = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
         long rankMask = this.turn.equals(Color.WHITE) ? Bitboard.RANKS[4] : Bitboard.RANKS[3];
         long attackMask = PAWN_ATTACKS[turn.other().ordinal()][epSquare.ordinal()];
 
-        long capturers = this.pawns & colorMask & sourceMask & attackMask & rankMask;
+        long capturers = this.pawns & this.occupiedColor[turn.ordinal()] & sourceMask & attackMask & rankMask;
 
         for (int index : BitboardUtils.scanReversed(capturers)) {
             Square source = Square.fromIndex(index);
@@ -541,9 +540,7 @@ public class Board extends BaseBoard {
         Set<Move> moves = new HashSet<>();
 
         long backrank = this.turn.equals(Color.WHITE) ? RANK_1 : RANK_8;
-        long colorMask = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
-
-        long king = colorMask & this.kings & ~this.promoted & backrank & sourceMask;
+        long king = this.occupiedColor[turn.ordinal()] & this.kings & ~this.promoted & backrank & sourceMask;
         king &= -king;
 
         if (king == 0) {
@@ -615,9 +612,8 @@ public class Board extends BaseBoard {
      * @return A set of legal captures.
      */
     public Set<Move> generateLegalCaptures(long sourceMask, long targetMask) {
-        long otherColorMask = this.turn == Color.WHITE ? this.blackPieces : this.whitePieces;
         Set<Move> moves = new HashSet<>();
-        moves.addAll(generateLegalMoves(sourceMask, targetMask & otherColorMask));
+        moves.addAll(generateLegalMoves(sourceMask, targetMask & this.occupiedColor[turn.other().ordinal()]));
         moves.addAll(generateLegalEnPassant(sourceMask, targetMask));
 
         return moves;
@@ -641,9 +637,8 @@ public class Board extends BaseBoard {
      * @return A set of pseudo-legal captures.
      */
     public Set<Move> generatePseudoLegalCaptures(long sourceMask, long targetMask) {
-        long otherColorMask = this.turn == Color.WHITE ? this.blackPieces : this.whitePieces;
         Set<Move> moves = new HashSet<>();
-        moves.addAll(generatePseudoLegalMoves(sourceMask, targetMask & otherColorMask));
+        moves.addAll(generatePseudoLegalMoves(sourceMask, targetMask & this.occupiedColor[turn.other().ordinal()]));
         moves.addAll(generatePseudoLegalEnPassant(sourceMask, targetMask));
 
         return moves;
@@ -681,16 +676,16 @@ public class Board extends BaseBoard {
      */
     protected long cleanCastlingRights() {
         long castling = this.castlingRights & this.rooks;
-        long whiteCastling = castling & RANK_1 & this.whitePieces;
-        long blackCastling = castling & RANK_8 & this.blackPieces;
+        long whiteCastling = castling & RANK_1 & this.occupiedColor[Color.WHITE.ordinal()];
+        long blackCastling = castling & RANK_8 & this.occupiedColor[Color.BLACK.ordinal()];
 
         whiteCastling &= (A1 | H1);
         blackCastling &= (A8 | H8);
 
-        if ((this.whitePieces & this.kings & ~this.promoted & E1) == 0) {
+        if ((this.occupiedColor[Color.WHITE.ordinal()] & this.kings & ~this.promoted & E1) == 0) {
             whiteCastling = 0;
         }
-        if ((this.blackPieces & this.kings & ~this.promoted & E8) == 0) {
+        if ((this.occupiedColor[Color.BLACK.ordinal()] & this.kings & ~this.promoted & E8) == 0) {
             blackCastling = 0;
         }
         return whiteCastling | blackCastling;
@@ -715,8 +710,7 @@ public class Board extends BaseBoard {
      */
     public boolean hasKingsideCastlingRights(Color color) {
         long backrank = color == Color.WHITE ? RANK_1 : RANK_8;
-        long colorMask = color == Color.WHITE ? this.whitePieces : this.blackPieces;
-        long kingMask = this.kings & colorMask & backrank;
+        long kingMask = this.kings & this.occupiedColor[color.ordinal()] & backrank;
 
         if (kingMask == 0) {
             return false;
@@ -735,8 +729,7 @@ public class Board extends BaseBoard {
      */
     public boolean hasQueensideCastlingRights(Color color) {
         long backrank = color == Color.WHITE ? RANK_1 : RANK_8;
-        long colorMask = color == Color.WHITE ? this.whitePieces : this.blackPieces;
-        long kingMask = this.kings & colorMask & backrank;
+        long kingMask = this.kings & this.occupiedColor[color.ordinal()] & backrank;
 
         if (kingMask == 0) {
             return false;
@@ -821,15 +814,14 @@ public class Board extends BaseBoard {
                 this.occupied & ~SQUARES[lastDouble]
                 & ~SQUARES[capturer.ordinal()] | SQUARES[this.epSquare.ordinal()]);
 
-        long colorMask = this.turn.equals(Color.WHITE) ? this.blackPieces : this.whitePieces;
-        long horizontalAttackers = colorMask & (this.rooks | this.queens);
+        long horizontalAttackers = this.occupiedColor[turn.other().ordinal()] & (this.rooks | this.queens);
         if ((
                     RANK_ATTACKS.get(kingSquare.ordinal())
                             .get((RANK_MASKS[kingSquare.ordinal()] & occupancy)) & horizontalAttackers) != 0) {
             return true;
         }
 
-        long diagonalAttackers = colorMask & (this.bishops | this.queens);
+        long diagonalAttackers = this.occupiedColor[turn.other().ordinal()] & (this.bishops | this.queens);
         if ((
                     DIAGONAL_ATTACKS.get(kingSquare.ordinal())
                             .get((DIAGONAL_MASKS[kingSquare.ordinal()] & occupancy)) & diagonalAttackers) != 0) {
@@ -865,7 +857,7 @@ public class Board extends BaseBoard {
             long rays = attack[0];
             if ((rays & squareMask) != 0) {
                 long snipers =
-                        rays & attack[1] & this.occupied & (color == Color.WHITE ? this.blackPieces : this.whitePieces);
+                        rays & attack[1] & this.occupied & this.occupiedColor[color.other().ordinal()];
                 for (int sniper : BitboardUtils.scanReversed(snipers)) {
                     if ((BitboardUtils.between(sniper, king.ordinal()) & (this.occupied | squareMask)) == squareMask) {
                         return BitboardUtils.ray(king.ordinal(), sniper);
@@ -898,8 +890,8 @@ public class Board extends BaseBoard {
     public boolean isCastling(Move move) {
         if ((this.kings & SQUARES[move.getSource().ordinal()]) != 0) {
             int diff = move.getSource().getFileIndex() - move.getTarget().getFileIndex();
-            long colorMask = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
-            return Math.abs(diff) > 1 || ((this.rooks & colorMask & SQUARES[move.getTarget().ordinal()]) != 0);
+            return Math.abs(diff) > 1 || (
+                    (this.rooks & this.occupiedColor[turn.ordinal()] & SQUARES[move.getTarget().ordinal()]) != 0);
         }
         return false;
     }
@@ -956,8 +948,8 @@ public class Board extends BaseBoard {
                 | (DIAGONAL_ATTACKS.get(kingSquareIndex).get(0L) & bishopsAndQueens));
 
         long blockers = 0;
-        long colorMask = this.turn == Color.WHITE ? this.blackPieces : this.whitePieces;
-        for (int sniper : BitboardUtils.scanReversed(snipers & colorMask)) {
+
+        for (int sniper : BitboardUtils.scanReversed(snipers & this.occupiedColor[turn.other().ordinal()])) {
             long b = BitboardUtils.between(kingSquareIndex, sniper) & this.occupied;
 
             if (b != 0 && SQUARES[BitboardUtils.msb(b)] == b) {
@@ -965,7 +957,7 @@ public class Board extends BaseBoard {
             }
         }
 
-        return blockers & (this.occupied & ~colorMask);
+        return blockers & (this.occupied & ~this.occupiedColor[turn.other().ordinal()]);
     }
 
     /**
@@ -987,8 +979,7 @@ public class Board extends BaseBoard {
             attacked |= BitboardUtils.ray(kingSquareIndex, checker) & ~SQUARES[checker];
         }
         if ((SQUARES[kingSquareIndex] & sourceMask) != 0) {
-            long colorMask = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
-            long mask = KING_ATTACKS[kingSquareIndex] & ~colorMask & ~attacked & targetMask;
+            long mask = KING_ATTACKS[kingSquareIndex] & ~this.occupiedColor[turn.ordinal()] & ~attacked & targetMask;
             int[] targets = BitboardUtils.scanReversed(mask);
             for (int target : targets) {
                 moves.add(new Move(Square.fromIndex(kingSquareIndex), Square.fromIndex(target)));
@@ -1025,9 +1016,7 @@ public class Board extends BaseBoard {
 
         long sourceMask = SQUARES[move.getSource().ordinal()];
 
-        long colorMask = turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
-
-        if ((colorMask & sourceMask) == 0) {
+        if ((this.occupiedColor[turn.ordinal()] & sourceMask) == 0) {
             return false;
         }
 
@@ -1050,7 +1039,7 @@ public class Board extends BaseBoard {
         }
         long targetMask = SQUARES[move.getTarget().ordinal()];
 
-        if ((colorMask & targetMask) != 0) {
+        if ((this.occupiedColor[turn.ordinal()] & targetMask) != 0) {
             return false;
         }
 
@@ -1156,7 +1145,6 @@ public class Board extends BaseBoard {
 
         long sourceMask = SQUARES[move.getSource().ordinal()];
         long targetMask = SQUARES[move.getTarget().ordinal()];
-        long colorMask = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
 
         boolean promoted = (this.promoted & sourceMask) != 0;
         PieceType type = removePieceType(move.getSource());
@@ -1253,9 +1241,8 @@ public class Board extends BaseBoard {
      */
     private boolean isZeroingMove(Move move) {
         long moveMask = SQUARES[move.getSource().ordinal()] ^ SQUARES[move.getTarget().ordinal()];
-        long otherColorMask = this.turn.equals(Color.WHITE) ? this.blackPieces : this.whitePieces;
 
-        return (moveMask & this.pawns) != 0 || (moveMask & otherColorMask) != 0;
+        return (moveMask & this.pawns) != 0 || (moveMask & this.occupiedColor[turn.other().ordinal()]) != 0;
     }
 
     /**
@@ -1335,8 +1322,7 @@ public class Board extends BaseBoard {
 
         // filter target square
         Square targetSquare = Square.parseSquare(matcher.group(4));
-        long colorMask = this.turn.equals(Color.WHITE) ? this.whitePieces : this.blackPieces;
-        long targetMask = SQUARES[targetSquare.ordinal()] & ~colorMask;
+        long targetMask = SQUARES[targetSquare.ordinal()] & ~this.occupiedColor[turn.ordinal()];
 
         // filter piece type
         PieceType pieceType = PieceType.PAWN;
@@ -1387,11 +1373,11 @@ public class Board extends BaseBoard {
             errors.add(Status.EMPTY);
         }
 
-        if ((this.whitePieces & this.kings) == 0) {
+        if ((this.occupiedColor[Color.WHITE.ordinal()] & this.kings) == 0) {
             errors.add(Status.NO_WHITE_KING);
         }
 
-        if ((this.blackPieces & this.kings) == 0) {
+        if ((this.occupiedColor[Color.BLACK.ordinal()] & this.kings) == 0) {
             errors.add(Status.NO_BLACK_KING);
         }
 
@@ -1399,19 +1385,19 @@ public class Board extends BaseBoard {
             errors.add(Status.TOO_MANY_KINGS);
         }
 
-        if (Long.bitCount(this.whitePieces) > 16) {
+        if (Long.bitCount(this.occupiedColor[Color.WHITE.ordinal()]) > 16) {
             errors.add(Status.TOO_MANY_WHITE_PIECES);
         }
 
-        if (Long.bitCount(this.blackPieces) > 16) {
+        if (Long.bitCount(this.occupiedColor[Color.BLACK.ordinal()]) > 16) {
             errors.add(Status.TOO_MANY_BLACK_PIECES);
         }
 
-        if (Long.bitCount(this.whitePieces & this.pawns) > 8) {
+        if (Long.bitCount(this.occupiedColor[Color.WHITE.ordinal()] & this.pawns) > 8) {
             errors.add(Status.TOO_MANY_WHITE_PAWNS);
         }
 
-        if (Long.bitCount(this.blackPieces & this.pawns) > 8) {
+        if (Long.bitCount(this.occupiedColor[Color.BLACK.ordinal()] & this.pawns) > 8) {
             errors.add(Status.TOO_MANY_BLACK_PAWNS);
         }
 
@@ -1433,7 +1419,7 @@ public class Board extends BaseBoard {
         }
 
         long checkers = this.checkers_mask();
-        long ourKings = this.kings & (this.turn == Color.WHITE ? this.whitePieces : this.blackPieces);
+        long ourKings = this.kings & this.occupiedColor[turn.ordinal()];
 
         if (checkers != 0) {
             if (Long.bitCount(checkers) > 2) {
@@ -1503,8 +1489,7 @@ public class Board extends BaseBoard {
             return null;
         }
 
-        long otherColorMask = this.turn == Color.WHITE ? this.blackPieces : this.whitePieces;
-        if ((this.pawns & pawnMask & otherColorMask) == 0) {
+        if ((this.pawns & pawnMask & this.occupiedColor[turn.other().ordinal()]) == 0) {
             return null;
         }
 
@@ -1587,7 +1572,7 @@ public class Board extends BaseBoard {
      * @return True if the given color has insufficient material to checkmate the opponent, false otherwise.
      */
     public boolean hasInsufficientMaterial(Color color) {
-        long colorMask = color == Color.WHITE ? this.whitePieces : this.blackPieces;
+        long colorMask = this.occupiedColor[color.ordinal()];
 
         if ((colorMask & (this.rooks | this.queens | this.pawns)) != 0) {
             return false;
@@ -1950,7 +1935,7 @@ public class Board extends BaseBoard {
      */
     public boolean isCapture(Move move) {
         long targetMask = SQUARES[move.getTarget().ordinal()];
-        long otherColorMask = this.turn == Color.WHITE ? this.blackPieces : this.whitePieces;
+        long otherColorMask = this.occupiedColor[turn.other().ordinal()];
 
         return (targetMask & otherColorMask) != 0 || this.isEnPassant(move);
     }
@@ -2127,8 +2112,12 @@ public class Board extends BaseBoard {
         long touched = SQUARES[move.getSource().ordinal()] ^ SQUARES[move.getTarget().ordinal()];
 
         return (touched & castlingRights) != 0
-               || ((castlingRights & RANK_1) != 0 && (touched & this.kings & this.whitePieces & ~this.promoted) != 0)
-               || ((castlingRights & RANK_8) != 0 && (touched & this.kings & this.blackPieces & ~this.promoted) != 0);
+               || (
+                       (castlingRights & RANK_1) != 0
+                       && (touched & this.kings & this.occupiedColor[Color.WHITE.ordinal()] & ~this.promoted) != 0)
+               || (
+                       (castlingRights & RANK_8) != 0
+                       && (touched & this.kings & this.occupiedColor[Color.BLACK.ordinal()] & ~this.promoted) != 0);
     }
 
     /**

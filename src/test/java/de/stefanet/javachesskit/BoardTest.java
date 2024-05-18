@@ -898,7 +898,7 @@ class BoardTest {
 		assertEquals(fen, board.getFen());
 		assertTrue((board.kings & Bitboard.Squares.G1) != 0);
 		assertTrue((board.occupied & Bitboard.Squares.G1) != 0);
-		assertTrue((board.whitePieces & Bitboard.Squares.G1) != 0);
+		assertTrue((board.occupiedColor[Color.WHITE.ordinal()] & Bitboard.Squares.G1) != 0);
 		assertEquals(Piece.fromTypeAndColor(PieceType.KING, Color.WHITE), board.pieceAt(Square.G1));
 		assertEquals(Piece.fromTypeAndColor(PieceType.ROOK, Color.WHITE), board.pieceAt(Square.C1));
 	}

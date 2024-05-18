@@ -2,6 +2,7 @@ package de.stefanet.javachesskit;
 
 import de.stefanet.javachesskit.core.Color;
 import de.stefanet.javachesskit.core.Square;
+import java.util.Arrays;
 
 /**
  * BoardState is a snapshot of the board state.
@@ -15,8 +16,7 @@ public class BoardState {
     private long kings;
 
     private long promoted;
-    private long whitePieces;
-    private long blackPieces;
+    private long[] occupiedColor;
     protected long occupied;
 
     private Color turn;
@@ -40,10 +40,8 @@ public class BoardState {
         this.queens = board.queens;
         this.kings = board.kings;
 
-
         this.occupied = board.occupied;
-        this.whitePieces = board.whitePieces;
-        this.blackPieces = board.blackPieces;
+        this.occupiedColor = Arrays.copyOf(board.occupiedColor, 2);
 
         this.promoted = board.promoted;
         this.turn = board.turn;
@@ -67,8 +65,7 @@ public class BoardState {
         board.kings = this.kings;
 
         board.occupied = this.occupied;
-        board.whitePieces = this.whitePieces;
-        board.blackPieces = this.blackPieces;
+        board.occupiedColor = Arrays.copyOf(this.occupiedColor, 2);
 
         board.promoted = this.promoted;
         board.turn = this.turn;

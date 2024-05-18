@@ -38,8 +38,7 @@ public class BaseBoard {
     protected long kings;
 
     protected long promoted;
-    protected long whitePieces;
-    protected long blackPieces;
+    protected long[] occupiedColor = new long[2];
     protected long occupied;
 
     /**
@@ -84,8 +83,7 @@ public class BaseBoard {
 
         this.promoted = 0;
 
-        this.whitePieces = 0;
-        this.blackPieces = 0;
+        this.occupiedColor = new long[2];
         this.occupied = 0;
     }
 
@@ -102,8 +100,8 @@ public class BaseBoard {
 
         this.promoted = 0;
 
-        this.whitePieces = RANK_1 | RANK_2;
-        this.blackPieces = RANK_7 | RANK_8;
+        this.occupiedColor[Color.WHITE.ordinal()] = RANK_1 | RANK_2;
+        this.occupiedColor[Color.BLACK.ordinal()] = RANK_7 | RANK_8;
         this.occupied = RANK_1 | RANK_2 | RANK_7 | RANK_8;
     }
 
@@ -119,22 +117,22 @@ public class BaseBoard {
 
         switch (type) {
             case PAWN:
-                pieceMask = color == Color.WHITE ? this.pawns & this.whitePieces : this.pawns & this.blackPieces;
+                pieceMask = this.occupiedColor[color.ordinal()] & this.pawns;
                 break;
             case KNIGHT:
-                pieceMask = color == Color.WHITE ? this.knights & this.whitePieces : this.knights & this.blackPieces;
+                pieceMask = this.occupiedColor[color.ordinal()] & this.knights;
                 break;
             case BISHOP:
-                pieceMask = color == Color.WHITE ? this.bishops & this.whitePieces : this.bishops & this.blackPieces;
+                pieceMask = this.occupiedColor[color.ordinal()] & this.bishops;
                 break;
             case ROOK:
-                pieceMask = color == Color.WHITE ? this.rooks & this.whitePieces : this.rooks & this.blackPieces;
+                pieceMask = this.occupiedColor[color.ordinal()] & this.rooks;
                 break;
             case QUEEN:
-                pieceMask = color == Color.WHITE ? this.queens & this.whitePieces : this.queens & this.blackPieces;
+                pieceMask = this.occupiedColor[color.ordinal()] & this.queens;
                 break;
             case KING:
-                pieceMask = color == Color.WHITE ? this.kings & this.whitePieces : this.kings & this.blackPieces;
+                pieceMask = this.occupiedColor[color.ordinal()] & this.kings;
                 break;
             default:
                 break;
@@ -157,8 +155,8 @@ public class BaseBoard {
         board.queens = this.queens;
         board.kings = this.kings;
 
-        board.whitePieces = this.whitePieces;
-        board.blackPieces = this.blackPieces;
+        board.occupiedColor[Color.WHITE.ordinal()] = this.occupiedColor[Color.WHITE.ordinal()];
+        board.occupiedColor[Color.BLACK.ordinal()] = this.occupiedColor[Color.BLACK.ordinal()];
         board.occupied = this.occupied;
         board.promoted = this.promoted;
 
@@ -175,7 +173,7 @@ public class BaseBoard {
         long mask = SQUARES[square.ordinal()];
         PieceType type = pieceTypeAt(square);
         if (type != null) {
-            Color color = Color.fromBoolean((this.whitePieces & mask) != 0);
+            Color color = Color.fromBoolean((this.occupiedColor[Color.WHITE.ordinal()] & mask) != 0);
             return Piece.fromTypeAndColor(type, color);
         }
         return null;
@@ -260,11 +258,7 @@ public class BaseBoard {
         }
 
         this.occupied ^= mask;
-        if (color == Color.WHITE) {
-            this.whitePieces ^= mask;
-        } else {
-            this.blackPieces ^= mask;
-        }
+        this.occupiedColor[color.ordinal()] ^= mask;
 
         if (promoted) {
             this.promoted ^= mask;
@@ -278,7 +272,7 @@ public class BaseBoard {
      * @return The removed piece. If there is no piece at the square, it returns null.
      */
     public Piece removePiece(Square square) {
-        Color color = Color.fromBoolean((this.whitePieces & SQUARES[square.ordinal()]) != 0);
+        Color color = Color.fromBoolean((this.occupiedColor[Color.WHITE.ordinal()] & SQUARES[square.ordinal()]) != 0);
         PieceType pieceType = removePieceType(square);
 
         if (pieceType != null) {
@@ -315,8 +309,8 @@ public class BaseBoard {
         }
 
         this.occupied ^= mask;
-        this.whitePieces &= ~mask;
-        this.blackPieces &= ~mask;
+        this.occupiedColor[Color.WHITE.ordinal()] &= ~mask;
+        this.occupiedColor[Color.BLACK.ordinal()] &= ~mask;
         this.promoted &= ~mask;
 
         return type;
@@ -330,9 +324,9 @@ public class BaseBoard {
      */
     public Color colorAt(Square square) {
         long mask = SQUARES[square.ordinal()];
-        if ((this.whitePieces & mask) != 0) {
+        if ((this.occupiedColor[Color.WHITE.ordinal()] & mask) != 0) {
             return Color.WHITE;
-        } else if ((this.blackPieces & mask) != 0) {
+        } else if ((this.occupiedColor[Color.BLACK.ordinal()] & mask) != 0) {
             return Color.BLACK;
         } else {
             return null;
@@ -346,8 +340,7 @@ public class BaseBoard {
      * @return The square of the king of the given color. If there is no king of the given color, it returns null.
      */
     public Square getKingSquare(Color color) {
-        long colorMask = (color == Color.WHITE) ? this.whitePieces : this.blackPieces;
-        long kingMask = this.kings & colorMask & ~this.promoted;
+        long kingMask = this.kings & this.occupiedColor[color.ordinal()] & ~this.promoted;
         if (kingMask != 0) {
             return Square.fromIndex(BitboardUtils.msb(kingMask));
         }
@@ -378,7 +371,7 @@ public class BaseBoard {
         long mask = SQUARES[square.ordinal()];
 
         if ((mask & this.pawns) != 0) {
-            int color = (mask & this.whitePieces) != 0 ? 0 : 1;
+            int color = (mask & this.occupiedColor[Color.WHITE.ordinal()]) != 0 ? 0 : 1;
             return PAWN_ATTACKS[color][square.ordinal()];
         } else if ((mask & this.knights) != 0) {
             return KNIGHT_ATTACKS[square.ordinal()];
@@ -446,7 +439,7 @@ public class BaseBoard {
                          | FILE_ATTACKS.get(square.ordinal()).get(filePieces) & queensAndRooks
                          | DIAGONAL_ATTACKS.get(square.ordinal()).get(diagPieces) & queensAndBishops
                          | PAWN_ATTACKS[color.other().ordinal()][square.ordinal()] & this.pawns;
-        return attackers & (color == Color.WHITE ? this.whitePieces : this.blackPieces);
+        return attackers & this.occupiedColor[color.ordinal()];
     }
 
     /**
@@ -629,22 +622,22 @@ public class BaseBoard {
             return false;
         }
         BaseBoard board = (BaseBoard) o;
-        return pawns == board.pawns
-               && knights == board.knights
-               && bishops == board.bishops
-               && rooks == board.rooks
-               && queens == board.queens
-               && kings == board.kings
-               && promoted == board.promoted
-               && whitePieces == board.whitePieces
-               && blackPieces == board.blackPieces
-               && occupied == board.occupied;
+        return this.pawns == board.pawns
+               && this.knights == board.knights
+               && this.bishops == board.bishops
+               && this.rooks == board.rooks
+               && this.queens == board.queens
+               && this.kings == board.kings
+               && this.promoted == board.promoted
+               && this.occupiedColor[Color.WHITE.ordinal()] == board.occupiedColor[Color.WHITE.ordinal()]
+               && this.occupiedColor[Color.BLACK.ordinal()] == board.occupiedColor[Color.BLACK.ordinal()]
+               && this.occupied == board.occupied;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(pawns, knights, bishops, rooks, queens,
-                            kings, promoted, whitePieces, blackPieces, occupied);
+                            kings, promoted, this.occupiedColor[Color.WHITE.ordinal()], this.occupiedColor[Color.BLACK.ordinal()], occupied);
     }
 
     @Override
@@ -768,11 +761,11 @@ public class BaseBoard {
     }
 
     public long getWhitePieces() {
-        return whitePieces;
+        return this.occupiedColor[Color.WHITE.ordinal()];
     }
 
     public long getBlackPieces() {
-        return blackPieces;
+        return this.occupiedColor[Color.BLACK.ordinal()];
     }
 
     public long getOccupied() {
@@ -785,9 +778,9 @@ public class BaseBoard {
      * <p>The board is mirrored along the vertical axis, e.g. A1 is mirrored to A8 and H1 to H8.
      */
     public void applyMirror() {
-        long temp = this.blackPieces;
-        this.blackPieces = this.whitePieces;
-        this.whitePieces = temp;
+        long temp = this.occupiedColor[Color.BLACK.ordinal()];
+        this.occupiedColor[Color.BLACK.ordinal()] = this.occupiedColor[Color.WHITE.ordinal()];
+        this.occupiedColor[Color.WHITE.ordinal()] = temp;
         this.applyTransform(BitboardUtils::flipVertical);
     }
 
@@ -810,8 +803,8 @@ public class BaseBoard {
         this.queens = transform.apply(this.queens);
         this.kings = transform.apply(this.kings);
 
-        this.whitePieces = transform.apply(this.whitePieces);
-        this.blackPieces = transform.apply(this.blackPieces);
+        this.occupiedColor[Color.WHITE.ordinal()] = transform.apply(this.occupiedColor[Color.WHITE.ordinal()]);
+        this.occupiedColor[Color.BLACK.ordinal()] = transform.apply(this.occupiedColor[Color.BLACK.ordinal()]);
         this.occupied = transform.apply(this.occupied);
         this.promoted = transform.apply(this.promoted);
     }
