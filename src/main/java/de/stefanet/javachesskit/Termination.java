@@ -31,5 +31,5 @@ public enum Termination {
     /**
      * End of the game by Fivefold repetition rule.
      */
-    FIVEFOLD_REPETITION;
+    FIVEFOLD_REPETITION
 }

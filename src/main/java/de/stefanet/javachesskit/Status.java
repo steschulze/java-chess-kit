@@ -18,5 +18,5 @@ public enum Status {
     OPPOSITE_CHECK,
     EMPTY,
     TOO_MANY_CHECKERS,
-    IMPOSSIBLE_CHECK;
+    IMPOSSIBLE_CHECK
 }
