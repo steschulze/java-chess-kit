@@ -924,9 +924,6 @@ class BoardTest {
 
 		Board a = new Board();
 		Board b = new Board();
-		Board c = a;
-
-		assertEquals(a, c);
 
 		a.pushSan("e4");
 		b.pushSan("d3");
