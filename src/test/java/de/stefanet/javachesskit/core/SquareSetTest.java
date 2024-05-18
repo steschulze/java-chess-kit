@@ -16,8 +16,8 @@ class SquareSetTest {
 
     @Test
     void testEqual() {
-        SquareSet set = new SquareSet(Bitboard.Ranks.RANK_6);
-        SquareSet other = new SquareSet(Bitboard.Ranks.RANK_6);
+        SquareSet set = new SquareSet(Bitboard.CENTER);
+        SquareSet other = new SquareSet(Bitboard.CENTER);
 
         assertEquals(set, other);
     }
