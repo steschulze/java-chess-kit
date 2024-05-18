@@ -1612,8 +1612,6 @@ class BoardTest {
 	@Test
 	void testPush_withEmptySquare() {
 		Board board = new Board();
-		assertThrows(IllegalMoveException.class, () -> {
-            board.push(Move.fromUci("e4e5"));
-		});
+		assertThrows(IllegalMoveException.class, () -> board.push(Move.fromUci("e4e5")));
 	}
 }

@@ -19,13 +19,9 @@ class MoveTest {
 
     @Test
     void testMoveCreation_wrongPromotion() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Move(Square.parseSquare("e4"), Square.parseSquare("e5"), PieceType.KNIGHT);
-        });
+        assertThrows(IllegalArgumentException.class, () -> new Move(Square.E4, Square.E5, PieceType.KNIGHT));
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Move(Square.parseSquare("e7"), Square.parseSquare("e8"), PieceType.PAWN);
-        });
+        assertThrows(IllegalArgumentException.class, () -> new Move(Square.E7, Square.E8, PieceType.PAWN));
     }
 
     @Test
