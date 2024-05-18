@@ -1614,4 +1614,20 @@ class BoardTest {
 		Board board = new Board();
 		assertThrows(IllegalMoveException.class, () -> board.push(Move.fromUci("e4e5")));
 	}
+
+	@Test
+	void testPushSan() {
+		Board board = new Board();
+		Move move = board.pushSan("e4");
+		assertEquals("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", board.getFen());
+		assertEquals("e2e4", move.getUciMove());
+	}
+
+	@Test
+	void testPushUci() {
+		Board board = new Board();
+		Move move = board.pushUci("g1f3");
+		assertEquals("rnbqkbnr/pppppppp/8/8/8/5N2/PPPPPPPP/RNBQKB1R b KQkq - 1 1", board.getFen());
+		assertEquals("g1f3", move.getUciMove());
+	}
 }
