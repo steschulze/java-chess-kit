@@ -68,7 +68,7 @@ public class LegalMoveGenerator implements Iterable<Move> {
      */
     public int count() {
         int count = 0;
-        for (Move move : this) {
+        for (Move ignored : this) {
             count++;
         }
         return count;
