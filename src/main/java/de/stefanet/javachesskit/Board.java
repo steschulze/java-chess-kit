@@ -209,21 +209,6 @@ public class Board extends BaseBoard {
     }
 
     /**
-     * Removes the piece from the given square.
-     *
-     * <p>This also clears the move and board state stack.
-     *
-     * @param square The given square
-     * @return The removed piece. If there is no piece on the square, returns null.
-     */
-    @Override
-    public Piece removePiece(Square square) {
-        Piece piece = super.removePiece(square);
-        this.clearStack();
-        return piece;
-    }
-
-    /**
      * Clears the board.
      *
      * <p>This also resets the move counters, removes the castling rights
