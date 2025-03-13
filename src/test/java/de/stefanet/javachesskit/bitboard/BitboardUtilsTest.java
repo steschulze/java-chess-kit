@@ -172,7 +172,7 @@ class BitboardUtilsTest {
 	}
 
 	@Test
-	void testShiftLefttA() {
+	void testShiftLeftA() {
 		long input = 0x01_01_01_01_01_01_01_01L;
 		long result = BitboardUtils.shiftLeft(input);
 

@@ -2019,9 +2019,9 @@ public class Board extends BaseBoard {
     }
 
     /**
-     * Checks if the player to move can claim a draw by Fifty moves rule or by treefold repetition.
+     * Checks if the player to move can claim a draw by Fifty moves rule or by threefold repetition.
      *
-     * @return True if the player to move can claim a draw by Fifty moves rule or by treefold repetition,
+     * @return True if the player to move can claim a draw by Fifty moves rule or by threefold repetition,
      *         false otherwise.
      */
     public boolean canClaimDraw() {
@@ -2029,12 +2029,12 @@ public class Board extends BaseBoard {
     }
 
     /**
-     * Checks if the player to move can claim a draw by treefold repetition.
+     * Checks if the player to move can claim a draw by threefold repetition.
      *
      * <p>If the position occurred the third time or if there is a legal move to reach such a repetition
      * a draw can be claimed.
      *
-     * @return True if the player to move can claim a draw by treefold repetition, false otherwise.
+     * @return True if the player to move can claim a draw by threefold repetition, false otherwise.
      */
     public boolean canClaimThreefoldRepetition() {
         int transpositionKey = this.hashCode();
