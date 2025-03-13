@@ -660,23 +660,23 @@ public class BaseBoard {
     }
 
     /**
-     * Returns a unicode representation of the board.
+     * Returns a Unicode representation of the board.
      *
-     * @return A unicode representation of the board.
+     * @return A Unicode representation of the board.
      */
     public String unicode() {
         return unicode(false, false, '·', Color.WHITE);
     }
 
     /**
-     * Returns a unicode representation of the board with the option to invert colors,
+     * Returns a Unicode representation of the board with the option to invert colors,
      * display a border and set the empty square character.
      *
      * @param invertColor If true, the board is displayed with inverted colors.
      * @param border      If true, the board is displayed with a border.
      * @param emptySquare The character used for an empty square.
      * @param orientation The orientation of the board. The starting color is at the bottom.
-     * @return A unicode representation of the board.
+     * @return A Unicode representation of the board.
      */
     public String unicode(boolean invertColor, boolean border, char emptySquare, Color orientation) {
         StringBuilder sb = new StringBuilder();
