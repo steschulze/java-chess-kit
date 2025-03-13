@@ -636,8 +636,9 @@ public class BaseBoard {
 
     @Override
     public int hashCode() {
-        return Objects.hash(pawns, knights, bishops, rooks, queens,
-                            kings, promoted, this.occupiedColor[Color.WHITE.ordinal()], this.occupiedColor[Color.BLACK.ordinal()], occupied);
+        return Objects.hash(pawns, knights, bishops, rooks, queens, kings, promoted, occupied,
+                            this.occupiedColor[Color.WHITE.ordinal()],
+                            this.occupiedColor[Color.BLACK.ordinal()]);
     }
 
     @Override

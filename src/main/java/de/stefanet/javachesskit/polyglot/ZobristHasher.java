@@ -12,6 +12,7 @@ import de.stefanet.javachesskit.core.Square;
  * Class for hashing chess positions using the Zobrist hashing algorithm.
  */
 public class ZobristHasher {
+    private static final int SIZE = 781;
     private final long[] randomArray;
 
     /**
@@ -21,7 +22,6 @@ public class ZobristHasher {
      */
     public ZobristHasher(int seed) {
         PseudoRandomNumberGenerator prng = new PseudoRandomNumberGenerator(seed);
-        int SIZE = 781;
         this.randomArray = new long[SIZE];
 
         for (int i = 0; i < SIZE; i++) {
