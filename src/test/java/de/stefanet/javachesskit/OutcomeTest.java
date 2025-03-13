@@ -8,37 +8,37 @@ import org.junit.jupiter.api.Test;
 
 class OutcomeTest {
 
-	@Test
-	void testResult_stalemate() {
-		Outcome outcome = new Outcome(Termination.STALEMATE, null);
+    @Test
+    void testResult_stalemate() {
+        Outcome outcome = new Outcome(Termination.STALEMATE, null);
 
-		assertEquals(Termination.STALEMATE, outcome.getTermination());
-		assertNull(outcome.getWinner());
+        assertEquals(Termination.STALEMATE, outcome.getTermination());
+        assertNull(outcome.getWinner());
 
-		assertEquals("1/2-1/2", outcome.result());
-		assertEquals("Outcome{termination=STALEMATE, winner=null}", outcome.toString());
-	}
+        assertEquals("1/2-1/2", outcome.result());
+        assertEquals("Outcome{termination=STALEMATE, winner=null}", outcome.toString());
+    }
 
-	@Test
-	void testResult_whiteWins() {
-		Outcome outcome = new Outcome(Termination.CHECKMATE, Color.WHITE);
+    @Test
+    void testResult_whiteWins() {
+        Outcome outcome = new Outcome(Termination.CHECKMATE, Color.WHITE);
 
-		assertEquals(Termination.CHECKMATE, outcome.getTermination());
-		assertEquals(Color.WHITE, outcome.getWinner());
+        assertEquals(Termination.CHECKMATE, outcome.getTermination());
+        assertEquals(Color.WHITE, outcome.getWinner());
 
-		assertEquals("1-0", outcome.result());
-		assertEquals("Outcome{termination=CHECKMATE, winner=WHITE}", outcome.toString());
-	}
+        assertEquals("1-0", outcome.result());
+        assertEquals("Outcome{termination=CHECKMATE, winner=WHITE}", outcome.toString());
+    }
 
-	@Test
-	void testResult_blackWins() {
-		Outcome outcome = new Outcome(Termination.CHECKMATE, Color.BLACK);
+    @Test
+    void testResult_blackWins() {
+        Outcome outcome = new Outcome(Termination.CHECKMATE, Color.BLACK);
 
-		assertEquals(Termination.CHECKMATE, outcome.getTermination());
-		assertEquals(Color.BLACK, outcome.getWinner());
+        assertEquals(Termination.CHECKMATE, outcome.getTermination());
+        assertEquals(Color.BLACK, outcome.getWinner());
 
-		assertEquals("0-1", outcome.result());
-		assertEquals("Outcome{termination=CHECKMATE, winner=BLACK}", outcome.toString());
-	}
+        assertEquals("0-1", outcome.result());
+        assertEquals("Outcome{termination=CHECKMATE, winner=BLACK}", outcome.toString());
+    }
 
 }
