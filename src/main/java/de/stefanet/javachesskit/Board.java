@@ -19,7 +19,6 @@ import static de.stefanet.javachesskit.bitboard.Bitboard.Squares.H8;
 import de.stefanet.javachesskit.bitboard.Bitboard;
 import de.stefanet.javachesskit.bitboard.BitboardUtils;
 import de.stefanet.javachesskit.core.Color;
-import de.stefanet.javachesskit.core.Piece;
 import de.stefanet.javachesskit.core.PieceType;
 import de.stefanet.javachesskit.core.Square;
 import de.stefanet.javachesskit.move.AmbiguousMoveException;
