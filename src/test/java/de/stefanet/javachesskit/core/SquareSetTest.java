@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.stefanet.javachesskit.bitboard.Bitboard;
-import org.junit.jupiter.api.Test;
 import java.util.Iterator;
+import org.junit.jupiter.api.Test;
 
 class SquareSetTest {
 

@@ -13,8 +13,8 @@ import de.stefanet.javachesskit.core.Color;
 import de.stefanet.javachesskit.core.Piece;
 import de.stefanet.javachesskit.core.PieceType;
 import de.stefanet.javachesskit.core.Square;
-import org.junit.jupiter.api.Test;
 import java.util.Collections;
+import org.junit.jupiter.api.Test;
 
 class BaseBoardTest {
 

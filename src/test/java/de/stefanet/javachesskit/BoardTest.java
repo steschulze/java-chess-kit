@@ -18,13 +18,13 @@ import de.stefanet.javachesskit.move.AmbiguousMoveException;
 import de.stefanet.javachesskit.move.IllegalMoveException;
 import de.stefanet.javachesskit.move.Move;
 import de.stefanet.javachesskit.polyglot.Polyglot;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class BoardTest {
 
