@@ -51,36 +51,36 @@ class BoardTest {
 
     @Test
     void testInvalidFEN_invalidTurnPart() {
-        Exception exception = assertThrows(InvalidFenException.class,
-                                           () -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR W KQkq - 0 1"));
+        String fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR W KQkq - 0 1";
+        Exception exception = assertThrows(InvalidFenException.class, () -> new Board(fen));
         assertEquals("Turn part of the FEN is invalid: Expected w or b, but was W", exception.getMessage());
     }
 
     @Test
     void testInvalidFEN_invalidCastlingPart() {
-        Exception exception = assertThrows(InvalidFenException.class,
-                                           () -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQqk - 0 1"));
+        String fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQqk - 0 1";
+        Exception exception = assertThrows(InvalidFenException.class, () -> new Board(fen));
         assertEquals("Castling part of the FEN is invalid", exception.getMessage());
     }
 
     @Test
     void testInvalidFEN_invalidEnPassantPart() {
-        Exception exception = assertThrows(InvalidFenException.class,
-                                           () -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq f5 0 1"));
+        String fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq f5 0 1";
+        Exception exception = assertThrows(InvalidFenException.class, () -> new Board(fen));
         assertEquals("En-passant part of the FEN is invalid", exception.getMessage());
     }
 
     @Test
     void testInvalidFEN_invalidHalfMovePart() {
-        Exception exception = assertThrows(InvalidFenException.class,
-                                           () -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 012 1"));
+        String fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 012 1";
+        Exception exception = assertThrows(InvalidFenException.class, () -> new Board(fen));
         assertEquals("Half move part of the FEN is invalid", exception.getMessage());
     }
 
     @Test
     void testInvalidFEN_invalidFullMovePart() {
-        Exception exception = assertThrows(InvalidFenException.class,
-                                           () -> new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"));
+        String fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0";
+        Exception exception = assertThrows(InvalidFenException.class, () -> new Board(fen));
         assertEquals("Full move part of the FEN is invalid", exception.getMessage());
     }
 
