@@ -1382,8 +1382,11 @@ class BoardTest {
         pin = Bitboard.Squares.E1 | Bitboard.Squares.F2 | Bitboard.Squares.G3 | Bitboard.Squares.H4;
         assertEquals(pin, board.pinMask(Color.WHITE, Square.F2));
 
-        pin = Bitboard.Squares.E1 | Bitboard.Squares.D2 | Bitboard.Squares.C3 | Bitboard.Squares.B4
-              | Bitboard.Squares.A5;
+        pin = Bitboard.Squares.E1 |
+              Bitboard.Squares.D2 |
+              Bitboard.Squares.C3 |
+              Bitboard.Squares.B4 |
+              Bitboard.Squares.A5;
         assertEquals(pin, board.pinMask(Color.WHITE, Square.D2));
     }
 

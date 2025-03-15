@@ -32,24 +32,16 @@ class SquareSetTest {
 
     @Test
     void testHashCode_withSameMask() {
-        SquareSet set1 = new SquareSet(
-                Bitboard.Squares.A1
-                | Bitboard.Squares.C3);
-        SquareSet set2 = new SquareSet(
-                Bitboard.Squares.A1
-                | Bitboard.Squares.C3);
+        SquareSet set1 = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.C3);
+        SquareSet set2 = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.C3);
 
         assertEquals(set1.hashCode(), set2.hashCode());
     }
 
     @Test
     void hashCode_withDifferentMask() {
-        SquareSet set1 = new SquareSet(
-                Bitboard.Squares.A1
-                | Bitboard.Squares.C3);
-        SquareSet set2 = new SquareSet(
-                Bitboard.Squares.A1
-                | Bitboard.Squares.H8);
+        SquareSet set1 = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.C3);
+        SquareSet set2 = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.H8);
 
         assertNotEquals(set1.hashCode(), set2.hashCode());
     }
@@ -57,10 +49,7 @@ class SquareSetTest {
     @Test
     void testSize() {
         SquareSet set1 = new SquareSet(0b10000000_01000000_00100000_00010000_00001000_00000100_00000010_00000001L);
-        SquareSet set2 = new SquareSet(
-                Bitboard.Squares.A1
-                | Bitboard.Squares.E1
-                | Bitboard.Squares.H1);
+        SquareSet set2 = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.E1 | Bitboard.Squares.H1);
 
         assertEquals(8, set1.size());
         assertEquals(3, set2.size());
@@ -88,9 +77,7 @@ class SquareSetTest {
 
     @Test
     void testIterator() {
-        SquareSet set = new SquareSet(
-                Bitboard.Squares.A3
-                | Bitboard.Squares.C6);
+        SquareSet set = new SquareSet(Bitboard.Squares.A3 | Bitboard.Squares.C6);
 
         assertEquals(2, set.size());
         Iterator<Square> iterator = set.iterator();
@@ -106,19 +93,13 @@ class SquareSetTest {
     void testToArray() {
         Square[] expected = new Square[]{Square.A1, Square.C3, Square.H8};
 
-        SquareSet set = new SquareSet(
-                Bitboard.Squares.A1
-                | Bitboard.Squares.C3
-                | Bitboard.Squares.H8);
+        SquareSet set = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.C3 | Bitboard.Squares.H8);
         assertArrayEquals(expected, set.toArray());
     }
 
     @Test
     void testToArray_withEmptyArray() {
-        SquareSet set = new SquareSet(
-                Bitboard.Squares.A1
-                | Bitboard.Squares.C3
-                | Bitboard.Squares.H8);
+        SquareSet set = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.C3 | Bitboard.Squares.H8);
         Square[] input = new Square[0];
         Square[] expected = new Square[]{Square.A1, Square.C3, Square.H8};
 
@@ -127,9 +108,7 @@ class SquareSetTest {
 
     @Test
     void testToArray_withLargerArray() {
-        SquareSet set = new SquareSet(
-                Bitboard.Squares.A1
-                | Bitboard.Squares.C3);
+        SquareSet set = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.C3);
         Square[] input = new Square[5];
         Square[] expected = new Square[]{Square.A1, Square.C3, null, null, null};
 
@@ -138,10 +117,7 @@ class SquareSetTest {
 
     @Test
     void testToArray_withExactSizeArray() {
-        SquareSet set = new SquareSet(
-                Bitboard.Squares.A1
-                | Bitboard.Squares.C3
-                | Bitboard.Squares.H8);
+        SquareSet set = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.C3 | Bitboard.Squares.H8);
         Square[] input = new Square[3];
         Square[] expected = new Square[]{Square.A1, Square.C3, Square.H8};
 
@@ -151,10 +127,7 @@ class SquareSetTest {
 
     @Test
     void testToArray_withNullArray() {
-        SquareSet set = new SquareSet(
-                Bitboard.Squares.A1
-                | Bitboard.Squares.C3
-                | Bitboard.Squares.H8);
+        SquareSet set = new SquareSet(Bitboard.Squares.A1 | Bitboard.Squares.C3 | Bitboard.Squares.H8);
 
         assertThrows(NullPointerException.class, () -> set.toArray(null));
     }
@@ -185,9 +158,7 @@ class SquareSetTest {
 
     @Test
     void testRemove() {
-        SquareSet set = new SquareSet(
-                Bitboard.Squares.E4
-                | Bitboard.Squares.D5);
+        SquareSet set = new SquareSet(Bitboard.Squares.E4 | Bitboard.Squares.D5);
         assertEquals(2, set.size());
 
         assertTrue(set.remove(Square.E4));
@@ -202,9 +173,7 @@ class SquareSetTest {
     @Test
     void testContainsAll() {
         SquareSet set = new SquareSet(0xFF_00_FF_00_FF_00_FF_00L);
-        SquareSet subset = new SquareSet(
-                Bitboard.Ranks.RANK_2
-                | Bitboard.Ranks.RANK_4);
+        SquareSet subset = new SquareSet(Bitboard.Ranks.RANK_2 | Bitboard.Ranks.RANK_4);
 
         assertTrue(set.containsAll(subset));
 
@@ -216,9 +185,7 @@ class SquareSetTest {
     @Test
     void testAddAll() {
         SquareSet set = new SquareSet();
-        SquareSet set1 = new SquareSet(
-                Bitboard.Files.FILE_A
-                | Bitboard.Ranks.RANK_4);
+        SquareSet set1 = new SquareSet(Bitboard.Files.FILE_A | Bitboard.Ranks.RANK_4);
 
         assertTrue(set.addAll(set1));
         assertEquals(15, set.size());
@@ -226,9 +193,7 @@ class SquareSetTest {
 
     @Test
     void testRetainAll() {
-        SquareSet set1 = new SquareSet(
-                Bitboard.Files.FILE_A
-                | Bitboard.Ranks.RANK_4);
+        SquareSet set1 = new SquareSet(Bitboard.Files.FILE_A | Bitboard.Ranks.RANK_4);
         SquareSet set2 = new SquareSet(Bitboard.Files.FILE_D);
 
         assertTrue(set1.retainAll(set2));
@@ -238,9 +203,7 @@ class SquareSetTest {
 
     @Test
     void testRemoveAll() {
-        SquareSet set1 = new SquareSet(
-                Bitboard.Files.FILE_A
-                | Bitboard.Files.FILE_D);
+        SquareSet set1 = new SquareSet(Bitboard.Files.FILE_A | Bitboard.Files.FILE_D);
         SquareSet set2 = new SquareSet(Bitboard.Files.FILE_A);
 
         assertTrue(set1.removeAll(set2));
@@ -249,9 +212,7 @@ class SquareSetTest {
 
     @Test
     void testClear() {
-        SquareSet set = new SquareSet(
-                Bitboard.Files.FILE_A
-                | Bitboard.Files.FILE_D);
+        SquareSet set = new SquareSet(Bitboard.Files.FILE_A | Bitboard.Files.FILE_D);
         assertFalse(set.isEmpty());
 
         set.clear();
