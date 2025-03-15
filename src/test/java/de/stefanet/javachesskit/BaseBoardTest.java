@@ -202,7 +202,8 @@ class BaseBoardTest {
         assertEquals(Bitboard.Ranks.RANK_1 |
                      Bitboard.Ranks.RANK_2 |
                      Bitboard.Ranks.RANK_7 |
-                     Bitboard.Ranks.RANK_8, board.getOccupied());
+                     Bitboard.Ranks.RANK_8,
+                     board.getOccupied());
     }
 
     @Test

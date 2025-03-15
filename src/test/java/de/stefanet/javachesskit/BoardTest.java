@@ -583,38 +583,38 @@ class BoardTest {
     @Test
     void testScholarsMate() {
         Board board = new Board();
-        Move e4 = Move.fromUci("e2e4");
-        assertTrue(board.legalMoves().contains(e4));
-        board.push(e4);
+        Move move = Move.fromUci("e2e4");
+        assertTrue(board.legalMoves().contains(move));
+        board.push(move);
 
-        Move e5 = Move.fromUci("e7e5");
-        assertTrue(board.legalMoves().contains(e5));
-        board.push(e5);
+        move = Move.fromUci("e7e5");
+        assertTrue(board.legalMoves().contains(move));
+        board.push(move);
 
-        Move Qf3 = Move.fromUci("d1f3");
-        assertTrue(board.legalMoves().contains(Qf3));
-        board.push(Qf3);
+        move = Move.fromUci("d1f3");
+        assertTrue(board.legalMoves().contains(move));
+        board.push(move);
 
-        Move Nc6 = Move.fromUci("b8c6");
-        assertTrue(board.legalMoves().contains(Nc6));
-        board.push(Nc6);
+        move = Move.fromUci("b8c6");
+        assertTrue(board.legalMoves().contains(move));
+        board.push(move);
 
-        Move Bc4 = Move.fromUci("f1c4");
-        assertTrue(board.legalMoves().contains(Bc4));
-        board.push(Bc4);
+        move = Move.fromUci("f1c4");
+        assertTrue(board.legalMoves().contains(move));
+        board.push(move);
 
-        Move Rb8 = Move.fromUci("a8b8");
-        assertTrue(board.legalMoves().contains(Rb8));
-        board.push(Rb8);
+        move = Move.fromUci("a8b8");
+        assertTrue(board.legalMoves().contains(move));
+        board.push(move);
 
         assertFalse(board.isCheck());
         assertFalse(board.isCheckmate());
         assertFalse(board.isStalemate());
         assertFalse(board.isGameOver());
 
-        Move Qf7 = Move.fromUci("f3f7");
-        assertTrue(board.legalMoves().contains(Qf7));
-        board.push(Qf7);
+        move = Move.fromUci("f3f7");
+        assertTrue(board.legalMoves().contains(move));
+        board.push(move);
 
         assertTrue(board.isCheck());
         assertTrue(board.isCheckmate());
@@ -622,7 +622,6 @@ class BoardTest {
         assertFalse(board.isStalemate());
 
         assertEquals("1rbqkbnr/pppp1Qpp/2n5/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQk - 0 4", board.getFen());
-
     }
 
     @Test
