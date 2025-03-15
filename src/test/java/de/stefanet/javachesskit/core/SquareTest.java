@@ -15,12 +15,13 @@ class SquareTest {
     void testSquareEquality() {
         Square square1 = Square.parseSquare("b4");
         Square square2 = Square.parseSquare("b4");
-        Square square3 = Square.parseSquare("b3");
-        Square square4 = Square.parseSquare("f3");
 
         assertEquals(square1, square1);
         assertEquals(square1, square2);
         assertEquals(square2, square1);
+
+        Square square3 = Square.parseSquare("b3");
+        Square square4 = Square.parseSquare("f3");
 
         assertNotEquals(square1, square3);
         assertNotEquals(square1, square4);
