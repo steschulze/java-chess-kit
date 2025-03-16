@@ -218,8 +218,8 @@ public enum Square {
      * @return The Manhattan distance between the two squares.
      */
     public static int manhattanDistance(Square square, Square other) {
-        return Math.abs(square.getFileIndex() - other.getFileIndex())
-               + Math.abs(square.getRankIndex() - other.getRankIndex());
+        return Math.abs(square.getFileIndex() - other.getFileIndex()) +
+               Math.abs(square.getRankIndex() - other.getRankIndex());
     }
 
     /**

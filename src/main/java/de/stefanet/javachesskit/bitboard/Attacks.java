@@ -40,8 +40,9 @@ public final class Attacks {
 
             while (true) {
                 squareIndex += delta;
-                if (squareIndex < 0 || squareIndex >= 64
-                    || Square.distance(Square.fromIndex(squareIndex), Square.fromIndex(squareIndex - delta)) > 2) {
+                if (squareIndex < 0 ||
+                    squareIndex >= 64 ||
+                    Square.distance(Square.fromIndex(squareIndex), Square.fromIndex(squareIndex - delta)) > 2) {
                     break;
                 }
 
@@ -83,9 +84,8 @@ public final class Attacks {
     private static long edges(Square square) {
         int rank = square.getRankIndex();
         int file = square.getFileIndex();
-        return (
-                ((Bitboard.Ranks.RANK_1 | Bitboard.Ranks.RANK_8) & ~Bitboard.RANKS[rank])
-                | ((Bitboard.Files.FILE_A | Bitboard.Files.FILE_H) & ~Bitboard.FILES[file]));
+        return (((Bitboard.Ranks.RANK_1 | Bitboard.Ranks.RANK_8) & ~Bitboard.RANKS[rank]) |
+                ((Bitboard.Files.FILE_A | Bitboard.Files.FILE_H) & ~Bitboard.FILES[file]));
     }
 
     /**
@@ -153,8 +153,9 @@ public final class Attacks {
 
             for (int b = 0; b < SQUARES.length; b++) {
                 if ((DIAGONAL_ATTACKS.get(a).get(0L) & SQUARES[b]) != EMPTY) {
-                    raysRow[b] = (DIAGONAL_ATTACKS.get(a).get(0L) & DIAGONAL_ATTACKS.get(b).get(0L))
-                                 | SQUARES[a] | SQUARES[b];
+                    raysRow[b] = (DIAGONAL_ATTACKS.get(a).get(0L) & DIAGONAL_ATTACKS.get(b).get(0L)) |
+                                 SQUARES[a] |
+                                 SQUARES[b];
                 } else if ((RANK_ATTACKS.get(a).get(0L) & SQUARES[b]) != EMPTY) {
                     raysRow[b] = RANK_ATTACKS.get(a).get(0L) | SQUARES[a];
                 } else if ((FILE_ATTACKS.get(a).get(0L) & SQUARES[b]) != EMPTY) {

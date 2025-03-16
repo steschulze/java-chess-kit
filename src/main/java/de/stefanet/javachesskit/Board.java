@@ -363,8 +363,9 @@ public class Board extends BaseBoard {
         for (int captureIndex : BitboardUtils.scanReversed(pawns)) {
             Square source = Square.fromIndex(captureIndex);
 
-            long targets = Bitboard.PAWN_ATTACKS[turn.ordinal()][captureIndex]
-                           & targetMask & this.occupiedColor[turn.other().ordinal()];
+            long targets = Bitboard.PAWN_ATTACKS[turn.ordinal()][captureIndex] &
+                           targetMask &
+                           this.occupiedColor[turn.other().ordinal()];
 
             for (int targetIndex : BitboardUtils.scanReversed(targets)) {
                 Square target = Square.fromIndex(targetIndex);
@@ -568,10 +569,9 @@ public class Board extends BaseBoard {
                     index,
                     BitboardUtils.msb(rookTarget));
 
-            if (!(
-                    ((this.occupied ^ king ^ rook) & (kingPath | rookPath | kingTarget | rookTarget)) != 0
-                    || attackedForKing(kingPath | king, this.occupied ^ king)
-                    || attackedForKing(kingTarget, this.occupied ^ king ^ rook ^ rookTarget))) {
+            if (!(((this.occupied ^ king ^ rook) & (kingPath | rookPath | kingTarget | rookTarget)) != 0 ||
+                  attackedForKing(kingPath | king, this.occupied ^ king) ||
+                  attackedForKing(kingTarget, this.occupied ^ king ^ rook ^ rookTarget))) {
                 Square source = Square.fromIndex(BitboardUtils.msb(king));
                 Square target = Square.fromIndex(index);
 
@@ -789,13 +789,12 @@ public class Board extends BaseBoard {
                 return !isAttackedBy(turn.other(), move.getTarget());
             }
         } else if (isEnPassant(move)) {
-            return (pinMask(turn, move.getSource()) & SQUARES[move.getTarget().ordinal()]) != 0
-                   && !epSkewered(kingSquare, move.getSource());
+            return (pinMask(turn, move.getSource()) & SQUARES[move.getTarget().ordinal()]) != 0 &&
+                   !epSkewered(kingSquare, move.getSource());
         } else {
-            return (blockers & SQUARES[move.getSource().ordinal()]) == 0
-                   || (
-                              BitboardUtils.ray(move.getSource().ordinal(),
-                                                move.getTarget().ordinal()) & SQUARES[kingSquare.ordinal()]) != 0;
+            return (blockers & SQUARES[move.getSource().ordinal()]) == 0 ||
+                   (BitboardUtils.ray(move.getSource().ordinal(), move.getTarget().ordinal()) &
+                    SQUARES[kingSquare.ordinal()]) != 0;
         }
     }
 
@@ -809,9 +808,8 @@ public class Board extends BaseBoard {
     private boolean epSkewered(Square kingSquare, Square capturer) {
         int lastDouble = this.epSquare.ordinal() + ((this.turn == Color.WHITE) ? -8 : 8);
 
-        long occupancy = (
-                this.occupied & ~SQUARES[lastDouble]
-                & ~SQUARES[capturer.ordinal()] | SQUARES[this.epSquare.ordinal()]);
+        long occupancy = this.occupied & ~SQUARES[lastDouble] & ~SQUARES[capturer.ordinal()] |
+                         SQUARES[this.epSquare.ordinal()];
 
         long horizontalAttackers = this.occupiedColor[turn.other().ordinal()] & (this.rooks | this.queens);
         if ((
@@ -918,11 +916,11 @@ public class Board extends BaseBoard {
      * @return True if the given move is En Passant, false otherwise.
      */
     public boolean isEnPassant(Move move) {
-        return this.epSquare == move.getTarget() && ((this.pawns & SQUARES[move.getSource().ordinal()]) != 0)
-               && (
-                       Math.abs(move.getTarget().ordinal() - move.getSource().ordinal()) == 7
-                       || Math.abs(move.getTarget().ordinal() - move.getSource().ordinal()) == 9)
-               && ((this.occupied & SQUARES[move.getTarget().ordinal()]) == 0);
+        return this.epSquare == move.getTarget() &&
+               ((this.pawns & SQUARES[move.getSource().ordinal()]) != 0) &&
+               (Math.abs(move.getTarget().ordinal() - move.getSource().ordinal()) == 7 ||
+                Math.abs(move.getTarget().ordinal() - move.getSource().ordinal()) == 9) &&
+               ((this.occupied & SQUARES[move.getTarget().ordinal()]) == 0);
     }
 
     /**
@@ -937,10 +935,9 @@ public class Board extends BaseBoard {
         long rooksAndQueens = this.rooks | this.queens;
         long bishopsAndQueens = this.bishops | this.queens;
 
-        long snipers = (
-                (RANK_ATTACKS.get(kingSquareIndex).get(0L) & rooksAndQueens)
-                | (FILE_ATTACKS.get(kingSquareIndex).get(0L) & rooksAndQueens)
-                | (DIAGONAL_ATTACKS.get(kingSquareIndex).get(0L) & bishopsAndQueens));
+        long snipers = ((RANK_ATTACKS.get(kingSquareIndex).get(0L) & rooksAndQueens) |
+                        (FILE_ATTACKS.get(kingSquareIndex).get(0L) & rooksAndQueens) |
+                        (DIAGONAL_ATTACKS.get(kingSquareIndex).get(0L) & bishopsAndQueens));
 
         long blockers = 0;
 
@@ -1168,8 +1165,9 @@ public class Board extends BaseBoard {
                 this.epSquare = Square.fromIndex(move.getSource().ordinal() + 8);
             } else if (diff == -16 && move.getSource().getRank() == 7) {
                 this.epSquare = Square.fromIndex(move.getSource().ordinal() - 8);
-            } else if (move.getTarget() == epSquare && (Math.abs(diff) == 7 || Math.abs(diff) == 9)
-                       && capturedPieceType == null) {
+            } else if (move.getTarget() == epSquare &&
+                       (Math.abs(diff) == 7 || Math.abs(diff) == 9) &&
+                       capturedPieceType == null) {
                 captureSquare = Square.fromIndex(epSquare.ordinal() - 8 * turn.forwardDirection());
                 capturedPieceType = removePieceType(captureSquare);
 
@@ -1425,16 +1423,14 @@ public class Board extends BaseBoard {
                 int pushedTo = validEpSquare.ordinal() ^ 8;
                 int pushedFrom = validEpSquare.ordinal() ^ 24;
                 long occupiedBefore = (this.occupied & ~SQUARES[pushedTo]) | SQUARES[pushedFrom];
-                if (Long.bitCount(checkers) > 1
-                    || (BitboardUtils.msb(checkers) != pushedTo && attackedForKing(ourKings, occupiedBefore))) {
+                if (Long.bitCount(checkers) > 1 ||
+                    (BitboardUtils.msb(checkers) != pushedTo && attackedForKing(ourKings, occupiedBefore))) {
                     errors.add(Status.IMPOSSIBLE_CHECK);
                 }
             } else {
-                if (Long.bitCount(checkers) > 2
-                    || (
-                            Long.bitCount(checkers) == 2
-                            && (BitboardUtils.ray(BitboardUtils.lsb(checkers), BitboardUtils.msb(checkers)) & ourKings)
-                               != 0)) {
+                if (Long.bitCount(checkers) > 2 ||
+                    (Long.bitCount(checkers) == 2 &&
+                     (BitboardUtils.ray(BitboardUtils.lsb(checkers), BitboardUtils.msb(checkers)) & ourKings) != 0)) {
                     errors.add(Status.IMPOSSIBLE_CHECK);
                 }
             }
@@ -1545,8 +1541,9 @@ public class Board extends BaseBoard {
      * @return The matching legal move.
      */
     public Move findMove(Square sourceSquare, Square targetSquare, PieceType promotion) {
-        if (promotion == null && (this.pawns & SQUARES[sourceSquare.ordinal()]) != 0
-            && (SQUARES[targetSquare.ordinal()] & BACKRANK) != 0) {
+        if (promotion == null &&
+            (this.pawns & SQUARES[sourceSquare.ordinal()]) != 0 &&
+            (SQUARES[targetSquare.ordinal()] & BACKRANK) != 0) {
             promotion = PieceType.QUEEN;
         }
 
@@ -2100,13 +2097,11 @@ public class Board extends BaseBoard {
         long castlingRights = this.cleanCastlingRights();
         long touched = SQUARES[move.getSource().ordinal()] ^ SQUARES[move.getTarget().ordinal()];
 
-        return (touched & castlingRights) != 0
-               || (
-                       (castlingRights & RANK_1) != 0
-                       && (touched & this.kings & this.occupiedColor[Color.WHITE.ordinal()] & ~this.promoted) != 0)
-               || (
-                       (castlingRights & RANK_8) != 0
-                       && (touched & this.kings & this.occupiedColor[Color.BLACK.ordinal()] & ~this.promoted) != 0);
+        return (touched & castlingRights) != 0 ||
+               ((castlingRights & RANK_1) != 0 &&
+                (touched & this.kings & this.occupiedColor[Color.WHITE.ordinal()] & ~this.promoted) != 0) ||
+               ((castlingRights & RANK_8) != 0 &&
+                (touched & this.kings & this.occupiedColor[Color.BLACK.ordinal()] & ~this.promoted) != 0);
     }
 
     /**
@@ -2193,9 +2188,9 @@ public class Board extends BaseBoard {
         }
 
         Board board = (Board) o;
-        return fullMoveNumber == board.fullMoveNumber
-               && halfMoveClock == board.halfMoveClock
-               && hashCode() == board.hashCode();
+        return fullMoveNumber == board.fullMoveNumber &&
+               halfMoveClock == board.halfMoveClock &&
+               hashCode() == board.hashCode();
     }
 
     @Override

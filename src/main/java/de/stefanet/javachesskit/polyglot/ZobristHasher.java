@@ -92,7 +92,6 @@ public class ZobristHasher {
     }
 
     public long hash(Board board) {
-        return this.hashBoard(board) ^ this.hashCastling(board)
-               ^ this.hashEpSquare(board) ^ this.hashTurn(board);
+        return this.hashBoard(board) ^ this.hashCastling(board) ^ this.hashEpSquare(board) ^ this.hashTurn(board);
     }
 }

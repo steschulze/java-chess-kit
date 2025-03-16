@@ -400,8 +400,8 @@ public class BaseBoard {
             Map<Long, Long> rankAttackMap = RANK_ATTACKS.get(square.ordinal());
             Map<Long, Long> fileAttackMap = FILE_ATTACKS.get(square.ordinal());
 
-            attacks |= rankAttackMap.get(RANK_MASKS[square.ordinal()] & this.occupied)
-                       | fileAttackMap.get(FILE_MASKS[square.ordinal()] & this.occupied);
+            attacks |= rankAttackMap.get(RANK_MASKS[square.ordinal()] & this.occupied) |
+                       fileAttackMap.get(FILE_MASKS[square.ordinal()] & this.occupied);
         }
         return attacks;
     }
@@ -433,12 +433,12 @@ public class BaseBoard {
         long queensAndRooks = this.queens | this.rooks;
         long queensAndBishops = this.queens | this.bishops;
 
-        long attackers = (KING_ATTACKS[square.ordinal()] & this.kings)
-                         | KNIGHT_ATTACKS[square.ordinal()] & this.knights
-                         | RANK_ATTACKS.get(square.ordinal()).get(rankPieces) & queensAndRooks
-                         | FILE_ATTACKS.get(square.ordinal()).get(filePieces) & queensAndRooks
-                         | DIAGONAL_ATTACKS.get(square.ordinal()).get(diagPieces) & queensAndBishops
-                         | PAWN_ATTACKS[color.other().ordinal()][square.ordinal()] & this.pawns;
+        long attackers = (KING_ATTACKS[square.ordinal()] & this.kings) |
+                         KNIGHT_ATTACKS[square.ordinal()] & this.knights |
+                         RANK_ATTACKS.get(square.ordinal()).get(rankPieces) & queensAndRooks |
+                         FILE_ATTACKS.get(square.ordinal()).get(filePieces) & queensAndRooks |
+                         DIAGONAL_ATTACKS.get(square.ordinal()).get(diagPieces) & queensAndBishops |
+                         PAWN_ATTACKS[color.other().ordinal()][square.ordinal()] & this.pawns;
         return attackers & this.occupiedColor[color.ordinal()];
     }
 
@@ -622,16 +622,16 @@ public class BaseBoard {
             return false;
         }
         BaseBoard board = (BaseBoard) o;
-        return this.pawns == board.pawns
-               && this.knights == board.knights
-               && this.bishops == board.bishops
-               && this.rooks == board.rooks
-               && this.queens == board.queens
-               && this.kings == board.kings
-               && this.promoted == board.promoted
-               && this.occupiedColor[Color.WHITE.ordinal()] == board.occupiedColor[Color.WHITE.ordinal()]
-               && this.occupiedColor[Color.BLACK.ordinal()] == board.occupiedColor[Color.BLACK.ordinal()]
-               && this.occupied == board.occupied;
+        return this.pawns == board.pawns &&
+               this.knights == board.knights &&
+               this.bishops == board.bishops &&
+               this.rooks == board.rooks &&
+               this.queens == board.queens &&
+               this.kings == board.kings &&
+               this.promoted == board.promoted &&
+               this.occupiedColor[Color.WHITE.ordinal()] == board.occupiedColor[Color.WHITE.ordinal()] &&
+               this.occupiedColor[Color.BLACK.ordinal()] == board.occupiedColor[Color.BLACK.ordinal()] &&
+               this.occupied == board.occupied;
     }
 
     @Override
