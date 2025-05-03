@@ -1,7 +1,6 @@
 package de.stefanet.javachesskit.examples;
 
 import de.stefanet.javachesskit.Board;
-import de.stefanet.javachesskit.move.Move;
 
 /**
  * Example of the Scholar's Mate.
@@ -9,20 +8,23 @@ import de.stefanet.javachesskit.move.Move;
 public class ScholarsMate {
 
     /**
-     * Setup Scholar's Mate and print outcome.
+     * Set up Scholar's Mate and print outcome.
      *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         Board board = new Board();
-        board.push(Move.fromUci("e2e4"));
-        board.push(Move.fromUci("e7e5"));
-        board.push(Move.fromUci("d1h5"));
-        board.push(Move.fromUci("b8c6"));
-        board.push(Move.fromUci("f1c4"));
-        board.push(Move.fromUci("g8f6"));
-        board.push(Move.fromUci("h5f7"));
+
+        board.pushSan("e4");
+
+        board.pushSan("e5");
+        board.pushSan("Qh5");
+        board.pushSan("Nc6");
+        board.pushSan("Bc4");
+        board.pushSan("Nf6");
+        board.pushSan("Qxf7");
 
         System.out.println(board.outcome());
+        System.out.println(board.getFen());
     }
 }
