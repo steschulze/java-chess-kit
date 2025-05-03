@@ -1,5 +1,7 @@
 # java-chess-kit: a chess library for Java
 
+![JitPack](https://img.shields.io/jitpack/version/com.github.Stefan3004/java-chess-kit?color=green)
+
 The java-chess-kit is a simple java chess library for generating legal moves, checking the state of the game
 and parsing a PGN or FEN.
 
