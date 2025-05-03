@@ -57,6 +57,11 @@ public class LegalMoveGenerator implements Iterable<Move> {
         return String.format("<LegalMoveGenerator (%s)>", sb);
     }
 
+    /**
+     * Check if there are any legal moves.
+     *
+     * @return True if there is at least one legal move, false otherwise.
+     */
     public boolean any() {
         return iterator().hasNext();
     }

@@ -20,6 +20,11 @@ import java.util.Iterator;
 public class PseudoLegalMoveGenerator implements Iterable<Move> {
     private final Board board;
 
+    /**
+     * Create a new pseudo-legal move generator for the given board.
+     *
+     * @param board The board to generate pseudo-legal moves for.
+     */
     public PseudoLegalMoveGenerator(Board board) {
         this.board = board;
     }
@@ -57,6 +62,11 @@ public class PseudoLegalMoveGenerator implements Iterable<Move> {
         return String.format("<PseudoLegalMoveGenerator (%s)>", sb);
     }
 
+    /**
+     * Check if there are any pseudo-legal moves.
+     *
+     * @return True if there is at least one pseudo-legal move, false otherwise.
+     */
     public boolean any() {
         return iterator().hasNext();
     }
