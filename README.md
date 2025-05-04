@@ -5,14 +5,44 @@
 The java-chess-kit is a simple java chess library for generating legal moves, checking the state of the game
 and parsing a PGN or FEN.
 
-## Installing from source
+## Installation
+### Source
 
 ```
 git clone https://github.com/steschulze/java-chess-kit.git
 cd java-chess-kit/
 gradlew build
 ```
+### Gradle
+```
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+```
 
+```
+dependencies {
+    implementation 'com.github.steschulze:java-chess-kit:v0.1.0'
+}
+```
+### Maven 
+```
+<repositories>
+    <repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+```
+
+```
+<dependency>
+    <groupId>com.github.steschulze</groupId>
+    <artifactId>java-chess-kit</artifactId>
+    <version>v0.1.0</version>
+</dependency>
+```
 ## Usage
 
 ### Scholar's mate
